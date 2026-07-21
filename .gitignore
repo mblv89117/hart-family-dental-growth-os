@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.pyc
+.next/
+out/
+dist/
+build/
+.turbo/
+.npm-cache/
+website/node_modules/
+website/.next/
+
+# Env & secrets — NEVER commit
+.env
+.env.*
+!.env.example
+secrets/
+*.pem
+*.key
+credentials*
+*password*
+*PASSWORD*
+
+# Credential-bearing source dumps
+Advertising.pdf
+**/Advertising*.pdf
+secrets/_quarantine/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+*.log
+npm-debug.log*
+
+# Local analytics exports
+data/exports/
+*.csv.bak
+
+You are the Chief Growth.docx
+.npm-cache/

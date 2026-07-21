@@ -1,0 +1,118 @@
+{
+  "practice": {
+    "legalName": "Harry Hart Dental Corporation",
+    "brandName": "Hart Family Dental",
+    "primaryDomain": "hartfamilydds.com",
+    "owner": "Dr. Harry Allen Hart, DDS",
+    "corporateContact": {
+      "name": "Lindsay Hawkins",
+      "title": "Corporate Secretary / Office Manager",
+      "phone": "(760) 365-6595",
+      "fax": "(760) 365-7203"
+    },
+    "techContact": {
+      "name": "Ryan Blakeslee",
+      "phone": "(951) 515-6246",
+      "notes": "Website coordination; Mason referenced as website builder"
+    }
+  },
+  "locations": [
+    {
+      "id": "yucca-valley",
+      "name": "Hart Family Dental — Yucca Valley",
+      "slug": "yucca-valley",
+      "address": {
+        "street": "56728 Twentynine Palms Highway",
+        "streetAlt": "56728 29 Palms Hwy",
+        "city": "Yucca Valley",
+        "state": "CA",
+        "zip": "92284",
+        "country": "US"
+      },
+      "phone": "(760) 365-6595",
+      "fax": "(760) 365-7203",
+      "emailAccounts": ["hartdentalyv@hotmail.com", "hartdental@gmail.com"],
+      "locationDomain": "hartfamilyyv.com",
+      "canonicalPath": "/yucca-valley",
+      "hoursStatus": "UNVERIFIED — reconcile GBP, Yelp, and front desk before publishing",
+      "hoursCandidates": {
+        "yelpListed": {
+          "monday": "8:00 AM – 4:30 PM",
+          "tuesday": "8:00 AM – 4:30 PM",
+          "wednesday": "8:00 AM – 4:30 PM",
+          "thursday": "8:00 AM – 4:30 PM",
+          "friday": "9:00 AM – 2:00 PM",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        },
+        "otherDirectories": {
+          "monday": "9:00 AM – 6:00 PM",
+          "tuesday": "8:30 AM – 5:30 PM",
+          "wednesday": "9:00 AM – 6:00 PM",
+          "thursday": "8:30 AM – 5:30 PM",
+          "friday": "9:00 AM – 2:00 PM",
+          "saturday": "Closed",
+          "sunday": "Closed"
+        }
+      },
+      "serviceArea": [
+        "Yucca Valley",
+        "Joshua Tree",
+        "Twentynine Palms",
+        "Morongo Valley",
+        "Landers",
+        "Pioneertown"
+      ]
+    },
+    {
+      "id": "desert-hot-springs",
+      "name": "Hart Family Dental — Desert Hot Springs",
+      "slug": "desert-hot-springs",
+      "address": {
+        "street": "11523 Palm Drive",
+        "city": "Desert Hot Springs",
+        "state": "CA",
+        "zip": "92240",
+        "country": "US"
+      },
+      "phone": "(760) 329-6713",
+      "fax": "(760) 329-1088",
+      "npi": "1689868564",
+      "emailAccounts": ["hartdental02@hotmail.com", "hartdental@gmail.com"],
+      "locationDomain": "hartfamilydhs.com",
+      "canonicalPath": "/desert-hot-springs",
+      "hoursStatus": "UNVERIFIED — confirm with office before publishing",
+      "hoursCandidates": null,
+      "serviceArea": [
+        "Desert Hot Springs",
+        "Palm Springs",
+        "Cathedral City",
+        "Palm Desert",
+        "Rancho Mirage",
+        "Sky Valley"
+      ]
+    }
+  ],
+  "domains": {
+    "primary": {
+      "host": "hartfamilydds.com",
+      "status": "Parked GoDaddy lander — no production website",
+      "dns": ["3.33.130.190", "15.197.148.33"],
+      "recommendation": "Build authoritative site here; point hosting away from park page"
+    },
+    "locationFunnels": [
+      {
+        "host": "hartfamilyyv.com",
+        "target": "https://hartfamilydds.com/yucca-valley",
+        "status": "No DNS A records found — configure at GoDaddy",
+        "recommendation": "301 redirect to primary location page after DNS setup"
+      },
+      {
+        "host": "hartfamilydhs.com",
+        "target": "https://hartfamilydds.com/desert-hot-springs",
+        "status": "No DNS A records found — configure at GoDaddy",
+        "recommendation": "301 redirect to primary location page after DNS setup"
+      }
+    ]
+  }
+}

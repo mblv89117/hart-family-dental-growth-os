@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #1a2b33;
+  --ink-soft: #3d5360;
+  --paper: #f3f6f8;
+  --paper-deep: #e4ebf0;
+  --sky: #5b8fad;
+  --sky-deep: #2a5570;
+  --sage: #2f6b5c;
+  --sage-deep: #1f4a40;
+  --sun: #e8c56a;
+  --line: rgba(26, 43, 51, 0.12);
+  --shadow: 0 24px 60px rgba(42, 85, 112, 0.14);
+  --background: var(--paper);
+  --foreground: var(--ink);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-sky: var(--sky);
+  --color-sky-deep: var(--sky-deep);
+  --color-sage: var(--sage);
+  --color-sage-deep: var(--sage-deep);
+  --color-sun: var(--sun);
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body), system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: color-mix(in oklab, var(--sky) 35%, white);
+}
+
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+.desert-sky {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(232, 197, 106, 0.35), transparent 55%),
+    radial-gradient(900px 500px at 10% 20%, rgba(91, 143, 173, 0.45), transparent 50%),
+    linear-gradient(165deg, #9ec4d8 0%, #d7e5ee 42%, #eef3f6 100%);
+}
+
+.grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+.reveal {
+  animation: rise 0.9s ease both;
+}
+
+.reveal-delay {
+  animation: rise 1s ease 0.15s both;
+}
+
+.reveal-delay-2 {
+  animation: rise 1.1s ease 0.3s both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+
+.float-soft {
+  animation: drift 7s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal-delay,
+  .reveal-delay-2,
+  .float-soft {
+    animation: none;
+  }
+}
