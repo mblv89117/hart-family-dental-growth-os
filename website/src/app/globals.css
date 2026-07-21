@@ -1,6 +1,9 @@
 @import "tailwindcss";
 
 :root {
+  /* Brand mark color from hartfamilydental logo.svg */
+  --brand: #7d0e0e;
+  --brand-deep: #5c0a0a;
   --ink: #1a2b33;
   --ink-soft: #3d5360;
   --paper: #f3f6f8;
@@ -19,6 +22,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-deep: var(--brand-deep);
   --color-ink: var(--ink);
   --color-ink-soft: var(--ink-soft);
   --color-paper: var(--paper);

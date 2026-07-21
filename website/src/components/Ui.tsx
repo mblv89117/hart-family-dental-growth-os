@@ -15,7 +15,7 @@ export function CtaRow({
     <div className="flex flex-wrap items-center gap-3">
       <Link
         href={primaryHref}
-        className="rounded-full bg-sage px-5 py-3 text-sm font-medium text-white transition hover:bg-sage-deep"
+        className="rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep"
       >
         {primaryLabel}
       </Link>

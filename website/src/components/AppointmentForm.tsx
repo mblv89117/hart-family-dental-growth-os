@@ -127,7 +127,7 @@ export function AppointmentForm({
         </label>
         <button
           type="submit"
-          className="mt-2 rounded-full bg-sky-deep px-5 py-3 text-sm font-medium text-white transition hover:bg-ink"
+          className="mt-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep"
         >
           Submit request
         </button>

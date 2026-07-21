@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { CtaRow } from "@/components/Ui";
@@ -21,7 +22,10 @@ export function PageHero({
     <section className="desert-sky relative overflow-hidden pt-32">
       <div className="grain absolute inset-0 opacity-50" aria-hidden />
       <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-8 md:px-8 md:pb-20">
-        <p className="reveal font-display text-4xl text-sky-deep md:text-5xl">{brandSignal}</p>
+        <div className="reveal flex items-center gap-3 md:gap-4">
+          <Image src="/logo.svg" alt="" width={56} height={56} className="rounded-[0.9rem]" priority />
+          <p className="font-display text-3xl text-brand md:text-5xl">{brandSignal}</p>
+        </div>
         <h1 className="reveal-delay mt-4 max-w-3xl text-2xl font-medium text-ink md:text-3xl">{title}</h1>
         <p className="reveal-delay-2 mt-4 max-w-2xl text-ink-soft">{body}</p>
         <div className="reveal-delay-2 mt-8">

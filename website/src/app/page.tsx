@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { AppointmentForm } from "@/components/AppointmentForm";
 import { CtaRow, SectionHeading } from "@/components/Ui";
@@ -10,9 +11,19 @@ export default function HomePage() {
       <section className="desert-sky relative min-h-[100svh] overflow-hidden">
         <div className="grain absolute inset-0 opacity-60" aria-hidden />
         <div className="relative mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-end px-5 pb-16 pt-36 md:justify-center md:px-8 md:pb-24 md:pt-40">
-          <p className="reveal font-display text-5xl leading-[0.95] tracking-tight text-sky-deep md:text-7xl lg:text-8xl">
-            {site.brand}
-          </p>
+          <div className="reveal flex items-center gap-4 md:gap-6">
+            <Image
+              src="/logo.svg"
+              alt=""
+              width={88}
+              height={88}
+              priority
+              className="rounded-[1.35rem] shadow-[var(--shadow)] md:h-[112px] md:w-[112px]"
+            />
+            <p className="font-display text-4xl leading-[0.95] tracking-tight text-brand md:text-6xl lg:text-7xl">
+              {site.brand}
+            </p>
+          </div>
           <h1 className="reveal-delay mt-6 max-w-xl text-xl font-medium text-ink md:text-2xl">
             Family dentistry that feels welcoming — with advanced options when you’re ready.
           </h1>
