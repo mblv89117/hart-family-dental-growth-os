@@ -1,39 +1,37 @@
 # DNS Cutover Runbook
 
-**Status:** **IN PROGRESS** — Vercel production live; GoDaddy DNS A records still need cutover  
-**Preferred first live domain:** **hfdds.net**  
-**Long-term SEO domain:** hartfamilydds.com (align after hfdds.net is stable)
+**Status:** **COMPLETE for hfdds.net** (2026-07-21)  
+**Preferred first live domain:** **https://hfdds.net**  
+**Long-term SEO domain:** hartfamilydds.com (align later)
 
 ## Live now
 
 | Host | Status |
 | --- | --- |
-| https://hart-family-dental.vercel.app | **Production READY** (Option A hours + lead API verified) |
-| hfdds.net / www.hfdds.net | Added in Vercel; **DNS still on GoDaddy park** until A records updated |
+| https://hfdds.net | **LIVE** — HTTPS cert issued |
+| https://www.hfdds.net | **LIVE** — CNAME → apex; HTTPS cert issued |
+| https://hart-family-dental.vercel.app | Production alias |
 
-## Required GoDaddy DNS (do this once)
+## DNS that worked
 
-In GoDaddy DNS for **hfdds.net**, replace parking records with:
+| Type | Name | Value | Notes |
+| --- | --- | --- | --- |
+| A | `@` | `76.76.21.21` | Set in GoDaddy |
+| CNAME | `www` | `hfdds.net` | **Keep existing** — do not add a second A for `www` (conflicts) |
 
-| Type | Name | Value |
-| --- | --- | --- |
-| A | `@` | `76.76.21.21` |
-| A | `www` | `76.76.21.21` |
+## Do not do
 
-(Or CNAME `www` → `cname.vercel-dns.com` if GoDaddy prefers CNAME for www.)
-
-Remove park/lander forwarding after save. Propagation usually minutes; HTTPS issues on Vercel after DNS verifies.
+Do not add a new **A** record for `www` while a **CNAME** for `www` already exists. Cancel that add in GoDaddy.
 
 ## Sequence status
 
 ### Phase A — Local complete ✓
-### Phase B — First move: hfdds.net
-1. ~~Deploy Next.js to Vercel~~ ✓ (`hart-family-dental`)  
-2. ~~Set `NEXT_PUBLIC_SITE_URL=https://hfdds.net`~~ ✓  
-3. **Point DNS** — owner action above  
-4. Verify HTTPS on hfdds.net + `/api/leads`  
-5. Notify Wendy that live forms are active  
-6. Confirm test lead in Hotmail  
+### Phase B — First move: hfdds.net ✓
+1. Deploy Next.js to Vercel ✓ (`hart-family-dental`)  
+2. `NEXT_PUBLIC_SITE_URL=https://hfdds.net` ✓  
+3. DNS A `@` → 76.76.21.21 ✓  
+4. HTTPS verified on apex + www ✓  
+5. Lead API live (`notifyInbox` Hotmail routing) ✓  
 
 ### Phase C — Brand domain alignment (later)
-hartfamilydds.com + location 301s after hfdds.net stable.
+hartfamilydds.com + location 301s after ops settle.
