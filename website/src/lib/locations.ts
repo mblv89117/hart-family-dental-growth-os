@@ -14,6 +14,21 @@ export type Location = {
   fax?: string;
   mapQuery: string;
   serviceArea: string[];
+  hours: {
+    monday: string;
+    tuesday: string;
+    wednesday: string;
+    thursday: string;
+    friday: string;
+    saturday: string;
+    sunday: string;
+  };
+  hoursNote: string;
+};
+
+export const leadOwner = {
+  name: "Wendy Delgado",
+  scope: "Both Yucca Valley and Desert Hot Springs desks",
 };
 
 export const locations: Location[] = [
@@ -38,6 +53,16 @@ export const locations: Location[] = [
       "Landers",
       "Pioneertown",
     ],
+    hours: {
+      monday: "Call to confirm",
+      tuesday: "Call to confirm",
+      wednesday: "Call to confirm",
+      thursday: "Call to confirm",
+      friday: "Call to confirm",
+      saturday: "Closed",
+      sunday: "Closed",
+    },
+    hoursNote: "Saturday & Sunday: Closed. Weekday hours — please call to confirm.",
   },
   {
     id: "desert-hot-springs",
@@ -60,6 +85,16 @@ export const locations: Location[] = [
       "Rancho Mirage",
       "Sky Valley",
     ],
+    hours: {
+      monday: "Call to confirm",
+      tuesday: "Call to confirm",
+      wednesday: "Call to confirm",
+      thursday: "Call to confirm",
+      friday: "Call to confirm",
+      saturday: "Closed",
+      sunday: "Closed",
+    },
+    hoursNote: "Saturday & Sunday: Closed. Weekday hours — please call to confirm.",
   },
 ];
 

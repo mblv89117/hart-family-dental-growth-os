@@ -14,4 +14,8 @@
 ## Avoid
 - Specific APR / monthly payment promises without approved calculators  
 - “Guaranteed approval”  
-- Publishing unapproved discounts
+- Publishing unapproved discounts  
+- Naming financing partners or terms until leadership adds them (deferred 2026-07-21)
+
+## If asked “which company?”
+“We can review the payment options available for your treatment plan. Specific partner details are confirmed at the office — I can have someone follow up with what’s currently offered.”

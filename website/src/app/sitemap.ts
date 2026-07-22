@@ -8,6 +8,7 @@ const paths = [
   "/dental-implants",
   "/full-mouth-dental-implants",
   "/teeth-straightening",
+  "/smile-assessment",
   "/cosmetic-dentistry",
   "/restorative-dentistry",
   "/emergency-dentistry",

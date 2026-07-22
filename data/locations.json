@@ -14,6 +14,11 @@
       "name": "Ryan Blakeslee",
       "phone": "(951) 515-6246",
       "notes": "Website coordination; Mason referenced as website builder"
+    },
+    "leadFollowUpOwner": {
+      "name": "Wendy Delgado",
+      "scope": "Both Yucca Valley and Desert Hot Springs desks",
+      "approved": "2026-07-21"
     }
   },
   "locations": [
@@ -34,7 +39,16 @@
       "emailAccounts": ["hartdentalyv@hotmail.com", "hartdental@gmail.com"],
       "locationDomain": "hartfamilyyv.com",
       "canonicalPath": "/yucca-valley",
-      "hoursStatus": "UNVERIFIED — reconcile GBP, Yelp, and front desk before publishing",
+      "hoursStatus": "Weekend CLOSED approved 2026-07-21; weekday hours PENDING confirmation",
+      "hours": {
+        "monday": "Call to confirm",
+        "tuesday": "Call to confirm",
+        "wednesday": "Call to confirm",
+        "thursday": "Call to confirm",
+        "friday": "Call to confirm",
+        "saturday": "Closed",
+        "sunday": "Closed"
+      },
       "hoursCandidates": {
         "yelpListed": {
           "monday": "8:00 AM – 4:30 PM",
@@ -81,7 +95,16 @@
       "emailAccounts": ["hartdental02@hotmail.com", "hartdental@gmail.com"],
       "locationDomain": "hartfamilydhs.com",
       "canonicalPath": "/desert-hot-springs",
-      "hoursStatus": "UNVERIFIED — confirm with office before publishing",
+      "hoursStatus": "Weekend CLOSED approved 2026-07-21; weekday hours PENDING confirmation",
+      "hours": {
+        "monday": "Call to confirm",
+        "tuesday": "Call to confirm",
+        "wednesday": "Call to confirm",
+        "thursday": "Call to confirm",
+        "friday": "Call to confirm",
+        "saturday": "Closed",
+        "sunday": "Closed"
+      },
       "hoursCandidates": null,
       "serviceArea": [
         "Desert Hot Springs",
@@ -94,24 +117,32 @@
     }
   ],
   "domains": {
+    "interimDeploy": {
+      "host": "hfdds.net",
+      "status": "Purchased GoDaddy 2026-07-21 — currently parked; preferred FIRST live host after local build",
+      "dns": ["3.33.130.190", "15.197.148.33"],
+      "cutoverStatus": "DEFERRED — finish local first",
+      "recommendation": "Deploy Next.js here first when moving; then align hartfamilydds.com"
+    },
     "primary": {
       "host": "hartfamilydds.com",
-      "status": "Parked GoDaddy lander — no production website",
+      "status": "Parked GoDaddy lander — long-term SEO/brand domain",
       "dns": ["3.33.130.190", "15.197.148.33"],
-      "recommendation": "Build authoritative site here; point hosting away from park page"
+      "cutoverStatus": "DEFERRED — after or with hfdds.net",
+      "recommendation": "Same app as hfdds.net; pick one canonical for GBP/Search Console"
     },
     "locationFunnels": [
       {
         "host": "hartfamilyyv.com",
-        "target": "https://hartfamilydds.com/yucca-valley",
-        "status": "No DNS A records found — configure at GoDaddy",
-        "recommendation": "301 redirect to primary location page after DNS setup"
+        "target": "https://hfdds.net/yucca-valley",
+        "status": "Deferred with cutover",
+        "recommendation": "301 redirect to location page on canonical host"
       },
       {
         "host": "hartfamilydhs.com",
-        "target": "https://hartfamilydds.com/desert-hot-springs",
-        "status": "No DNS A records found — configure at GoDaddy",
-        "recommendation": "301 redirect to primary location page after DNS setup"
+        "target": "https://hfdds.net/desert-hot-springs",
+        "status": "Deferred with cutover",
+        "recommendation": "301 redirect to location page on canonical host"
       }
     ]
   }

@@ -1,12 +1,14 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useRouter } from "next/navigation";
 import { locations, LocationId } from "@/lib/locations";
 
 type Props = {
   defaultLocation?: LocationId;
   defaultService?: string;
   heading?: string;
+  formType?: string;
 };
 
 const services = [
@@ -28,16 +30,36 @@ export function AppointmentForm({
   defaultLocation,
   defaultService = "New patient visit",
   heading = "Request an appointment",
+  formType = "appointment",
 }: Props) {
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const router = useRouter();
+  const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
+  const [error, setError] = useState("");
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setStatus("sending");
+    setError("");
     const form = e.currentTarget;
     const data = new FormData(form);
-    console.info("[HFD lead]", Object.fromEntries(data.entries()));
-    setStatus("sent");
-    form.reset();
+    const payload = Object.fromEntries(data.entries());
+
+    try {
+      const res = await fetch("/api/leads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...payload, formType }),
+      });
+      const json = await res.json();
+      if (!res.ok || !json.ok) {
+        throw new Error(json.error || "Could not submit. Please call the office.");
+      }
+      const loc = String(payload.location || "");
+      router.push(`/thank-you?location=${encodeURIComponent(loc)}&service=${encodeURIComponent(String(payload.service || ""))}`);
+    } catch (err) {
+      setStatus("error");
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+    }
   }
 
   return (
@@ -47,16 +69,13 @@ export function AppointmentForm({
     >
       <h2 className="font-display text-3xl text-sky-deep">{heading}</h2>
       <p className="mt-2 text-sm text-ink-soft">
-        Tell us which office works best. We’ll confirm by phone or your preferred contact method. This form does not
-        diagnose or approve treatment.
+        Tell us which office works best. Wendy Delgado follows up for both locations. This form does not diagnose or
+        approve treatment.
       </p>
 
-      {status === "sent" ? (
-        <p
-          className="mt-6 rounded-xl bg-[color-mix(in_oklab,var(--sage)_12%,white)] p-4 text-sm text-sage-deep"
-          role="status"
-        >
-          Thank you — your request was recorded for follow-up. If this is urgent, please call the office directly.
+      {status === "error" ? (
+        <p className="mt-4 rounded-xl bg-[color-mix(in_oklab,var(--brand)_10%,white)] p-4 text-sm text-brand" role="alert">
+          {error} Or call Yucca Valley (760) 365-6595 / Desert Hot Springs (760) 329-6713.
         </p>
       ) : null}
 
@@ -127,12 +146,14 @@ export function AppointmentForm({
         </label>
         <button
           type="submit"
-          className="mt-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep"
+          disabled={status === "sending"}
+          className="mt-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep disabled:opacity-60"
         >
-          Submit request
+          {status === "sending" ? "Sending…" : "Submit request"}
         </button>
         <p className="text-xs text-ink-soft">
-          For immediate help, call Yucca Valley (760) 365-6595 or Desert Hot Springs (760) 329-6713.
+          For immediate help, call Yucca Valley (760) 365-6595 or Desert Hot Springs (760) 329-6713. Saturday &amp; Sunday:
+          Closed.
         </p>
       </form>
     </section>

@@ -19,7 +19,7 @@
 | Oral surgery | ☐ | ☐ | | ☐ | ☐ | ☐ | Hold |
 | Sedation | ☐ | ☐ | | ☐ | ☐ | ☐ | Hold |
 | Same-day / expedited | ☐ | ☐ | | ☐ | ☐ | ☐ | Hold |
-| Financing partners | ☐ | ☐ | | ☐ | ☐ | ☐ | Hold |
+| Financing partners | ☐ | ☐ | | ☐ | ☐ | ☐ | **Deferred — add later** |
 | Membership / savings plan | ☐ | ☐ | | ☐ | ☐ | ☐ | Hold |
 
 ## Clinical workflow gates — teeth straightening

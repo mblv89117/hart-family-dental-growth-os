@@ -1,33 +1,39 @@
 # DNS Cutover Runbook (Approval Required)
 
-**Do not execute without Lindsay Hawkins / Harry Hart / Ryan Blakeslee approval.**
+**Status:** **DEFERRED** — finish local build first; move later.  
+**Preferred first live domain:** **hfdds.net** (purchased GoDaddy 2026-07-21).  
+**Long-term SEO domain:** hartfamilydds.com (align/canonical after hfdds.net is stable).  
+**Do not execute until Lindsay Hawkins / Harry Hart / Ryan Blakeslee schedule cutover.**
 
 ## Current state (2026-07-21)
 
 | Host | Observation |
 | --- | --- |
-| hartfamilydds.com | A records → GoDaddy parking (parkweb lander) |
-| hartfamilyyv.com | No A records observed |
-| hartfamilydhs.com | No A records observed |
+| hfdds.net | Purchased; currently GoDaddy parking (same A pattern as primary) |
+| www.hfdds.net | Resolves via park |
+| hartfamilydds.com | GoDaddy parking (parkweb lander) |
+| hartfamilyyv.com | No useful A records observed earlier |
+| hartfamilydhs.com | No useful A records observed earlier |
 
-## Target
+## Recommended sequence (when approved)
 
-1. Host Next.js site (`website/`) on approved host (e.g. Vercel)  
-2. Point `hartfamilydds.com` + `www` to host  
-3. Configure `hartfamilyyv.com` + `www` → **301** `https://hartfamilydds.com/yucca-valley`  
-4. Configure `hartfamilydhs.com` + `www` → **301** `https://hartfamilydds.com/desert-hot-springs`  
+### Phase A — Local complete ✓ (in progress)
+Build and QA on `localhost` only.
 
-## Steps
+### Phase B — First move: hfdds.net
+1. Screenshot GoDaddy DNS for **hfdds.net**  
+2. Deploy Next.js (`website/`) to approved host (e.g. Vercel)  
+3. Set env `NEXT_PUBLIC_SITE_URL=https://hfdds.net`  
+4. Point `hfdds.net` + `www` to host; remove park lander  
+5. Verify HTTPS, all pages, `/api/leads`, thank-you flow  
+6. Notify **Wendy Delgado** that live forms are active  
+7. Optional: temporary `noindex` if still in soft launch  
 
-1. Screenshot all GoDaddy DNS panels (backup)  
-2. Create hosting project; note required A/CNAME values  
-3. Add domains in host dashboard  
-4. Update DNS TTL lower (300s) a day before if possible  
-5. Apply DNS changes during low-traffic window  
-6. Verify HTTPS, homepage, both location pages, form submit path  
-7. Update GBP website URLs to location pages  
-8. Submit sitemap in Google Search Console  
-9. Monitor 48h for email/DNS/SSL issues  
+### Phase C — Brand domain alignment
+1. Point `hartfamilydds.com` + `www` to same host **or** 301 → `https://hfdds.net`  
+2. Pick **one canonical** URL for GBP, Search Console, ads  
+3. Location domains → 301 to `/yucca-valley` and `/desert-hot-springs` on canonical host  
+4. Submit sitemap; monitor 48h  
 
 ## Rollback
 

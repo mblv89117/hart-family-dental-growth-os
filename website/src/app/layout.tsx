@@ -17,7 +17,7 @@ const body = Outfit({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.domain),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
     default: `${site.brand} | Yucca Valley & Desert Hot Springs`,
     template: `%s | ${site.brand}`,

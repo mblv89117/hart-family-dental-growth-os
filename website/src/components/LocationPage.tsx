@@ -19,6 +19,17 @@ export function LocationPage({ location }: { location: Location }) {
             <SectionHeading title="Visit this office" body="Call to confirm today’s hours before you drive." />
             <dl className="mt-8 space-y-4 text-sm">
               <div>
+                <dt className="font-semibold text-ink">Hours</dt>
+                <dd className="text-ink-soft">
+                  <p>{location.hoursNote}</p>
+                  <ul className="mt-2 space-y-1">
+                    <li>Mon–Fri: {location.hours.monday}</li>
+                    <li>Saturday: {location.hours.saturday}</li>
+                    <li>Sunday: {location.hours.sunday}</li>
+                  </ul>
+                </dd>
+              </div>
+              <div>
                 <dt className="font-semibold text-ink">Address</dt>
                 <dd className="text-ink-soft">
                   {location.street}

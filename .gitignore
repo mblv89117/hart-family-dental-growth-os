@@ -24,6 +24,11 @@ credentials*
 *password*
 *PASSWORD*
 
+# Local lead capture (may contain PII — never commit)
+data/leads/
+!data/leads/.gitkeep
+
+
 # Credential-bearing source dumps
 Advertising.pdf
 **/Advertising*.pdf
