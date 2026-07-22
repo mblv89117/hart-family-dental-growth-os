@@ -192,7 +192,13 @@ export async function POST(req: NextRequest) {
     console.error("[leads] local write failed", err);
   }
 
-  const deliveries = await notifyHotmailInboxes(lead, primaryInbox);
+  let deliveries: Array<{ channel: string; ok: boolean; detail?: string }> = [];
+  try {
+    deliveries = await notifyHotmailInboxes(lead, primaryInbox);
+  } catch (err) {
+    console.error("[leads] notify failed", err);
+    deliveries = [{ channel: "notify", ok: false, detail: String(err) }];
+  }
 
   console.info("[HFD lead]", {
     id: lead.id,
