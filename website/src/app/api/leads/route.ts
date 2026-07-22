@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { appendFile, mkdir } from "fs/promises";
 import path from "path";
 import { getLocationById, leadOwner } from "@/lib/locations";
+import { deliverLeadEmail } from "@/lib/lead-delivery";
 
 export const runtime = "nodejs";
 
@@ -42,114 +43,6 @@ function officeInbox(locationId: string) {
   return loc?.leadNotifyEmail || "hartdentalyv@hotmail.com";
 }
 
-async function notifyHotmailInboxes(lead: Record<string, unknown>, primaryInbox: string) {
-  const deliveries: Array<{ channel: string; ok: boolean; detail?: string }> = [];
-
-  const subject = `[HFD Lead] ${lead.formType || "request"} — ${lead.location || "office"} — ${lead.name}`;
-  const text = [
-    `Owner: ${leadOwner.name} (${leadOwner.scope})`,
-    `ID: ${lead.id}`,
-    `Received: ${lead.receivedAt}`,
-    `Name: ${lead.name}`,
-    `Phone: ${lead.phone}`,
-    `Email: ${lead.email}`,
-    `Location: ${lead.location}`,
-    `Service: ${lead.service}`,
-    `Follow-up: ${lead.followUp}`,
-    `Form: ${lead.formType}`,
-    `Message: ${lead.message || "(none)"}`,
-    `Page: ${lead.pagePath || ""}`,
-    `UTM: ${lead.utm_source || ""} / ${lead.utm_medium || ""} / ${lead.utm_campaign || ""}`,
-    `SMS consent: ${lead.smsConsent}`,
-    `Email consent: ${lead.emailConsent}`,
-    "",
-    "Respond during business hours. Sat/Sun closed.",
-  ].join("\n");
-
-  const resendKey = process.env.RESEND_API_KEY;
-  const resendFrom = process.env.RESEND_FROM_EMAIL || "Hart Family Dental Leads <onboarding@resend.dev>";
-  const cc = (process.env.LEAD_CC_EMAILS || "hartdental@gmail.com")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
-
-  if (resendKey) {
-    try {
-      const res = await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: resendFrom,
-          to: [primaryInbox],
-          cc: cc.filter((e) => e !== primaryInbox),
-          subject,
-          text,
-        }),
-      });
-      deliveries.push({
-        channel: "resend",
-        ok: res.ok,
-        detail: res.ok ? undefined : `status ${res.status}`,
-      });
-    } catch (err) {
-      deliveries.push({ channel: "resend", ok: false, detail: String(err) });
-    }
-  }
-
-  // Hotmail delivery without storing passwords: FormSubmit ajax to office inbox.
-  // First-time use may require a one-click confirmation in that Hotmail inbox.
-  try {
-    const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(primaryInbox)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify({
-        _subject: subject,
-        _template: "table",
-        name: lead.name,
-        phone: lead.phone,
-        email: lead.email,
-        location: lead.location,
-        service: lead.service,
-        followUp: lead.followUp,
-        formType: lead.formType,
-        message: lead.message || "",
-        owner: leadOwner.name,
-        leadId: lead.id,
-        replyto: lead.email,
-      }),
-    });
-    deliveries.push({
-      channel: "formsubmit-hotmail",
-      ok: res.ok,
-      detail: res.ok ? primaryInbox : `status ${res.status}`,
-    });
-  } catch (err) {
-    deliveries.push({ channel: "formsubmit-hotmail", ok: false, detail: String(err) });
-  }
-
-  const webhook = process.env.LEAD_WEBHOOK_URL;
-  if (webhook) {
-    try {
-      const res = await fetch(webhook, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...lead, notifyInbox: primaryInbox, deliveries }),
-      });
-      deliveries.push({ channel: "webhook", ok: res.ok, detail: res.ok ? undefined : `status ${res.status}` });
-    } catch (err) {
-      deliveries.push({ channel: "webhook", ok: false, detail: String(err) });
-    }
-  }
-
-  return deliveries;
-}
-
 export async function POST(req: NextRequest) {
   let body: LeadBody;
   try {
@@ -158,9 +51,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
-  // Honeypot: silent success so bots do not retry
   if (sanitize(body.companyWebsite, 80)) {
-    return NextResponse.json({ ok: true, id: `lead_spam_${Date.now()}` });
+    return NextResponse.json({ ok: true, id: `lead_spam_${Date.now()}`, emailDelivered: false });
   }
 
   const lead = {
@@ -218,13 +110,7 @@ export async function POST(req: NextRequest) {
     console.error("[leads] local write failed", err);
   }
 
-  let deliveries: Array<{ channel: string; ok: boolean; detail?: string }> = [];
-  try {
-    deliveries = await notifyHotmailInboxes(lead, primaryInbox);
-  } catch (err) {
-    console.error("[leads] notify failed", err);
-    deliveries = [{ channel: "notify", ok: false, detail: String(err) }];
-  }
+  const { deliveries, emailDelivered, recipients } = await deliverLeadEmail(lead, primaryInbox);
 
   console.info("[HFD lead]", {
     id: lead.id,
@@ -232,8 +118,22 @@ export async function POST(req: NextRequest) {
     service: lead.service,
     formType: lead.formType,
     notifyInbox: primaryInbox,
+    recipients,
+    emailDelivered,
     deliveries,
   });
 
-  return NextResponse.json({ ok: true, id: lead.id, notifyInbox: primaryInbox });
+  // Accept the lead record, but never imply email succeeded when it did not.
+  return NextResponse.json({
+    ok: true,
+    id: lead.id,
+    notifyInbox: primaryInbox,
+    recipients,
+    emailDelivered,
+    deliveries: deliveries.map((d) => ({
+      channel: d.channel,
+      ok: d.ok,
+      detail: d.ok ? d.detail : d.detail,
+    })),
+  });
 }
