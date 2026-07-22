@@ -13,9 +13,16 @@ export function SiteFooter() {
           <BrandLogo size={44} />
           <p className="mt-3 max-w-sm text-sm text-ink-soft">{site.tagline}</p>
           <p className="mt-4 text-xs text-ink-soft">
-            Saturday &amp; Sunday: Closed. Weekday hours — please call to confirm. Website content is educational and
-            not a diagnosis. Web leads are followed up by Wendy Delgado for both offices.
+            Hours: Mon–Thu 8:00 AM–4:30 PM · Fri 9:00 AM–2:00 PM · Sat &amp; Sun Closed (both offices). Website content
+            is educational and not a diagnosis. Web leads are followed up by Wendy Delgado for both offices.
           </p>
+          <ul className="mt-3 space-y-1 text-xs text-ink-soft">
+            {locations.map((loc) => (
+              <li key={loc.id}>
+                <span className="font-medium text-ink">{loc.shortName}:</span> {loc.hoursNote}
+              </li>
+            ))}
+          </ul>
         </div>
         <div>
           <p className="text-sm font-semibold uppercase tracking-[0.14em] text-brand">Locations</p>

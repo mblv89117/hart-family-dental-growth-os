@@ -22,8 +22,8 @@ export default function Page() {
               <SectionHeading title="What to expect" body="Clear consultation steps, honest candidacy discussion, and transparent next actions — including financing education when appropriate." />
             </section>
             <section>
-              <SectionHeading title="Locations" body="Available pathways may vary by office capacity and clinical offerings. Confirm details when you schedule." />
-              <p className="mt-3 text-sm text-ink-soft">Yucca Valley · Desert Hot Springs</p>
+              <SectionHeading title="Locations" body="Same-week emergency evaluations when capacity allows — both Yucca Valley and Desert Hot Springs. Call for the soonest opening." />
+              <p className="mt-3 text-sm text-ink-soft">Yucca Valley · Desert Hot Springs · Mon–Thu 8:00 AM–4:30 PM · Fri 9:00 AM–2:00 PM · Sat/Sun Closed</p>
             </section>
             <FaqList
               items={[

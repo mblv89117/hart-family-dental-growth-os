@@ -12,6 +12,23 @@ No lead may disappear into an unmonitored inbox. Every lead gets automated confi
 
 Wendy is the accountable human for responding to new web leads, missed-call callbacks during coverage, and daily open-lead review across both locations. Escalate clinical or capacity questions to Lindsay Hawkins / Dr. Hart as needed.
 
+## Hotmail delivery (approved pattern)
+
+| Preferred office | Notify inbox (public identity) |
+| --- | --- |
+| Yucca Valley | `hartdentalyv@hotmail.com` |
+| Desert Hot Springs | `hartdental02@hotmail.com` |
+| Optional CC | `hartdental@gmail.com` via `LEAD_CC_EMAILS` |
+
+Implementation (`website/src/app/api/leads/route.ts`):
+
+1. Append to `data/leads/leads.jsonl` (local / server filesystem; gitignored)  
+2. Email primary Hotmail via FormSubmit ajax (no password stored in repo)  
+3. Optional Resend email when `RESEND_API_KEY` is set on the host  
+4. Optional `LEAD_WEBHOOK_URL` for CRM  
+
+**Never commit Hotmail passwords.** Prefer vaulted host env vars for Resend / SMTP.
+
 ## Channels in scope
 
 - Website forms (appointment, implant, straightening assessment, financing, contact)  
@@ -40,22 +57,11 @@ Wendy is the accountable human for responding to new web leads, missed-call call
 3. Else “nearest / either office” queue — Wendy monitors both  
 4. Implant or straightening may route to the office with sooner consult capacity (define weekly)
 
-## Required system (Phase 1 minimum)
-
-Until a full CRM is approved, use:
-
-1. Shared mailbox or form destination monitored by Wendy on-shift  
-2. Spreadsheet or simple CRM board: New → Contacted → Booked → Showed → Treatment  
-3. Missed-call callback list  
-4. Daily end-of-day open-lead review (Wendy)  
-
-Recommended next step: Dental CRM or CallRail/Ring-type tracking + form → SMS alert to Wendy.
-
 ## Response-time standards
 
 | Event | Target |
 | --- | --- |
-| Web lead auto-confirmation | Immediate |
+| Web lead auto-confirmation | Immediate thank-you page |
 | Human follow-up (business hours) | As fast as operationally possible; track < 15–30 min |
 | Missed call callback | Prompt; same hour when possible |
 | Implant leads | Prioritized |
@@ -71,4 +77,10 @@ Do not treat form submit as revenue.
 
 ## Hours context for routing
 
-Both offices: **Saturday & Sunday Closed** (approved). After-hours and weekend inquiries → auto-ack + Wendy follow-up next business day.
+Both offices (Option A approved):
+
+- Monday–Thursday: 8:00 AM – 4:30 PM  
+- Friday: 9:00 AM – 2:00 PM  
+- Saturday & Sunday: Closed  
+
+After-hours and weekend inquiries → thank-you ack + Wendy follow-up next business day.

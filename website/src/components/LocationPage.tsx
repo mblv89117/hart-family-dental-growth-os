@@ -2,6 +2,17 @@ import { AppointmentForm } from "@/components/AppointmentForm";
 import { FaqList, SectionHeading } from "@/components/Ui";
 import { PageHero, Prose } from "@/components/PageHero";
 import { Location } from "@/lib/locations";
+import { site } from "@/lib/site";
+
+const dayLabels = [
+  ["monday", "Monday"],
+  ["tuesday", "Tuesday"],
+  ["wednesday", "Wednesday"],
+  ["thursday", "Thursday"],
+  ["friday", "Friday"],
+  ["saturday", "Saturday"],
+  ["sunday", "Sunday"],
+] as const;
 
 export function LocationPage({ location }: { location: Location }) {
   return (
@@ -16,16 +27,17 @@ export function LocationPage({ location }: { location: Location }) {
       <Prose>
         <div className="grid gap-10 md:grid-cols-[1.1fr_0.9fr]">
           <div>
-            <SectionHeading title="Visit this office" body="Call to confirm today’s hours before you drive." />
+            <SectionHeading title="Visit this office" body={location.hoursNote} />
             <dl className="mt-8 space-y-4 text-sm">
               <div>
                 <dt className="font-semibold text-ink">Hours</dt>
                 <dd className="text-ink-soft">
-                  <p>{location.hoursNote}</p>
                   <ul className="mt-2 space-y-1">
-                    <li>Mon–Fri: {location.hours.monday}</li>
-                    <li>Saturday: {location.hours.saturday}</li>
-                    <li>Sunday: {location.hours.sunday}</li>
+                    {dayLabels.map(([key, label]) => (
+                      <li key={key}>
+                        {label}: {location.hours[key]}
+                      </li>
+                    ))}
                   </ul>
                 </dd>
               </div>
@@ -72,11 +84,11 @@ export function LocationPage({ location }: { location: Location }) {
                   },
                   {
                     q: "What if I need urgent dental care?",
-                    a: "Call the office and describe your concern. We’ll work to find the soonest available evaluation. For life-threatening emergencies, call 911.",
+                    a: "Call the office and describe your concern. We’ll work to find the soonest available evaluation during business hours. For life-threatening emergencies, call 911.",
                   },
                   {
                     q: "Can I ask about implants or straightening here?",
-                    a: "Yes. We can schedule a consultation so a dentist can evaluate your needs. Online tools never diagnose or approve treatment.",
+                    a: "Yes. We offer implant consultations and dentist-supervised straightening at both offices. Online tools never diagnose or approve treatment.",
                   },
                 ]}
               />
@@ -93,6 +105,7 @@ export function LocationPage({ location }: { location: Location }) {
             "@type": "Dentist",
             name: location.name,
             telephone: location.phone,
+            email: location.leadNotifyEmail,
             address: {
               "@type": "PostalAddress",
               streetAddress: location.street,
@@ -101,7 +114,13 @@ export function LocationPage({ location }: { location: Location }) {
               postalCode: location.zip,
               addressCountry: "US",
             },
-            url: `https://hartfamilydds.com/${location.slug}`,
+            url: `${site.domain}/${location.slug}`,
+            openingHoursSpecification: location.openingHoursSpecification.map((spec) => ({
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: spec.dayOfWeek,
+              opens: spec.opens,
+              closes: spec.closes,
+            })),
           }),
         }}
       />

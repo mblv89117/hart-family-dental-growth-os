@@ -3,6 +3,7 @@
     "legalName": "Harry Hart Dental Corporation",
     "brandName": "Hart Family Dental",
     "primaryDomain": "hartfamilydds.com",
+    "interimDeployDomain": "hfdds.net",
     "owner": "Dr. Harry Allen Hart, DDS",
     "corporateContact": {
       "name": "Lindsay Hawkins",
@@ -37,37 +38,18 @@
       "phone": "(760) 365-6595",
       "fax": "(760) 365-7203",
       "emailAccounts": ["hartdentalyv@hotmail.com", "hartdental@gmail.com"],
+      "leadNotifyEmail": "hartdentalyv@hotmail.com",
       "locationDomain": "hartfamilyyv.com",
       "canonicalPath": "/yucca-valley",
-      "hoursStatus": "Weekend CLOSED approved 2026-07-21; weekday hours PENDING confirmation",
+      "hoursStatus": "OFFICIAL — Option A approved 2026-07-21 for both locations",
       "hours": {
-        "monday": "Call to confirm",
-        "tuesday": "Call to confirm",
-        "wednesday": "Call to confirm",
-        "thursday": "Call to confirm",
-        "friday": "Call to confirm",
+        "monday": "8:00 AM – 4:30 PM",
+        "tuesday": "8:00 AM – 4:30 PM",
+        "wednesday": "8:00 AM – 4:30 PM",
+        "thursday": "8:00 AM – 4:30 PM",
+        "friday": "9:00 AM – 2:00 PM",
         "saturday": "Closed",
         "sunday": "Closed"
-      },
-      "hoursCandidates": {
-        "yelpListed": {
-          "monday": "8:00 AM – 4:30 PM",
-          "tuesday": "8:00 AM – 4:30 PM",
-          "wednesday": "8:00 AM – 4:30 PM",
-          "thursday": "8:00 AM – 4:30 PM",
-          "friday": "9:00 AM – 2:00 PM",
-          "saturday": "Closed",
-          "sunday": "Closed"
-        },
-        "otherDirectories": {
-          "monday": "9:00 AM – 6:00 PM",
-          "tuesday": "8:30 AM – 5:30 PM",
-          "wednesday": "9:00 AM – 6:00 PM",
-          "thursday": "8:30 AM – 5:30 PM",
-          "friday": "9:00 AM – 2:00 PM",
-          "saturday": "Closed",
-          "sunday": "Closed"
-        }
       },
       "serviceArea": [
         "Yucca Valley",
@@ -93,19 +75,19 @@
       "fax": "(760) 329-1088",
       "npi": "1689868564",
       "emailAccounts": ["hartdental02@hotmail.com", "hartdental@gmail.com"],
+      "leadNotifyEmail": "hartdental02@hotmail.com",
       "locationDomain": "hartfamilydhs.com",
       "canonicalPath": "/desert-hot-springs",
-      "hoursStatus": "Weekend CLOSED approved 2026-07-21; weekday hours PENDING confirmation",
+      "hoursStatus": "OFFICIAL — Option A approved 2026-07-21 for both locations",
       "hours": {
-        "monday": "Call to confirm",
-        "tuesday": "Call to confirm",
-        "wednesday": "Call to confirm",
-        "thursday": "Call to confirm",
-        "friday": "Call to confirm",
+        "monday": "8:00 AM – 4:30 PM",
+        "tuesday": "8:00 AM – 4:30 PM",
+        "wednesday": "8:00 AM – 4:30 PM",
+        "thursday": "8:00 AM – 4:30 PM",
+        "friday": "9:00 AM – 2:00 PM",
         "saturday": "Closed",
         "sunday": "Closed"
       },
-      "hoursCandidates": null,
       "serviceArea": [
         "Desert Hot Springs",
         "Palm Springs",
@@ -116,32 +98,54 @@
       ]
     }
   ],
+  "servicesApproved": {
+    "status": "Approved 2026-07-21 from owner Target Services brief + financing deferred reply",
+    "provider": "Dr. Harry Allen Hart, DDS",
+    "bothLocations": [
+      "general-family",
+      "new-patient-exam-cleaning",
+      "emergency",
+      "dental-implants-single",
+      "implants-multiple-bridges",
+      "implant-supported-dentures",
+      "full-arch",
+      "implant-consult-second-opinion",
+      "dentist-supervised-aligners",
+      "cosmetic-veneers-whitening",
+      "crowns-bridges-dentures",
+      "root-canal",
+      "oral-surgery-routine",
+      "sedation-as-clinically-appropriate",
+      "same-week-emergency-when-capacity"
+    ],
+    "deferred": ["financing-partners", "membership-savings-plan"]
+  },
   "domains": {
     "interimDeploy": {
       "host": "hfdds.net",
-      "status": "Purchased GoDaddy 2026-07-21 — currently parked; preferred FIRST live host after local build",
+      "status": "Purchased GoDaddy 2026-07-21 — go-live authorized 2026-07-21",
       "dns": ["3.33.130.190", "15.197.148.33"],
-      "cutoverStatus": "DEFERRED — finish local first",
-      "recommendation": "Deploy Next.js here first when moving; then align hartfamilydds.com"
+      "cutoverStatus": "IN PROGRESS — deploy + DNS",
+      "recommendation": "Deploy Next.js here first; then align hartfamilydds.com"
     },
     "primary": {
       "host": "hartfamilydds.com",
       "status": "Parked GoDaddy lander — long-term SEO/brand domain",
       "dns": ["3.33.130.190", "15.197.148.33"],
-      "cutoverStatus": "DEFERRED — after or with hfdds.net",
+      "cutoverStatus": "DEFERRED — after hfdds.net stable",
       "recommendation": "Same app as hfdds.net; pick one canonical for GBP/Search Console"
     },
     "locationFunnels": [
       {
         "host": "hartfamilyyv.com",
         "target": "https://hfdds.net/yucca-valley",
-        "status": "Deferred with cutover",
+        "status": "Deferred with brand-domain alignment",
         "recommendation": "301 redirect to location page on canonical host"
       },
       {
         "host": "hartfamilydhs.com",
         "target": "https://hfdds.net/desert-hot-springs",
-        "status": "Deferred with cutover",
+        "status": "Deferred with brand-domain alignment",
         "recommendation": "301 redirect to location page on canonical host"
       }
     ]

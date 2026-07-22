@@ -57,6 +57,7 @@ export default function HomePage() {
                 <br />
                 {loc.city}, {loc.state} {loc.zip}
               </p>
+              <p className="mt-4 text-sm text-ink-soft">{loc.hoursNote}</p>
               <p className="mt-4 text-sage group-hover:underline">{loc.phone}</p>
             </Link>
           ))}

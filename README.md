@@ -2,17 +2,17 @@
 
 Patient-acquisition operating system for **Hart Family Dental** (Yucca Valley + Desert Hot Springs).
 
-- Interim / first-deploy domain: **hfdds.net** (purchased; cutover later)
-- Long-term SEO domain: hartfamilydds.com
+- First public domain: **hfdds.net** (go-live authorized)
+- Long-term SEO domain: hartfamilydds.com (align after first deploy)
 - Repo: [github.com/mblv89117/hart-family-dental-growth-os](https://github.com/mblv89117/hart-family-dental-growth-os)
 
 ## Local first
 
+See **[HANDOFF.md](./HANDOFF.md)** for full status, run commands, approvals, and next steps.
+
 ```bash
 npm run dev
 ```
-
-See **[docs/LOCAL-HANDOFF.md](./docs/LOCAL-HANDOFF.md)** for the finish-locally → move-later plan.
 
 ## Start here
 
@@ -25,10 +25,14 @@ See **[docs/LOCAL-HANDOFF.md](./docs/LOCAL-HANDOFF.md)** for the finish-locally 
 
 | Phase | Focus | Status |
 | --- | --- | --- |
-| 1 Foundation | Access, tracking, website, local SEO, routing, scripts | Local build in progress |
-| Move | Deploy to **hfdds.net** | Deferred |
-| 2 Campaigns | Implants, straightening, paid, nurture | Gated |
+| 1 Foundation | Access, website, hours, services, routing | **Complete locally** |
+| Move | Deploy to **hfdds.net** | **Authorized / in progress** |
+| 2 Campaigns | Implants, straightening, paid, nurture | Gated on live tracking |
 | 3 Optimize | Tests, coaching, budget | Not started |
+
+## Official hours (both offices)
+
+Mon–Thu 8:00 AM–4:30 PM · Fri 9:00 AM–2:00 PM · Sat/Sun Closed
 
 ## Contacts
 

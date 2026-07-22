@@ -14,6 +14,7 @@ export type Location = {
   fax?: string;
   mapQuery: string;
   serviceArea: string[];
+  leadNotifyEmail: string;
   hours: {
     monday: string;
     tuesday: string;
@@ -24,7 +25,39 @@ export type Location = {
     sunday: string;
   };
   hoursNote: string;
+  /** schema.org OpeningHoursSpecification-compatible day windows */
+  openingHoursSpecification: Array<{
+    dayOfWeek: string | string[];
+    opens: string;
+    closes: string;
+  }>;
 };
+
+const optionAHours = {
+  monday: "8:00 AM – 4:30 PM",
+  tuesday: "8:00 AM – 4:30 PM",
+  wednesday: "8:00 AM – 4:30 PM",
+  thursday: "8:00 AM – 4:30 PM",
+  friday: "9:00 AM – 2:00 PM",
+  saturday: "Closed",
+  sunday: "Closed",
+} as const;
+
+const optionANote =
+  "Monday–Thursday 8:00 AM–4:30 PM · Friday 9:00 AM–2:00 PM · Saturday & Sunday Closed";
+
+const optionAOpeningHours = [
+  {
+    dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+    opens: "08:00",
+    closes: "16:30",
+  },
+  {
+    dayOfWeek: "Friday",
+    opens: "09:00",
+    closes: "14:00",
+  },
+];
 
 export const leadOwner = {
   name: "Wendy Delgado",
@@ -45,6 +78,7 @@ export const locations: Location[] = [
     phoneHref: "tel:+17603656595",
     fax: "(760) 365-7203",
     mapQuery: "56728 Twentynine Palms Highway, Yucca Valley, CA 92284",
+    leadNotifyEmail: "hartdentalyv@hotmail.com",
     serviceArea: [
       "Yucca Valley",
       "Joshua Tree",
@@ -53,16 +87,9 @@ export const locations: Location[] = [
       "Landers",
       "Pioneertown",
     ],
-    hours: {
-      monday: "Call to confirm",
-      tuesday: "Call to confirm",
-      wednesday: "Call to confirm",
-      thursday: "Call to confirm",
-      friday: "Call to confirm",
-      saturday: "Closed",
-      sunday: "Closed",
-    },
-    hoursNote: "Saturday & Sunday: Closed. Weekday hours — please call to confirm.",
+    hours: { ...optionAHours },
+    hoursNote: optionANote,
+    openingHoursSpecification: optionAOpeningHours,
   },
   {
     id: "desert-hot-springs",
@@ -77,6 +104,7 @@ export const locations: Location[] = [
     phoneHref: "tel:+17603296713",
     fax: "(760) 329-1088",
     mapQuery: "11523 Palm Drive, Desert Hot Springs, CA 92240",
+    leadNotifyEmail: "hartdental02@hotmail.com",
     serviceArea: [
       "Desert Hot Springs",
       "Palm Springs",
@@ -85,19 +113,16 @@ export const locations: Location[] = [
       "Rancho Mirage",
       "Sky Valley",
     ],
-    hours: {
-      monday: "Call to confirm",
-      tuesday: "Call to confirm",
-      wednesday: "Call to confirm",
-      thursday: "Call to confirm",
-      friday: "Call to confirm",
-      saturday: "Closed",
-      sunday: "Closed",
-    },
-    hoursNote: "Saturday & Sunday: Closed. Weekday hours — please call to confirm.",
+    hours: { ...optionAHours },
+    hoursNote: optionANote,
+    openingHoursSpecification: optionAOpeningHours,
   },
 ];
 
 export function getLocation(slug: string) {
   return locations.find((l) => l.slug === slug);
+}
+
+export function getLocationById(id: string) {
+  return locations.find((l) => l.id === id);
 }

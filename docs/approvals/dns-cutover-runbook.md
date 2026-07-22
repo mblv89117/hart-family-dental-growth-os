@@ -1,40 +1,37 @@
-# DNS Cutover Runbook (Approval Required)
+# DNS Cutover Runbook
 
-**Status:** **DEFERRED** — finish local build first; move later.  
-**Preferred first live domain:** **hfdds.net** (purchased GoDaddy 2026-07-21).  
-**Long-term SEO domain:** hartfamilydds.com (align/canonical after hfdds.net is stable).  
-**Do not execute until Lindsay Hawkins / Harry Hart / Ryan Blakeslee schedule cutover.**
+**Status:** **AUTHORIZED** for hfdds.net (2026-07-21 owner direction)  
+**Preferred first live domain:** **hfdds.net**  
+**Long-term SEO domain:** hartfamilydds.com (align after hfdds.net is stable)
 
-## Current state (2026-07-21)
+## Current / target state
 
 | Host | Observation |
 | --- | --- |
-| hfdds.net | Purchased; currently GoDaddy parking (same A pattern as primary) |
-| www.hfdds.net | Resolves via park |
-| hartfamilydds.com | GoDaddy parking (parkweb lander) |
-| hartfamilyyv.com | No useful A records observed earlier |
-| hartfamilydhs.com | No useful A records observed earlier |
+| hfdds.net | Purchased; was GoDaddy parking — point to production host |
+| www.hfdds.net | Same as apex |
+| hartfamilydds.com | Still parked — align later |
+| hartfamilyyv.com / hartfamilydhs.com | 301 later |
 
-## Recommended sequence (when approved)
+## Sequence
 
-### Phase A — Local complete ✓ (in progress)
-Build and QA on `localhost` only.
+### Phase A — Local complete ✓
+Build/QA on localhost; Option A hours + approved services applied.
 
-### Phase B — First move: hfdds.net
-1. Screenshot GoDaddy DNS for **hfdds.net**  
-2. Deploy Next.js (`website/`) to approved host (e.g. Vercel)  
-3. Set env `NEXT_PUBLIC_SITE_URL=https://hfdds.net`  
-4. Point `hfdds.net` + `www` to host; remove park lander  
-5. Verify HTTPS, all pages, `/api/leads`, thank-you flow  
-6. Notify **Wendy Delgado** that live forms are active  
-7. Optional: temporary `noindex` if still in soft launch  
+### Phase B — First move: hfdds.net (now)
+1. Deploy Next.js (`website/`) to host (Vercel preferred)  
+2. Set env `NEXT_PUBLIC_SITE_URL=https://hfdds.net`  
+3. Point `hfdds.net` + `www` to host; remove park lander  
+4. Verify HTTPS, pages, `/api/leads`, thank-you flow  
+5. Notify **Wendy Delgado** that live forms are active  
+6. Confirm test lead arrives in office Hotmail  
 
-### Phase C — Brand domain alignment
+### Phase C — Brand domain alignment (later)
 1. Point `hartfamilydds.com` + `www` to same host **or** 301 → `https://hfdds.net`  
-2. Pick **one canonical** URL for GBP, Search Console, ads  
-3. Location domains → 301 to `/yucca-valley` and `/desert-hot-springs` on canonical host  
+2. One canonical for GBP / Search Console  
+3. Location domains → 301 to location paths  
 4. Submit sitemap; monitor 48h  
 
 ## Rollback
 
-Restore previous DNS records from screenshots; park lander will return until fixed permanently.
+Restore previous DNS records from screenshots; park lander returns until fixed permanently.

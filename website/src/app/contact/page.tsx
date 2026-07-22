@@ -32,6 +32,7 @@ export default function ContactPage() {
                   <a href={loc.phoneHref} className="mt-2 inline-block text-sage hover:underline">
                     {loc.phone}
                   </a>
+                  <p className="mt-2 text-sm text-ink-soft">{loc.hoursNote}</p>
                 </li>
               ))}
             </ul>

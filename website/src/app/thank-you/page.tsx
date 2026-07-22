@@ -20,7 +20,7 @@ export default async function ThankYouPage({
     <>
       <PageHero
         title="We received your request"
-        body="Thank you. Wendy Delgado follows up for both Hart Family Dental offices during business hours. Saturday & Sunday we are closed."
+        body="Thank you. Wendy Delgado follows up for both Hart Family Dental offices during business hours (Mon–Thu 8:00 AM–4:30 PM, Fri 9:00 AM–2:00 PM). Saturday & Sunday we are closed."
       />
       <Prose>
         <div className="max-w-2xl space-y-4 text-ink-soft">

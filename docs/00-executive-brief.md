@@ -6,66 +6,43 @@
 
 ## Verdict
 
-Hart Family Dental has strong local demand potential (two High Desert / Coachella Valley offices) but **no production website** yet (DNS cutover deferred) and **weekday hours still to be finalized**. Password rotation is complete. **Wendy Delgado** owns web-lead follow-up for both desks. Phase 1 continues: tracking, site readiness, local SEO prep, and front-desk conversion — not paid ads yet.
+Hart Family Dental has two offices ready for a measurable acquisition system. **Hours (Option A) and service marketing scope are approved.** Password rotation is complete. **Wendy Delgado** owns web-lead follow-up for both desks. Production go-live for **hfdds.net** is authorized. Financing partner names and paid ads remain deferred until delivery/tracking are verified live.
 
-## Critical findings (Day 0)
+## Critical findings (Day 0) — status
 
-| Priority | Finding | Impact | Recommended action |
-| --- | --- | --- | --- |
-| P0 | Credentials shared in plaintext email PDF | Security / account takeover risk | ~~Rotate~~ **Done 2026-07-21** |
-| P0 | `hartfamilydds.com` is a GoDaddy parking lander | Zero organic/conversion funnel | Ship site; DNS cutover **deferred** |
-| P0 | `hartfamilyyv.com` / `hartfamilydhs.com` have no DNS | Unused assets; no funnel | Bundle with deferred cutover |
-| P1 | Weekday hours not finalized (weekend closed approved) | Trust + GBP risk | Confirm Mon–Fri hours |
-| P1 | Lead follow-up ownership | Conversion | **Wendy Delgado — both desks** (approved) |
-| P1 | Services/implants/aligners not clinically verified for marketing | Compliance risk | Complete service verification checklist |
-| P2 | No baseline analytics or call tracking | Cannot prove ROI | GA4 + GTM + call tracking on launch |
-| P2 | Review / social systems not audited | Reputation upside unused | GBP + Yelp + Facebook audit week 1–2 |
+| Priority | Finding | Status |
+| --- | --- | --- |
+| P0 | Credentials in plaintext PDF | **Rotated** |
+| P0 | Domains parked / no site | **hfdds.net go-live authorized** |
+| P1 | Weekday hours conflict | **Resolved — Option A both offices** |
+| P1 | Lead follow-up ownership | **Wendy Delgado — both desks** |
+| P1 | Services not verified for marketing | **Approved** (checklist complete; financing deferred) |
+| P2 | Analytics / call tracking | Add GA4/GTM when IDs available |
+| P2 | Review / social audits | After site live |
 
-## Verified public facts (publish only after office confirmation)
+## Official hours (both offices)
 
-**Yucca Valley**  
-56728 Twentynine Palms Highway, Yucca Valley, CA 92284  
-(760) 365-6595
+Mon–Thu 8:00 AM–4:30 PM · Fri 9:00 AM–2:00 PM · Sat/Sun Closed
 
-**Desert Hot Springs**  
-11523 Palm Drive, Desert Hot Springs, CA 92240  
-(760) 329-6713
+## Verified public facts
 
-**Provider publicly associated:** Dr. Harry Allen Hart, DDS
-
-## Domain strategy (working plan)
-
-- **First deploy (when ready):** `hfdds.net`  
-- **Long-term SEO/brand:** `hartfamilydds.com` (align after first move)  
-- **Location URLs:** `/yucca-valley` and `/desert-hot-springs`  
-- **Location domains:** 301 redirect later  
-- **Now:** finish locally on localhost; DNS cutover deferred  
-
-## 90-day outcomes to manage toward
-
-1. Booked new-patient + implant consultations at both offices  
-2. Cash-pay revenue lift via financing education + clear offers (approved)  
-3. Dentist-supervised straightening funnel live (assessment → consult → clinical approval)  
-4. Measurable CPL / CPA / case acceptance dashboard  
-5. Rising Maps visibility + review velocity without incentive abuse
-
-## What we will not do yet
-
-- Significant paid ad spend (until tracking + front-desk follow-up verified)  
-- Publish prices, “free” offers, or clinical guarantees without approval  
-- Position aligners as DIY / unsupervised  
-- Store PHI in marketing tools or this repo  
-- Unauthorized live DNS / GBP / ads changes
+**Yucca Valley** — 56728 Twentynine Palms Highway, Yucca Valley, CA 92284 · (760) 365-6595  
+**Desert Hot Springs** — 11523 Palm Drive, Desert Hot Springs, CA 92240 · (760) 329-6713  
+**Provider:** Dr. Harry Allen Hart, DDS
 
 ## Immediate asks of leadership
 
-1. ~~Approve password rotation + vault ownership~~ **Done**  
-2. Confirm **weekday** hours per location (weekend closed approved)  
-3. Confirm services offered (implants scope, sedation, aligners workflow)  
-4. ~~Confirm financing partners~~ **Deferred — add later** (no lender names/terms until approved)  
-5. Schedule Phase 1 website go-live + DNS cutover with Ryan/Mason (**deferred**)  
-6. ~~Name primary lead inbox owner~~ **Wendy Delgado — both desks**
+1. ~~Password rotation~~ **Done**  
+2. ~~Weekday hours~~ **Option A both offices**  
+3. ~~Services~~ **Approved**  
+4. ~~Financing partners~~ **Deferred**  
+5. ~~Lead owner~~ **Wendy Delgado**  
+6. Hosting/DNS login if deploy token expired (ops)  
+7. Optional: GA4/GTM IDs; Resend API key for redundant lead email  
 
-## Phased plan
+## What we will not do yet
 
-See `docs/calendars/90-day-marketing-calendar.md` and folder structure in root `README.md`.
+- Publish lender names / APRs  
+- Significant paid ad spend until live tracking + Wendy inbox verified  
+- DIY / unsupervised aligner claims  
+- Store PHI or passwords in this repo  
