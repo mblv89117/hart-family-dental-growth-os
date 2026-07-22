@@ -13,6 +13,7 @@ const paths = [
   "/restorative-dentistry",
   "/emergency-dentistry",
   "/financing",
+  "/cash-pay-dentistry",
   "/new-patients",
   "/about",
   "/providers",

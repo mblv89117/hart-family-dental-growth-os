@@ -10,19 +10,20 @@
 | 2026-07-21 | Lead inbox routing | **Approved pattern** | YV → `hartdentalyv@hotmail.com`; DHS → `hartdental02@hotmail.com`; ops CC `hartdental@gmail.com` when configured. No passwords in repo. |
 | 2026-07-21 | Financing partners | **Deferred** | Do not publish lender names, APRs, or monthly-payment claims until approved. |
 | 2026-07-21 | Domain hfdds.net | **Purchased + go-live authorized** | First public host. Deploy + DNS cutover in progress. |
-| 2026-07-21 | DNS cutover (hfdds.net) | **Authorized** | Owner directed production deploy to https://hfdds.net. |
+| 2026-07-21 | Production go-live hfdds.net | **Complete** | Vercel + DNS A/CNAME; tag `v1.0.0-hfdds-production`. |
+| 2026-07-21 | Service verification checklist (detailed) | **Deferred** | Owner: complete after remainder of system is built. Live pages stay educational. |
 
 ## No further owner response required for
 
 - Weekday / weekend hours  
-- Service marketing scope (except future financing partners / membership)
+- Production site existence on hfdds.net  
 
-## Still open (ops / infra — not clinical)
+## Still open (ops)
 
-- Hosting login / DNS provider auth if tokens expired  
-- Optional Resend API key for redundant email delivery  
-- FormSubmit one-click confirm in Hotmail inboxes on first live lead (if prompted)  
-- GA4 / GTM IDs when available  
-- hartfamilydds.com + location-domain alignment after hfdds.net stable  
-- GBP / Yelp live edits (separate change log)  
-- Paid ads (blocked until tracking + Wendy follow-up verified in production)
+- Hotmail **inbox** confirmation of TEST LEADs (API already ok)  
+- GA4 / GTM measurement IDs  
+- Location funnel domain DNS (middleware ready)  
+- GBP / Yelp supervised edits  
+- Paid ads (explicit approval required)  
+- Financing partners  
+- Detailed service checklist

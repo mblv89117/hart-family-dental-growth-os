@@ -1,0 +1,2 @@
+id,received_at,source,channel,utm_campaign,location,service,patient_name,phone,email,status,assigned_to,last_contact,next_follow_up,appointment_date,outcome,lost_reason,notes,duplicate_of
+EXAMPLE-001,2026-07-21T18:00:00-07:00,website,form,production-qa,yucca-valley,Dental implants,TEST LEAD — DO NOT CONTACT,(760) 555-9001,test@example.com,Spam/Test,Wendy Delgado,,,,,,"QA example — replace with real leads; never store PHI beyond contact needs",

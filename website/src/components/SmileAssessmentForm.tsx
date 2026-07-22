@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { locations } from "@/lib/locations";
+import { readAttribution, trackEvent } from "@/lib/tracking";
 
 const fieldClass =
   "rounded-[0.85rem] border border-[var(--line)] bg-white px-3.5 py-2.5 text-[var(--ink)] outline-none focus:outline focus:outline-2 focus:outline-[color-mix(in_oklab,var(--sky)_55%,white)]";
@@ -11,6 +12,7 @@ export function SmileAssessmentForm() {
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
+  const [started, setStarted] = useState(false);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -18,6 +20,7 @@ export function SmileAssessmentForm() {
     setError("");
     const data = new FormData(e.currentTarget);
     const payload = Object.fromEntries(data.entries());
+    const attribution = readAttribution();
 
     try {
       const res = await fetch("/api/leads", {
@@ -25,23 +28,43 @@ export function SmileAssessmentForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...payload,
+          ...attribution,
           formType: "smile-assessment",
           service: "Teeth straightening assessment",
+          pagePath: window.location.pathname,
         }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) throw new Error(json.error || "Could not submit.");
+      trackEvent("form_submit_success", {
+        formType: "smile-assessment",
+        location: String(payload.location || ""),
+        service: "Teeth straightening assessment",
+      });
       router.push(
         `/thank-you?location=${encodeURIComponent(String(payload.location || ""))}&service=${encodeURIComponent("Teeth straightening assessment")}`,
       );
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong.");
+      trackEvent("form_submit_error", { formType: "smile-assessment" });
     }
   }
 
   return (
-    <form className="grid gap-4" onSubmit={onSubmit}>
+    <form
+      className="grid gap-4"
+      onSubmit={onSubmit}
+      onFocus={() => {
+        if (started) return;
+        setStarted(true);
+        trackEvent("form_start", { formType: "smile-assessment", path: "/smile-assessment" });
+      }}
+    >
+      <label className="absolute left-[-10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+        Company
+        <input tabIndex={-1} autoComplete="off" name="companyWebsite" type="text" defaultValue="" />
+      </label>
       <p className="rounded-xl bg-[color-mix(in_oklab,var(--sage)_10%,white)] p-4 text-sm text-sage-deep">
         This is a <strong>preliminary</strong> assessment only. It is not a diagnosis, prescription, or treatment
         approval. A licensed dentist must review records and approve any straightening plan.

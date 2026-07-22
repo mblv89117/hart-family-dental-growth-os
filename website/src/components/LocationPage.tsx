@@ -76,6 +76,39 @@ export function LocationPage({ location }: { location: Location }) {
               </div>
             </dl>
             <div className="mt-10">
+              <SectionHeading
+                title="Services patients often request here"
+                body="Family dentistry, implants, dentist-supervised straightening, cosmetic and restorative care, emergency evaluations, and cash-pay consults."
+              />
+              <ul className="mt-4 list-disc space-y-1 pl-5 text-sm text-ink-soft">
+                <li>
+                  <a className="text-sage hover:underline" href="/dental-implants">
+                    Dental implants
+                  </a>
+                </li>
+                <li>
+                  <a className="text-sage hover:underline" href="/teeth-straightening">
+                    Dentist-supervised clear aligners
+                  </a>
+                </li>
+                <li>
+                  <a className="text-sage hover:underline" href="/cash-pay-dentistry">
+                    Cash-pay dentistry
+                  </a>
+                </li>
+                <li>
+                  <a className="text-sage hover:underline" href="/emergency-dentistry">
+                    Emergency dentistry
+                  </a>
+                </li>
+                <li>
+                  <a className="text-sage hover:underline" href="/restorative-dentistry">
+                    Restorative &amp; cosmetic care
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div className="mt-10">
               <FaqList
                 items={[
                   {

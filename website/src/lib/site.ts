@@ -16,7 +16,7 @@ export const nav = [
   { href: "/desert-hot-springs", label: "Desert Hot Springs" },
   { href: "/dental-implants", label: "Implants" },
   { href: "/teeth-straightening", label: "Straightening" },
-  { href: "/financing", label: "Financing" },
+  { href: "/cash-pay-dentistry", label: "Cash-pay" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -35,6 +35,11 @@ export const services = [
     href: "/teeth-straightening",
     title: "Dentist-supervised straightening",
     blurb: "A simpler path to a straighter smile — always with dentist oversight, never DIY.",
+  },
+  {
+    href: "/cash-pay-dentistry",
+    title: "Cash-pay dentistry",
+    blurb: "Clear next steps if you’re paying without insurance — no invented online prices.",
   },
   {
     href: "/cosmetic-dentistry",
@@ -58,6 +63,8 @@ export const footerLinks = [
   { href: "/providers", label: "Providers" },
   { href: "/new-patients", label: "New patients" },
   { href: "/smile-assessment", label: "Smile assessment" },
+  { href: "/cash-pay-dentistry", label: "Cash-pay" },
+  { href: "/financing", label: "Financing" },
   { href: "/reviews", label: "Reviews" },
   { href: "/faq", label: "FAQ" },
   { href: "/privacy", label: "Privacy" },

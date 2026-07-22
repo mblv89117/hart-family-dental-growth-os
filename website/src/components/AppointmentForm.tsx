@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { locations, LocationId } from "@/lib/locations";
+import { readAttribution, trackEvent } from "@/lib/tracking";
 
 type Props = {
   defaultLocation?: LocationId;
@@ -19,6 +20,7 @@ const services = [
   "Emergency / tooth pain",
   "Cosmetic dentistry",
   "Restorative dentistry",
+  "Cash-pay consult",
   "Financing information",
   "Other",
 ];
@@ -35,6 +37,13 @@ export function AppointmentForm({
   const router = useRouter();
   const [status, setStatus] = useState<"idle" | "sending" | "error">("idle");
   const [error, setError] = useState("");
+  const [started, setStarted] = useState(false);
+
+  function onStart() {
+    if (started) return;
+    setStarted(true);
+    trackEvent("form_start", { formType, path: typeof window !== "undefined" ? window.location.pathname : "" });
+  }
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,22 +52,32 @@ export function AppointmentForm({
     const form = e.currentTarget;
     const data = new FormData(form);
     const payload = Object.fromEntries(data.entries());
+    const attribution = readAttribution();
 
     try {
       const res = await fetch("/api/leads", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...payload, formType }),
+        body: JSON.stringify({ ...payload, ...attribution, formType, pagePath: window.location.pathname }),
       });
       const json = await res.json();
       if (!res.ok || !json.ok) {
         throw new Error(json.error || "Could not submit. Please call the office.");
       }
+      trackEvent("form_submit_success", {
+        formType,
+        location: String(payload.location || ""),
+        service: String(payload.service || ""),
+      });
+      trackEvent("location_selection", { location: String(payload.location || "") });
       const loc = String(payload.location || "");
-      router.push(`/thank-you?location=${encodeURIComponent(loc)}&service=${encodeURIComponent(String(payload.service || ""))}`);
+      router.push(
+        `/thank-you?location=${encodeURIComponent(loc)}&service=${encodeURIComponent(String(payload.service || ""))}`,
+      );
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong.");
+      trackEvent("form_submit_error", { formType });
     }
   }
 
@@ -79,7 +98,11 @@ export function AppointmentForm({
         </p>
       ) : null}
 
-      <form className="mt-6 grid gap-4" onSubmit={onSubmit}>
+      <form className="mt-6 grid gap-4" onSubmit={onSubmit} onFocus={onStart}>
+        <label className="absolute left-[-10000px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+          Company
+          <input tabIndex={-1} autoComplete="off" name="companyWebsite" type="text" defaultValue="" />
+        </label>
         <label className="grid gap-1 text-sm">
           <span>Full name</span>
           <input required name="name" className={fieldClass} autoComplete="name" />
@@ -97,7 +120,13 @@ export function AppointmentForm({
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-1 text-sm">
             <span>Preferred office</span>
-            <select required name="location" className={fieldClass} defaultValue={defaultLocation ?? ""}>
+            <select
+              required
+              name="location"
+              className={fieldClass}
+              defaultValue={defaultLocation ?? ""}
+              onChange={(e) => trackEvent("location_selection", { location: e.target.value, formType })}
+            >
               <option value="" disabled>
                 Select
               </option>

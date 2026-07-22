@@ -20,6 +20,16 @@ type LeadBody = {
   priorOrtho?: string;
   dentalVisit?: string;
   concerns?: string;
+  companyWebsite?: string;
+  pagePath?: string;
+  utm_source?: string;
+  utm_medium?: string;
+  utm_campaign?: string;
+  utm_content?: string;
+  utm_term?: string;
+  gclid?: string;
+  fbclid?: string;
+  referrer?: string;
 };
 
 function sanitize(value: unknown, max = 500) {
@@ -48,6 +58,8 @@ async function notifyHotmailInboxes(lead: Record<string, unknown>, primaryInbox:
     `Follow-up: ${lead.followUp}`,
     `Form: ${lead.formType}`,
     `Message: ${lead.message || "(none)"}`,
+    `Page: ${lead.pagePath || ""}`,
+    `UTM: ${lead.utm_source || ""} / ${lead.utm_medium || ""} / ${lead.utm_campaign || ""}`,
     `SMS consent: ${lead.smsConsent}`,
     `Email consent: ${lead.emailConsent}`,
     "",
@@ -146,6 +158,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
   }
 
+  // Honeypot: silent success so bots do not retry
+  if (sanitize(body.companyWebsite, 80)) {
+    return NextResponse.json({ ok: true, id: `lead_spam_${Date.now()}` });
+  }
+
   const lead = {
     id: `lead_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
     receivedAt: new Date().toISOString(),
@@ -164,6 +181,15 @@ export async function POST(req: NextRequest) {
     priorOrtho: sanitize(body.priorOrtho, 80),
     dentalVisit: sanitize(body.dentalVisit, 80),
     concerns: sanitize(body.concerns, 500),
+    pagePath: sanitize(body.pagePath, 120),
+    utm_source: sanitize(body.utm_source, 80),
+    utm_medium: sanitize(body.utm_medium, 80),
+    utm_campaign: sanitize(body.utm_campaign, 120),
+    utm_content: sanitize(body.utm_content, 120),
+    utm_term: sanitize(body.utm_term, 120),
+    gclid: sanitize(body.gclid, 120),
+    fbclid: sanitize(body.fbclid, 120),
+    referrer: sanitize(body.referrer, 500),
     userAgent: req.headers.get("user-agent")?.slice(0, 200) || "",
   };
 
