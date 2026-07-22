@@ -1,37 +1,39 @@
 # DNS Cutover Runbook
 
-**Status:** **AUTHORIZED** for hfdds.net (2026-07-21 owner direction)  
+**Status:** **IN PROGRESS** — Vercel production live; GoDaddy DNS A records still need cutover  
 **Preferred first live domain:** **hfdds.net**  
 **Long-term SEO domain:** hartfamilydds.com (align after hfdds.net is stable)
 
-## Current / target state
+## Live now
 
-| Host | Observation |
+| Host | Status |
 | --- | --- |
-| hfdds.net | Purchased; was GoDaddy parking — point to production host |
-| www.hfdds.net | Same as apex |
-| hartfamilydds.com | Still parked — align later |
-| hartfamilyyv.com / hartfamilydhs.com | 301 later |
+| https://hart-family-dental.vercel.app | **Production READY** (Option A hours + lead API verified) |
+| hfdds.net / www.hfdds.net | Added in Vercel; **DNS still on GoDaddy park** until A records updated |
 
-## Sequence
+## Required GoDaddy DNS (do this once)
+
+In GoDaddy DNS for **hfdds.net**, replace parking records with:
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | `@` | `76.76.21.21` |
+| A | `www` | `76.76.21.21` |
+
+(Or CNAME `www` → `cname.vercel-dns.com` if GoDaddy prefers CNAME for www.)
+
+Remove park/lander forwarding after save. Propagation usually minutes; HTTPS issues on Vercel after DNS verifies.
+
+## Sequence status
 
 ### Phase A — Local complete ✓
-Build/QA on localhost; Option A hours + approved services applied.
-
-### Phase B — First move: hfdds.net (now)
-1. Deploy Next.js (`website/`) to host (Vercel preferred)  
-2. Set env `NEXT_PUBLIC_SITE_URL=https://hfdds.net`  
-3. Point `hfdds.net` + `www` to host; remove park lander  
-4. Verify HTTPS, pages, `/api/leads`, thank-you flow  
-5. Notify **Wendy Delgado** that live forms are active  
-6. Confirm test lead arrives in office Hotmail  
+### Phase B — First move: hfdds.net
+1. ~~Deploy Next.js to Vercel~~ ✓ (`hart-family-dental`)  
+2. ~~Set `NEXT_PUBLIC_SITE_URL=https://hfdds.net`~~ ✓  
+3. **Point DNS** — owner action above  
+4. Verify HTTPS on hfdds.net + `/api/leads`  
+5. Notify Wendy that live forms are active  
+6. Confirm test lead in Hotmail  
 
 ### Phase C — Brand domain alignment (later)
-1. Point `hartfamilydds.com` + `www` to same host **or** 301 → `https://hfdds.net`  
-2. One canonical for GBP / Search Console  
-3. Location domains → 301 to location paths  
-4. Submit sitemap; monitor 48h  
-
-## Rollback
-
-Restore previous DNS records from screenshots; park lander returns until fixed permanently.
+hartfamilydds.com + location 301s after hfdds.net stable.
