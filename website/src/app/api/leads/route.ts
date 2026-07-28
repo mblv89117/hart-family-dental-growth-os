@@ -3,6 +3,8 @@ import { appendFile, mkdir } from "fs/promises";
 import path from "path";
 import { getLocationById, leadOwner } from "@/lib/locations";
 import { deliverLeadEmail } from "@/lib/lead-delivery";
+import { isPlatformEnabled } from "@/server/env";
+import { safeError, safeInfo } from "@/server/logging";
 
 export const runtime = "nodejs";
 
@@ -43,14 +45,8 @@ function officeInbox(locationId: string) {
   return loc?.leadNotifyEmail || "hartdentalyv@hotmail.com";
 }
 
-export async function POST(req: NextRequest) {
-  let body: LeadBody;
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
-  }
-
+/** Pre-platform public path — no Prisma, no worker, no AUTH_SECRET required. */
+async function handleLegacyLead(req: NextRequest, body: LeadBody) {
   if (sanitize(body.companyWebsite, 80)) {
     return NextResponse.json({ ok: true, id: `lead_spam_${Date.now()}`, emailDelivered: false });
   }
@@ -93,7 +89,10 @@ export async function POST(req: NextRequest) {
   }
 
   if (!lead.smsConsent) {
-    return NextResponse.json({ ok: false, error: "SMS consent is required for appointment follow-up." }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, error: "SMS consent is required for appointment follow-up." },
+      { status: 400 },
+    );
   }
 
   const primaryInbox = officeInbox(lead.location);
@@ -107,23 +106,20 @@ export async function POST(req: NextRequest) {
       "utf8",
     );
   } catch (err) {
-    console.error("[leads] local write failed", err);
+    safeError("[leads] local write failed", {
+      error: err instanceof Error ? err.message : "unknown",
+    });
   }
 
   const { deliveries, emailDelivered, recipients } = await deliverLeadEmail(lead, primaryInbox);
 
-  console.info("[HFD lead]", {
+  safeInfo("[HFD lead]", {
     id: lead.id,
     location: lead.location,
-    service: lead.service,
     formType: lead.formType,
-    notifyInbox: primaryInbox,
-    recipients,
     emailDelivered,
-    deliveries,
   });
 
-  // Accept the lead record, but never imply email succeeded when it did not.
   return NextResponse.json({
     ok: true,
     id: lead.id,
@@ -133,7 +129,112 @@ export async function POST(req: NextRequest) {
     deliveries: deliveries.map((d) => ({
       channel: d.channel,
       ok: d.ok,
-      detail: d.ok ? d.detail : d.detail,
+      detail: d.detail || "",
     })),
   });
+}
+
+async function handlePlatformLead(req: NextRequest, body: unknown) {
+  // Lazy import — Prisma must not load on the legacy public path.
+  const { ingestPublicLead } = await import("@/server/leads/ingest");
+
+  const result = await ingestPublicLead(body, {
+    userAgent: req.headers.get("user-agent") || undefined,
+    ipAddress: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || undefined,
+  });
+
+  if (!result.ok) {
+    return NextResponse.json({ ok: false, error: result.error }, { status: result.status });
+  }
+
+  if ("spam" in result && result.spam) {
+    return NextResponse.json(result.payload);
+  }
+
+  const leadPayload = {
+    id: result.lead!.id,
+    receivedAt: result.lead!.receivedAt.toISOString(),
+    owner: result.lead!.ownerName || "Wendy Delgado",
+    formType: result.lead!.formType,
+    name: result.lead!.name,
+    phone: result.lead!.phone,
+    email: result.lead!.email,
+    location: result.location!.key,
+    service: result.lead!.service || "",
+    followUp: result.lead!.followUp || "",
+    message: result.lead!.message || "",
+    smsConsent: result.lead!.smsConsent,
+    emailConsent: result.lead!.emailConsent,
+  };
+
+  try {
+    const dir = path.join(process.cwd(), "..", "data", "leads");
+    await mkdir(dir, { recursive: true });
+    await appendFile(
+      path.join(dir, "leads.jsonl"),
+      `${JSON.stringify({ ...leadPayload, notifyInbox: result.location!.leadNotifyEmail })}\n`,
+      "utf8",
+    );
+  } catch (err) {
+    safeError("[leads] local write failed", {
+      error: err instanceof Error ? err.message : "unknown",
+    });
+  }
+
+  let emailDelivered = false;
+  let deliveries: Array<{ channel: string; ok: boolean; detail: string }> = [];
+  let recipients: string[] = [result.location!.leadNotifyEmail];
+
+  if (!("skipNotify" in result && result.skipNotify)) {
+    const delivered = await deliverLeadEmail(leadPayload, result.location!.leadNotifyEmail);
+    emailDelivered = delivered.emailDelivered;
+    deliveries = delivered.deliveries.map((d) => ({
+      channel: d.channel,
+      ok: d.ok,
+      detail: d.detail || "",
+    }));
+    recipients = delivered.recipients;
+  }
+
+  safeInfo("[HFD lead]", {
+    id: result.lead!.id,
+    location: result.location!.key,
+    formType: result.lead!.formType,
+    emailDelivered,
+  });
+
+  return NextResponse.json({
+    ok: true,
+    id: result.lead!.id,
+    notifyInbox: result.location!.leadNotifyEmail,
+    recipients,
+    emailDelivered,
+    deliveries,
+  });
+}
+
+export async function POST(req: NextRequest) {
+  let body: LeadBody;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ ok: false, error: "Invalid JSON" }, { status: 400 });
+  }
+
+  if (!isPlatformEnabled()) {
+    return handleLegacyLead(req, body);
+  }
+
+  try {
+    return await handlePlatformLead(req, body);
+  } catch (err) {
+    // Platform enabled: do not silently fall back to legacy — fail closed.
+    safeError("[leads] platform ingest failed", {
+      error: err instanceof Error ? err.message : "unknown",
+    });
+    return NextResponse.json(
+      { ok: false, error: "Unable to accept lead right now. Please call the office." },
+      { status: 503 },
+    );
+  }
 }

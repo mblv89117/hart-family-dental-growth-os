@@ -1,19 +1,11 @@
 # Hart Family Dental — Project Handoff
 
-**Date:** 2026-07-21  
+**Date:** 2026-07-28  
 **Repo:** https://github.com/mblv89117/hart-family-dental-growth-os  
-**Local path:** `/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS`  
-**Branch:** `main`  
-**Production release tag:** `v1.0.0-hfdds-production`  
-**Live:** https://hfdds.net · https://www.hfdds.net  
+**Branch:** `cursor/open-dental-growth-os-4c45`  
+**Live marketing site:** https://hfdds.net  
 
 Prefer this file over chat history.
-
----
-
-## Mission
-
-Measurable patient-acquisition for Yucca Valley + Desert Hot Springs: implants, dentist-supervised aligners, cash-pay, higher-value care — without DIY ortho claims, invented prices, or credential exposure.
 
 ---
 
@@ -21,50 +13,62 @@ Measurable patient-acquisition for Yucca Valley + Desert Hot Springs: implants, 
 
 | Area | Status |
 | --- | --- |
-| Production website | **Live** on Vercel + hfdds.net HTTPS |
-| Hours | Option A both offices |
-| Lead owner | Wendy Delgado both desks |
-| Lead API | Live; Hotmail notify wired; **inbox receipt pending human confirm** |
-| Wendy workbook + scripts | `ops/leads/` + `docs/wendy-lead-workflow.md` |
-| Analytics IDs | Code ready — **GA4/GTM IDs not set** |
-| Service checklist detail | **Intentionally deferred** by owner |
-| Location domain 301s | Middleware ready — **DNS queued** |
-| Paid ads | Not activated |
+| Production marketing website | Live — must remain compatible with `GROWTH_OS_PLATFORM_ENABLED=false` |
+| Phases 0–4 platform | Implemented on feature branch |
+| Default production flags | Platform **off**, Ops **off**, OD writes **off**, outbound **off** |
+| Production auth | Local credentials **forbidden** when OPS is on in production |
+| Dependency security | Next **15.5.22**; `npm audit` **0** after overrides — see `docs/PR1_DEPENDENCY_SECURITY_GATE.md` |
+| Vercel Production safety flags | **Verified via authenticated Vercel CLI on July 28, 2026** (`hart-family-dental` / `hfdds.net`) |
+| PR #1 merge | Ready with platform/ops remaining disabled |
+| Phases 5–8 | **Not implemented** |
+
+### Production blockers
+
+1. Managed Postgres vendor  
+2. Worker hosting  
+3. Open Dental credentials + BAA  
+4. Production auth provider (OIDC/OAuth/magic_link/passkey) — not a boolean alone  
+5. Outbound vendors + compliance  
 
 ---
 
 ## How to run
 
+**Public-compatible (no Postgres):**
+
 ```bash
-cd "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS"
-npm run dev      # local
-npm run build
+# GROWTH_OS_PLATFORM_ENABLED=false OPS_ENABLED=false
+npm run build && npm run start
 ```
 
-Production: Vercel project `high-value-capital-group/hart-family-dental`.
+**Local platform:**
+
+```bash
+npm run db:up
+# set GROWTH_OS_PLATFORM_ENABLED=true OPS_ENABLED=true (+ DATABASE_URL, AUTH_SECRET)
+npm run db:migrate && npm run db:seed   # passwords printed once or from DEV_SEED_*
+npm run dev
+npm run worker
+```
+
+Synthetic emails: `wendy@local.test`, `lindsay@local.test`, `owner@local.test`, `readonly@local.test`, `yv-only@local.test`. Passwords are **not** stored in git.
+
+---
 
 ## Key docs
 
 | Doc | Purpose |
 | --- | --- |
-| `docs/production-release-record.md` | Commit/tag/DNS/env/rollback |
-| `docs/production-qa-report.md` | QA results |
-| `docs/test-lead-matrix.md` | TEST leads submitted |
-| `docs/analytics/analytics-setup.md` | GA4/GTM owner checklist |
-| `docs/wendy-lead-workflow.md` | Wendy daily system |
-| `docs/campaigns/campaign-foundation-pack.md` | Campaign pack (not paid yet) |
-| `docs/approvals/location-domain-redirects.md` | YV/DHS domain 301s |
-| `docs/audits/external-profile-launch-prep.md` | GBP/Yelp/FB prep |
-| `docs/reliability/production-ops.md` | Monitoring / incidents |
+| `docs/PR1_RELEASE_GATE_AUDIT.md` | Independent release-gate findings |
+| `docs/ACCEPTANCE_TEST_COVERAGE.md` | Requirement → test matrix |
+| `docs/DATABASE_MIGRATION_AND_RECOVERY.md` | Migration / recovery |
+| `docs/ARCHITECTURE.md` | System topology |
+| `docs/IMPLEMENTATION_STATUS.md` | Phase status |
 
-## Owner actions still required
+---
 
-1. Confirm TEST LEAD emails arrived in YV + DHS Hotmail (or click FormSubmit confirm).  
-2. Provide GA4 (and optional GTM) IDs → set on Vercel → redeploy.  
-3. Point hartfamilyyv.com / hartfamilydhs.com DNS to Vercel when ready.  
-4. Supervised GBP/Yelp login session to apply NAP/hours/URL.  
-5. Explicit approval before any paid ad spend.
+## Owner actions
 
-## Resume prompt
-
-> Continue Hart Family Dental Growth OS at `/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS`. Read `HANDOFF.md`. Production is live at https://hfdds.net. Wendy owns leads. Confirm Hotmail test-lead receipt and add GA4 IDs next; do not reopen hours; service checklist remains deferred.
+1. Keep production Vercel env: `GROWTH_OS_PLATFORM_ENABLED=false`, `OPS_ENABLED=false`.  
+2. Complete admin/vendor/compliance checklists before enabling platform.  
+3. Do not enable OD writes or patient outbound without explicit approval.
