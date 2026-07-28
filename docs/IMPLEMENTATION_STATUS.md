@@ -14,7 +14,7 @@
 | 3 — Leads + front desk | Implemented and tested |
 | 4 — Supervised mock scheduling | Mock only — implemented and tested |
 | PR #1 release gate | Remediated — see `PR1_RELEASE_GATE_AUDIT.md` |
-| PR #1 dependency-security gate | Remediated locally — see `PR1_DEPENDENCY_SECURITY_GATE.md`; merge blocked on Vercel env verify |
+| PR #1 dependency-security gate | Remediated — `PR1_DEPENDENCY_SECURITY_GATE.md`; Vercel Production flags verified via CLI 2026-07-28 |
 | 5–8 | Not implemented |
 
 ## Exact stack (post dependency gate)
@@ -46,13 +46,14 @@
 | `npm audit` | **0 vulnerabilities** |
 | Blank DB migration | **pass** |
 
-## Production blockers (unchanged except dependency audit)
+## Production blockers (unchanged except dependency audit + Vercel verify)
 
-Hosted Postgres · worker hosting · OD credentials/BAA · production auth provider · outbound vendors · **Vercel Production safety-flag verification before merge**
+Hosted Postgres · worker hosting · OD credentials/BAA · production auth provider · outbound vendors
 
 ## Exact next action
 
-1. Manny verifies Vercel Production env checklist in `PR1_DEPENDENCY_SECURITY_GATE.md`.  
-2. Squash/merge PR #1 only after that confirmation (do not enable platform/ops).  
-3. Post-deploy public smoke + `/ops` 404.  
-4. Do **not** start Phase 5–8.
+1. Merge PR #1 with platform/ops **off** (Vercel Production safety flags already verified).  
+2. Monitor Git-triggered Production deploy to `hfdds.net`.  
+3. Public smoke + `/ops` 404 + one synthetic lead.  
+4. Roll back to `dpl_5NUP4wLrJHaMVnByQShfsW7Rr4gU` on material regression.  
+5. Do **not** start Phase 5–8.

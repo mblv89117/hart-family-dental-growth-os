@@ -13,8 +13,8 @@
 | Forced major / `npm audit fix --force`? | **No** |
 | Regression suite? | **Pass** (unit 18, integration 21, lint, typecheck, build) |
 | Platform-disabled prod-like (no `DATABASE_URL`)? | **Pass** |
-| Vercel Production safety flags verified by this agent? | **No — no Vercel API/token access** |
-| Merge recommendation | **DO NOT MERGE until Manny verifies Vercel Production env checklist** |
+| Vercel Production safety flags verified by this agent? | **Yes — authenticated Vercel CLI on July 28, 2026** |
+| Merge recommendation | **APPROVE FOR MERGE** (platform/ops remain disabled) |
 
 ---
 
@@ -311,43 +311,70 @@ Flags: `NODE_ENV=production`, `GROWTH_OS_PLATFORM_ENABLED=false`, `OPS_ENABLED=f
 
 ---
 
-## Vercel Production environment checklist (Manny)
+## Vercel Production safety flags (verified)
 
-This agent **could not** read Vercel Production env (`VERCEL_TOKEN` unset; no project link). **Merge is blocked on owner verification.**
+**Vercel Production safety flags verified through authenticated Vercel CLI on July 28, 2026.**
 
-Confirm Production has **exactly** these safety values (never paste secret values into chat/tickets):
+| Field | Value |
+| --- | --- |
+| Vercel account / team | `mblv89117` / **High Value Capital Group** (`high-value-capital-group`) |
+| Project | **hart-family-dental** |
+| Project ID | `prj_aGXp1cSsfuzp7z20A5AtdzUeCJtO` |
+| Production domain | **hfdds.net** (also www.hfdds.net) |
+| Application directory linked | `website/` |
+| Framework | Next.js |
+| Known-good Production deployment (pre-merge rollback target) | `dpl_5NUP4wLrJHaMVnByQShfsW7Rr4gU` (`hart-family-dental-aady0ghex-high-value-capital-group.vercel.app`) |
+
+### Production env metadata
+
+- **Before:** 6 Production variables (lead delivery + analytics + site URL only)
+- **After:** 20 Production variables (6 preserved + 14 safety flags added)
+- **Preview / Development:** no safety-flag definitions added
+- **Forbidden variables in Production:** absent (`DATABASE_URL`, `DIRECT_URL`, `DEV_SEED_*`, Open Dental keys)
+
+### Existing public lead-delivery variables preserved (names only)
+
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID`
+- `RESEND_FROM_EMAIL`
+- `RESEND_API_KEY`
+- `LEAD_CC_EMAILS`
+- `LEAD_PRIMARY_EMAIL`
+- `NEXT_PUBLIC_SITE_URL`
+
+### Exact value verification (`vercel env run -e production`, local `.env` isolated)
 
 ```
-GROWTH_OS_PLATFORM_ENABLED=false
-OPS_ENABLED=false
-AUTH_MODE=disabled
-AUTH_PRODUCTION_APPROVED=false
-OPEN_DENTAL_WRITES_ENABLED=false
-OUTBOUND_COMMUNICATIONS_ENABLED=false
-AI_ENABLED=false
-AI_PHI_ALLOWED=false
-VOICE_AUTOMATION_ENABLED=false
-CALL_RECORDING_ENABLED=false
-TREATMENT_PLAN_FOLLOWUP_ENABLED=false
-PATIENT_REACTIVATION_ENABLED=false
-REVIEW_REQUESTS_ENABLED=false
+GROWTH_OS_PLATFORM_ENABLED: PASS
+OPS_ENABLED: PASS
+AUTH_MODE: PASS
+AUTH_PRODUCTION_APPROVED: PASS
+OPEN_DENTAL_MODE: PASS
+OPEN_DENTAL_WRITES_ENABLED: PASS
+OUTBOUND_COMMUNICATIONS_ENABLED: PASS
+AI_ENABLED: PASS
+AI_PHI_ALLOWED: PASS
+VOICE_AUTOMATION_ENABLED: PASS
+CALL_RECORDING_ENABLED: PASS
+TREATMENT_PLAN_FOLLOWUP_ENABLED: PASS
+PATIENT_REACTIVATION_ENABLED: PASS
+REVIEW_REQUESTS_ENABLED: PASS
 ```
 
-Allowed:
+Confirmed configuration (non-secret controls):
 
-```
-OPEN_DENTAL_MODE=mock
-```
-
-Must **not** add for this public-site merge:
-
-- `DATABASE_URL`
-- `DEV_SEED_WENDY_PASSWORD` / `DEV_SEED_LINDSAY_PASSWORD` / `DEV_SEED_OWNER_PASSWORD` (or other seed passwords)
-- Open Dental developer/customer keys
-- Production SMS / patient-email credentials
-- Worker hosting secrets required only for platform-on
-
-After merge + deploy: smoke hfdds.net public pages and confirm `/ops*` → 404.
+- Growth OS platform **disabled**
+- Operations portal **disabled**
+- Production authentication **disabled**
+- Open Dental mode **mock**; writes **disabled**
+- Outbound patient communications **disabled**
+- AI / AI PHI / voice / call recording **disabled**
+- Treatment-plan follow-up / patient reactivation / review-request automation **disabled**
+- No Production database configured
+- No development seed variables configured
+- No Open Dental credentials configured
+- No new patient-messaging credentials configured
+- Existing public lead-delivery variables preserved
+- **Growth OS remains not production-ready**
 
 ---
 
@@ -361,8 +388,8 @@ After merge + deploy: smoke hfdds.net public pages and confirm `/ops*` → 404.
 | Unit / integration / concurrency / booking / security / PHI scrub | **PASS** |
 | Lint / typecheck / build / platform-off prod-like | **PASS** |
 | Public lead compatibility / ops 404 | **PASS** |
-| No secrets in git diff | **PASS** (package files + docs only) |
+| No secrets in git diff | **PASS** |
 | Growth OS / OD writes / outbound remain off by default | **PASS** |
-| Vercel Production flags verified | **FAIL (unverified)** |
+| Vercel Production flags verified | **PASS** (authenticated CLI, 2026-07-28) |
 
-**MERGE PR #1: NO** until Vercel checklist is confirmed by the owner.
+**MERGE PR #1: YES** — keep platform/ops disabled; monitor Git-triggered Production deploy; roll back to `dpl_5NUP4wLrJHaMVnByQShfsW7Rr4gU` on material regression.

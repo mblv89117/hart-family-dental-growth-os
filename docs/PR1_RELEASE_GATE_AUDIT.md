@@ -13,7 +13,7 @@ Functional release-gate remediations (public compatibility, auth fail-closed, se
 
 - Next.js patched to **15.5.22**; PostCSS/Sharp/Prisma Effect/brace-expansion advisories cleared.
 - `npm audit` → **0** vulnerabilities after controlled overrides (no `npm audit fix --force`, no Next 16).
-- Merge remains **blocked** until Manny verifies Vercel Production safety flags (agent has no Vercel API access).
+- **Vercel Production safety flags verified through authenticated Vercel CLI on July 28, 2026** (project `hart-family-dental`, domain `hfdds.net`). Existing lead-delivery variables preserved; 14 safety flags set Production-only; forbidden DB/seed/OD vars absent.
 
 Do **not** treat npm audit Highs as non-blocking merely because `GROWTH_OS_PLATFORM_ENABLED=false` — the public site runs Next.js.
 
