@@ -8,8 +8,14 @@ const bool = (v: string | undefined, fallback: boolean) => {
 
 export type AuthMode = "local_credentials" | "oidc" | "oauth" | "magic_link" | "passkey" | "disabled";
 
+export type AppDeploymentEnv = "development" | "test" | "staging" | "production";
+
+export type OpenDentalMode = "mock" | "remote" | "remote_readonly";
+
 export type RuntimeFlags = {
   nodeEnv: string;
+  /** Logical deployment environment (APP_ENV). Staging shows ops banners and forbids local_credentials when hosted. */
+  appEnv: AppDeploymentEnv;
   growthOsPlatformEnabled: boolean;
   opsEnabled: boolean;
   authMode: AuthMode;
@@ -17,8 +23,10 @@ export type RuntimeFlags = {
   automationMode: "off" | "observe" | "draft" | "supervised" | "autonomous";
   outboundCommunicationsEnabled: boolean;
   outboundAllowlist: string[];
-  openDentalMode: "mock" | "remote";
+  openDentalMode: OpenDentalMode;
   openDentalWritesEnabled: boolean;
+  /** False in remote_readonly; otherwise mirrors OPEN_DENTAL_WRITES_ENABLED for remote mode. */
+  openDentalWritesAllowed: boolean;
   aiEnabled: boolean;
   aiPhiAllowed: boolean;
 };
@@ -49,6 +57,21 @@ function parseAuthMode(raw: string | undefined): AuthMode {
   throw new Error(`Invalid AUTH_MODE: ${raw}`);
 }
 
+function parseAppEnv(raw: string | undefined, nodeEnv: string): AppDeploymentEnv {
+  const v = (raw || "").toLowerCase();
+  if (v === "staging" || v === "production" || v === "test" || v === "development") return v;
+  if (nodeEnv === "test") return "test";
+  if (nodeEnv === "production") return "production";
+  return "development";
+}
+
+function parseOpenDentalMode(raw: string | undefined): OpenDentalMode {
+  const v = (raw || "mock").toLowerCase();
+  if (v === "remote_readonly" || v === "remote-readonly") return "remote_readonly";
+  if (v === "remote") return "remote";
+  return "mock";
+}
+
 /**
  * Lightweight flags safe to read without DATABASE_URL / AUTH_SECRET.
  * Used by public lead routing and middleware-adjacent checks.
@@ -56,30 +79,49 @@ function parseAuthMode(raw: string | undefined): AuthMode {
 export function getRuntimeFlags(): RuntimeFlags {
   if (flagsCache) return flagsCache;
   const nodeEnv = process.env.NODE_ENV || "development";
+  const appEnv = parseAppEnv(process.env.APP_ENV, nodeEnv);
   const growthOsPlatformEnabled = bool(process.env.GROWTH_OS_PLATFORM_ENABLED, false);
   const opsEnabled = bool(process.env.OPS_ENABLED, false);
   const authMode = parseAuthMode(process.env.AUTH_MODE);
   const authProductionApproved = bool(process.env.AUTH_PRODUCTION_APPROVED, false);
+  const openDentalMode = parseOpenDentalMode(process.env.OPEN_DENTAL_MODE);
+  const openDentalWritesEnabled = bool(process.env.OPEN_DENTAL_WRITES_ENABLED, false);
+  // remote_readonly hard-blocks writes even if OPEN_DENTAL_WRITES_ENABLED=true
+  const openDentalWritesAllowed =
+    openDentalMode === "remote_readonly"
+      ? false
+      : openDentalMode === "remote"
+        ? openDentalWritesEnabled
+        : true; // mock is synthetic; booking still checks the writes flag separately
 
-  // Production ops must never use local_credentials or disabled — approval flag alone is insufficient.
-  if (nodeEnv === "production" && opsEnabled) {
+  // Hosted staging/production ops must never use local_credentials or disabled.
+  const hostedOps = opsEnabled && (appEnv === "production" || appEnv === "staging" || nodeEnv === "production");
+  if (hostedOps) {
     if (authMode === "local_credentials" || authMode === "disabled") {
       throw new Error(
-        "Fail-closed: production OPS_ENABLED cannot use AUTH_MODE=local_credentials or disabled.",
+        "Fail-closed: hosted staging/production OPS_ENABLED cannot use AUTH_MODE=local_credentials or disabled.",
       );
     }
-    if (!authProductionApproved) {
-      throw new Error(
-        "Fail-closed: OPS_ENABLED=true in production requires AUTH_PRODUCTION_APPROVED=true and a supported production auth provider.",
-      );
+    if (appEnv === "production" || nodeEnv === "production") {
+      if (!authProductionApproved) {
+        throw new Error(
+          "Fail-closed: OPS_ENABLED=true in production requires AUTH_PRODUCTION_APPROVED=true and a supported production auth provider.",
+        );
+      }
     }
     if (!["oidc", "oauth", "magic_link", "passkey"].includes(authMode)) {
-      throw new Error(`Fail-closed: unsupported production AUTH_MODE=${authMode}`);
+      throw new Error(`Fail-closed: unsupported hosted AUTH_MODE=${authMode}`);
     }
+    // Hosted MFA providers are registered but not yet wired (see auth/providers.ts).
+    // Fail closed until OIDC (or approved alternate) is implemented.
+    throw new Error(
+      `Fail-closed: hosted staff authentication AUTH_MODE=${authMode} is not implemented yet. Complete OIDC+MFA wiring before enabling OPS in staging/production.`,
+    );
   }
 
   flagsCache = {
     nodeEnv,
+    appEnv,
     growthOsPlatformEnabled,
     opsEnabled,
     authMode,
@@ -90,12 +132,26 @@ export function getRuntimeFlags(): RuntimeFlags {
       .split(",")
       .map((s) => s.trim().toLowerCase())
       .filter(Boolean),
-    openDentalMode: process.env.OPEN_DENTAL_MODE === "remote" ? "remote" : "mock",
-    openDentalWritesEnabled: bool(process.env.OPEN_DENTAL_WRITES_ENABLED, false),
+    openDentalMode,
+    openDentalWritesEnabled,
+    openDentalWritesAllowed,
     aiEnabled: bool(process.env.AI_ENABLED, false),
     aiPhiAllowed: bool(process.env.AI_PHI_ALLOWED, false),
   };
   return flagsCache;
+}
+
+export function isStagingEnv(): boolean {
+  try {
+    return getRuntimeFlags().appEnv === "staging";
+  } catch {
+    return (process.env.APP_ENV || "").toLowerCase() === "staging";
+  }
+}
+
+/** Whether Open Dental remote API writes may proceed for the current mode/flags. */
+export function areOpenDentalWritesAllowed(): boolean {
+  return getRuntimeFlags().openDentalWritesAllowed;
 }
 
 export function isPlatformEnabled(): boolean {

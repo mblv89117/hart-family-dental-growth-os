@@ -125,3 +125,62 @@ export async function recordConsent(input: {
     },
   });
 }
+
+/**
+ * Latest applicable consent for channel/purpose. Fail closed when no grant.
+ * Opt-out/suppression is checked separately via checkOutboundAllowed (opt-out wins).
+ */
+export async function hasActiveConsent(input: {
+  organizationId: string;
+  contactId?: string;
+  leadId?: string;
+  channel: string;
+  purpose?: string;
+}): Promise<boolean> {
+  if (!input.contactId && !input.leadId) return false;
+  const now = new Date();
+  const records = await prisma.consentRecord.findMany({
+    where: {
+      organizationId: input.organizationId,
+      channel: input.channel,
+      ...(input.contactId ? { contactId: input.contactId } : {}),
+      ...(input.leadId ? { leadId: input.leadId } : {}),
+      ...(input.purpose ? { purpose: input.purpose } : {}),
+    },
+    orderBy: { createdAt: "desc" },
+    take: 20,
+  });
+  for (const r of records) {
+    if (r.expiresAt && r.expiresAt < now) continue;
+    if (r.revokedAt) return false;
+    if (r.granted) return true;
+    return false;
+  }
+  return false;
+}
+
+/** Idempotent opt-out: reuse active matching suppressions when present. */
+export async function recordOptOutIdempotent(input: {
+  organizationId: string;
+  contactId?: string;
+  email?: string;
+  phone?: string;
+  channel: "sms" | "email" | "voice" | "all";
+  source: string;
+  reason?: string;
+}) {
+  const existing = await prisma.suppressionRecord.findFirst({
+    where: {
+      organizationId: input.organizationId,
+      active: true,
+      reason: input.reason || "opt_out",
+      OR: [
+        input.contactId ? { contactId: input.contactId } : undefined,
+        input.email ? { email: input.email.toLowerCase() } : undefined,
+        input.phone ? { phone: input.phone } : undefined,
+      ].filter(Boolean) as object[],
+    },
+  });
+  if (existing) return [existing];
+  return recordOptOut(input);
+}

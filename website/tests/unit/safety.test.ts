@@ -33,6 +33,7 @@ describe("unit safety primitives", () => {
     delete process.env.OUTBOUND_COMMUNICATIONS_ENABLED;
     delete process.env.GROWTH_OS_PLATFORM_ENABLED;
     delete process.env.OPS_ENABLED;
+    delete process.env.APP_ENV;
     process.env.AUTH_MODE = "local_credentials";
     (process.env as Record<string, string>)["NODE_ENV"] = "development";
     resetEnvCache();
@@ -55,6 +56,7 @@ describe("unit safety primitives", () => {
 
   it("allows development local_credentials with OPS enabled", () => {
     (process.env as Record<string, string>)["NODE_ENV"] = "development";
+    delete process.env.APP_ENV;
     process.env.OPS_ENABLED = "true";
     process.env.AUTH_MODE = "local_credentials";
     process.env.AUTH_PRODUCTION_APPROVED = "false";

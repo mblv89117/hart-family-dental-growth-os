@@ -10,9 +10,10 @@ export { findRecentMatchingAppointment } from "./mockGateway";
 
 export async function getGatewayForConnection(connectionId: string): Promise<OpenDentalGateway> {
   const conn = await prisma.openDentalConnection.findUniqueOrThrow({ where: { id: connectionId } });
-  const mode = conn.mode || getEnv().openDentalMode;
+  const envMode = getEnv().openDentalMode;
+  const mode = conn.mode || envMode;
 
-  if (mode === "mock" || getEnv().openDentalMode === "mock") {
+  if (mode === "mock" || envMode === "mock") {
     return createMockGateway(conn.key);
   }
 
@@ -28,11 +29,14 @@ export async function getGatewayForConnection(connectionId: string): Promise<Ope
     throw new Error(`Open Dental remote credentials not configured for connection ${conn.key}`);
   }
 
+  const readOnly = envMode === "remote_readonly" || mode === "remote_readonly";
+
   return createRemoteGateway({
     connectionKey: conn.key,
     baseUrl,
     developerKey,
     customerKey,
+    readOnly,
   });
 }
 
