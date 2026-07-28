@@ -5,6 +5,16 @@
     "dev": "npm --prefix website run dev",
     "build": "npm --prefix website run build",
     "start": "npm --prefix website run start",
-    "lint": "npm --prefix website run lint"
+    "lint": "npm --prefix website run lint",
+    "typecheck": "npm --prefix website run typecheck",
+    "test": "npm --prefix website run test",
+    "test:integration": "npm --prefix website run test:integration",
+    "db:up": "npm --prefix website run db:up",
+    "db:down": "npm --prefix website run db:down",
+    "db:migrate": "npm --prefix website run db:migrate",
+    "db:seed": "npm --prefix website run db:seed",
+    "db:reset": "npm --prefix website run db:reset",
+    "db:studio": "npm --prefix website run db:studio",
+    "worker": "npm --prefix website run worker"
   }
 }

@@ -1,0 +1,911 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  Owner
+  Administrator
+  FrontDesk
+  Marketing
+  ClinicalReviewer
+  ReadOnly
+  SystemService
+}
+
+enum AutomationMode {
+  off
+  observe
+  draft
+  supervised
+  autonomous
+}
+
+enum SuppressionType {
+  global
+  sms
+  email
+  voice
+  marketing
+  recall
+  wrong_number
+  deceased
+  legal_hold
+  temporary_pause
+}
+
+enum PatientLinkState {
+  UNLINKED
+  CANDIDATE_MATCH
+  VERIFICATION_REQUIRED
+  VERIFIED
+  LINKED
+  CONFLICT
+  MANUAL_REVIEW
+}
+
+enum TaskStatus {
+  open
+  in_progress
+  waiting
+  closed
+  paused
+}
+
+enum TaskPriority {
+  low
+  normal
+  high
+  urgent
+}
+
+enum JobStatus {
+  pending
+  leased
+  completed
+  failed
+  dead_letter
+  cancelled
+}
+
+enum AppointmentOperationStatus {
+  pending
+  in_progress
+  succeeded
+  failed
+  ambiguous
+  cancelled
+}
+
+enum OutboxStatus {
+  pending
+  processing
+  processed
+  failed
+  dead_letter
+}
+
+model Organization {
+  id        String   @id @default(cuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  locations             Location[]
+  users                 User[]
+  leads                 Lead[]
+  contacts              Contact[]
+  conversations         Conversation[]
+  messages              Message[]
+  messageTemplates      MessageTemplate[]
+  frontDeskTasks        FrontDeskTask[]
+  consentRecords        ConsentRecord[]
+  suppressionRecords    SuppressionRecord[]
+  auditLogs             AuditLog[]
+  featureFlags          FeatureFlag[]
+  systemSettings        SystemSetting[]
+  approvalRecords       ApprovalRecord[]
+  openDentalConnections OpenDentalConnection[]
+  patientLinks          PatientLink[]
+  appointmentCategories AppointmentCategory[]
+  schedulingRules       SchedulingRule[]
+  appointmentRequests   AppointmentRequest[]
+  appointmentMirrors    AppointmentMirror[]
+  appointmentOperations AppointmentOperation[]
+  domainEvents          DomainEvent[]
+  outboxEvents          OutboxEvent[]
+  jobs                  Job[]
+  webhookEvents         WebhookEvent[]
+  sessions              Session[]
+  loginAttempts         LoginAttempt[]
+  offeredSlots          OfferedSlot[]
+}
+
+model Location {
+  id              String   @id @default(cuid())
+  organizationId  String
+  key             String
+  name            String
+  shortName       String
+  street          String
+  city            String
+  state           String
+  zip             String
+  phone           String
+  leadNotifyEmail String
+  timezone        String   @default("America/Los_Angeles")
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization             Organization              @relation(fields: [organizationId], references: [id])
+  userAccess               UserLocationAccess[]
+  leads                    Lead[]
+  contacts                 Contact[]
+  frontDeskTasks           FrontDeskTask[]
+  openDentalClinicMappings OpenDentalClinicMapping[]
+  schedulingRules          SchedulingRule[]
+  appointmentRequests      AppointmentRequest[]
+  appointmentMirrors       AppointmentMirror[]
+  jobs                     Job[]
+  systemSettings           SystemSetting[]
+  offeredSlots             OfferedSlot[]
+
+  @@unique([organizationId, key])
+}
+
+model User {
+  id               String    @id @default(cuid())
+  organizationId   String
+  email            String
+  name             String
+  role             Role
+  passwordHash     String
+  active           Boolean   @default(true)
+  failedLoginCount Int       @default(0)
+  lockedUntil      DateTime?
+  lastLoginAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  organization   Organization         @relation(fields: [organizationId], references: [id])
+  locationAccess UserLocationAccess[]
+  sessions       Session[]
+  assignedTasks  FrontDeskTask[]      @relation("TaskAssignee")
+  auditLogs      AuditLog[]
+  approvalRecords ApprovalRecord[]
+
+  @@unique([organizationId, email])
+}
+
+model UserLocationAccess {
+  id         String   @id @default(cuid())
+  userId     String
+  locationId String
+  createdAt  DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  location Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, locationId])
+}
+
+model Session {
+  id             String    @id @default(cuid())
+  organizationId String
+  userId         String
+  tokenHash      String    @unique
+  csrfToken      String
+  expiresAt      DateTime
+  revokedAt      DateTime?
+  ipAddress      String?
+  userAgent      String?
+  createdAt      DateTime  @default(now())
+  lastSeenAt     DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user         User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model LoginAttempt {
+  id             String   @id @default(cuid())
+  organizationId String?
+  email          String
+  ipAddress      String?
+  success        Boolean
+  reason         String?
+  createdAt      DateTime @default(now())
+
+  organization Organization? @relation(fields: [organizationId], references: [id])
+
+  @@index([email, createdAt])
+  @@index([ipAddress, createdAt])
+}
+
+model Lead {
+  id             String   @id @default(cuid())
+  organizationId String
+  locationId     String
+  externalKey    String?
+  formType       String
+  name           String
+  phone          String
+  email          String
+  service        String?
+  followUp       String?
+  message        String?
+  smsConsent     Boolean  @default(false)
+  emailConsent   Boolean  @default(false)
+  goals          String?
+  priorOrtho     String?
+  dentalVisit    String?
+  concerns       String?
+  status         String   @default("new")
+  ownerName      String?
+  nurtureStopped Boolean  @default(false)
+  duplicateOfId  String?
+  contactId      String?
+  conversationId String?
+  receivedAt     DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization        Organization         @relation(fields: [organizationId], references: [id])
+  location            Location             @relation(fields: [locationId], references: [id])
+  contact             Contact?             @relation(fields: [contactId], references: [id])
+  conversation        Conversation?        @relation(fields: [conversationId], references: [id])
+  attribution         LeadAttribution?
+  tasks               FrontDeskTask[]
+  consentRecords      ConsentRecord[]
+  patientLinks        PatientLink[]
+  appointmentRequests AppointmentRequest[]
+
+  @@index([organizationId, locationId, receivedAt])
+  @@index([organizationId, email, phone])
+  @@index([externalKey])
+}
+
+model LeadAttribution {
+  id          String   @id @default(cuid())
+  leadId      String   @unique
+  pagePath    String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  gclid       String?
+  fbclid      String?
+  referrer    String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  lead Lead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+}
+
+model Contact {
+  id             String   @id @default(cuid())
+  organizationId String
+  locationId     String?
+  displayName    String
+  email          String?
+  phone          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization           Organization              @relation(fields: [organizationId], references: [id])
+  location               Location?                 @relation(fields: [locationId], references: [id])
+  leads                  Lead[]
+  conversations          ConversationParticipant[]
+  consentRecords         ConsentRecord[]
+  suppressionRecords     SuppressionRecord[]
+  patientLinks           PatientLink[]
+  messages               Message[]
+
+  @@index([organizationId, email])
+  @@index([organizationId, phone])
+}
+
+model Conversation {
+  id             String       @id @default(cuid())
+  organizationId String
+  subject        String?
+  channel        String       @default("web")
+  status         String       @default("open")
+  priority       TaskPriority @default(normal)
+  aiSummary      String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization              @relation(fields: [organizationId], references: [id])
+  participants ConversationParticipant[]
+  messages     Message[]
+  leads        Lead[]
+  tasks        FrontDeskTask[]
+}
+
+model ConversationParticipant {
+  id             String   @id @default(cuid())
+  conversationId String
+  contactId      String?
+  role           String   @default("patient")
+  createdAt      DateTime @default(now())
+
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  contact      Contact?     @relation(fields: [contactId], references: [id])
+
+  @@index([conversationId])
+}
+
+model Message {
+  id                String    @id @default(cuid())
+  organizationId    String
+  conversationId    String?
+  contactId         String?
+  channel           String
+  direction         String
+  purpose           String?
+  templateVersion   String?
+  contentHash       String?
+  bodyPreview       String?
+  status            String    @default("draft")
+  providerMessageId String?
+  failureReason     String?
+  workflow          String?
+  actorType         String    @default("system")
+  actorUserId       String?
+  sentAt            DateTime?
+  createdAt         DateTime  @default(now())
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  conversation Conversation? @relation(fields: [conversationId], references: [id])
+  contact      Contact?      @relation(fields: [contactId], references: [id])
+
+  @@index([organizationId, createdAt])
+  @@index([conversationId])
+}
+
+model MessageTemplate {
+  id             String   @id @default(cuid())
+  organizationId String
+  key            String
+  name           String
+  channel        String
+  purpose        String
+  body           String
+  status         String   @default("draft")
+  version        Int      @default(1)
+  locationKey    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, key, version])
+}
+
+model FrontDeskTask {
+  id             String       @id @default(cuid())
+  organizationId String
+  locationId     String?
+  leadId         String?
+  conversationId String?
+  assigneeId     String?
+  title          String
+  description    String?
+  status         TaskStatus   @default(open)
+  priority       TaskPriority @default(normal)
+  type           String
+  dueAt          DateTime?
+  closedAt       DateTime?
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  organization Organization  @relation(fields: [organizationId], references: [id])
+  location     Location?     @relation(fields: [locationId], references: [id])
+  lead         Lead?         @relation(fields: [leadId], references: [id])
+  conversation Conversation? @relation(fields: [conversationId], references: [id])
+  assignee     User?         @relation("TaskAssignee", fields: [assigneeId], references: [id])
+
+  @@index([organizationId, status, priority])
+  @@index([assigneeId])
+}
+
+model ConsentRecord {
+  id              String    @id @default(cuid())
+  organizationId  String
+  leadId          String?
+  contactId       String?
+  channel         String
+  purpose         String
+  scope           String?
+  source          String
+  languageVersion String?
+  granted         Boolean
+  revoked         Boolean   @default(false)
+  revokedAt       DateTime?
+  ipAddress       String?
+  staffUserId     String?
+  evidence        String?
+  notes           String?
+  expiresAt       DateTime?
+  createdAt       DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  lead         Lead?        @relation(fields: [leadId], references: [id])
+  contact      Contact?     @relation(fields: [contactId], references: [id])
+
+  @@index([organizationId, contactId, channel])
+  @@index([leadId])
+}
+
+model SuppressionRecord {
+  id             String          @id @default(cuid())
+  organizationId String
+  contactId      String?
+  email          String?
+  phone          String?
+  type           SuppressionType
+  reason         String?
+  active         Boolean         @default(true)
+  source         String?
+  expiresAt      DateTime?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  contact      Contact?     @relation(fields: [contactId], references: [id])
+
+  @@index([organizationId, type, active])
+  @@index([email])
+  @@index([phone])
+}
+
+model AuditLog {
+  id             String   @id @default(cuid())
+  organizationId String
+  locationId     String?
+  actorUserId    String?
+  actorRole      String?
+  actorType      String
+  action         String
+  resourceType   String
+  resourceId     String?
+  result         String
+  reason         String?
+  correlationId  String?
+  previousSafe   Json?
+  nextSafe       Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  actorUser    User?        @relation(fields: [actorUserId], references: [id])
+
+  @@index([organizationId, createdAt])
+  @@index([resourceType, resourceId])
+  @@index([correlationId])
+}
+
+model FeatureFlag {
+  id             String   @id @default(cuid())
+  organizationId String
+  key            String
+  enabled        Boolean  @default(false)
+  description    String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, key])
+}
+
+model SystemSetting {
+  id             String   @id @default(cuid())
+  organizationId String
+  locationId     String?
+  key            String
+  value          Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  location     Location?    @relation(fields: [locationId], references: [id])
+
+  @@unique([organizationId, locationId, key])
+}
+
+model ApprovalRecord {
+  id             String    @id @default(cuid())
+  organizationId String
+  resourceType   String
+  resourceId     String
+  status         String
+  requestedById  String?
+  approvedById   String?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  decidedAt      DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  approvedBy   User?        @relation(fields: [approvedById], references: [id])
+
+  @@index([organizationId, resourceType, status])
+}
+
+model OpenDentalConnection {
+  id              String   @id @default(cuid())
+  organizationId  String
+  key             String
+  name            String
+  mode            String   @default("mock")
+  baseUrl         String?
+  developerKeyEnv String?
+  customerKeyEnv  String?
+  officeVersion   String?
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  organization          Organization                 @relation(fields: [organizationId], references: [id])
+  clinicMappings        OpenDentalClinicMapping[]
+  providerMappings      OpenDentalProviderMapping[]
+  operatoryMappings     OpenDentalOperatoryMapping[]
+  capabilityMatrix      CapabilityMatrix?
+  integrationHealth     IntegrationHealth?
+  syncCursors           SyncCursor[]
+  patientLinks          PatientLink[]
+  appointmentMirrors    AppointmentMirror[]
+  appointmentOperations AppointmentOperation[]
+  schedulingRules       SchedulingRule[]
+
+  @@unique([organizationId, key])
+}
+
+model OpenDentalClinicMapping {
+  id               String   @id @default(cuid())
+  connectionId     String
+  locationId       String
+  externalClinicId String
+  name             String?
+  createdAt        DateTime @default(now())
+
+  connection OpenDentalConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  location   Location             @relation(fields: [locationId], references: [id])
+
+  @@unique([connectionId, locationId])
+  @@unique([connectionId, externalClinicId])
+}
+
+model OpenDentalProviderMapping {
+  id              String   @id @default(cuid())
+  connectionId    String
+  externalProvNum String
+  displayName     String
+  active          Boolean  @default(true)
+  createdAt       DateTime @default(now())
+
+  connection OpenDentalConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, externalProvNum])
+}
+
+model OpenDentalOperatoryMapping {
+  id                   String   @id @default(cuid())
+  connectionId         String
+  externalOperatoryNum String
+  displayName          String
+  locationKey          String?
+  active               Boolean  @default(true)
+  createdAt            DateTime @default(now())
+
+  connection OpenDentalConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, externalOperatoryNum])
+}
+
+model CapabilityMatrix {
+  id                 String    @id @default(cuid())
+  connectionId       String    @unique
+  officeVersion      String?
+  endpoints          Json
+  missingPermissions Json?
+  lastSmokeAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  connection OpenDentalConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+}
+
+model IntegrationHealth {
+  id                  String    @id @default(cuid())
+  connectionId        String    @unique
+  status              String    @default("unknown")
+  lastSuccessAt       DateTime?
+  lastErrorAt         DateTime?
+  lastErrorSummary    String?
+  consecutiveFailures Int       @default(0)
+  circuitOpenUntil    DateTime?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  connection OpenDentalConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+}
+
+model SyncCursor {
+  id           String   @id @default(cuid())
+  connectionId String
+  resource     String
+  cursorValue  String
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+
+  connection OpenDentalConnection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+
+  @@unique([connectionId, resource])
+}
+
+model PatientLink {
+  id              String           @id @default(cuid())
+  organizationId  String
+  connectionId    String
+  leadId          String?
+  contactId       String?
+  state           PatientLinkState @default(UNLINKED)
+  externalPatNum  String?
+  matchCandidates Json?
+  verifiedAt      DateTime?
+  notes           String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  organization        Organization         @relation(fields: [organizationId], references: [id])
+  connection          OpenDentalConnection @relation(fields: [connectionId], references: [id])
+  lead                Lead?                @relation(fields: [leadId], references: [id])
+  contact             Contact?             @relation(fields: [contactId], references: [id])
+  appointmentRequests AppointmentRequest[]
+  appointmentMirrors  AppointmentMirror[]
+
+  @@index([organizationId, state])
+  @@index([connectionId, externalPatNum])
+}
+
+model AppointmentCategory {
+  id                      String   @id @default(cuid())
+  organizationId          String
+  key                     String
+  internalName            String
+  patientFacingName       String
+  description             String?
+  durationMinutes         Int      @default(60)
+  newPatientEligible      Boolean  @default(true)
+  existingPatientEligible Boolean  @default(true)
+  autoBook                Boolean  @default(false)
+  requiresHumanApproval    Boolean  @default(true)
+  active                  Boolean  @default(false)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  organization        Organization         @relation(fields: [organizationId], references: [id])
+  schedulingRules     SchedulingRule[]
+  appointmentRequests AppointmentRequest[]
+  offeredSlots        OfferedSlot[]
+
+  @@unique([organizationId, key])
+}
+
+model SchedulingRule {
+  id                      String   @id @default(cuid())
+  organizationId          String
+  locationId              String
+  connectionId            String
+  categoryId              String
+  externalClinicId        String?
+  externalProvNums        Json?
+  externalOperatoryNums   Json?
+  durationMinutes         Int
+  pattern                 String?
+  newPatientEligible      Boolean  @default(true)
+  existingPatientEligible Boolean  @default(true)
+  minNoticeMinutes        Int      @default(120)
+  maxDaysAhead            Int      @default(30)
+  daysOfWeek              Json
+  timeWindows             Json
+  dailyCap                Int?
+  requiredFields          Json?
+  requiresHumanApproval   Boolean  @default(true)
+  autoBook                Boolean  @default(false)
+  active                  Boolean  @default(false)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id])
+  location     Location             @relation(fields: [locationId], references: [id])
+  connection   OpenDentalConnection @relation(fields: [connectionId], references: [id])
+  category     AppointmentCategory  @relation(fields: [categoryId], references: [id])
+
+  @@index([organizationId, locationId, active])
+}
+
+model AppointmentRequest {
+  id             String    @id @default(cuid())
+  organizationId String
+  locationId     String
+  leadId         String?
+  patientLinkId  String?
+  categoryId     String?
+  preferredStart DateTime?
+  preferredEnd   DateTime?
+  status         String    @default("pending_confirmation")
+  reason         String?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  organization Organization         @relation(fields: [organizationId], references: [id])
+  location     Location             @relation(fields: [locationId], references: [id])
+  lead         Lead?                @relation(fields: [leadId], references: [id])
+  patientLink  PatientLink?         @relation(fields: [patientLinkId], references: [id])
+  category     AppointmentCategory? @relation(fields: [categoryId], references: [id])
+}
+
+model AppointmentMirror {
+  id             String   @id @default(cuid())
+  organizationId String
+  locationId     String
+  connectionId   String
+  patientLinkId  String?
+  externalAptNum String
+  status         String
+  confirmed      Boolean  @default(false)
+  startAt        DateTime
+  endAt          DateTime
+  categoryKey    String?
+  lastSyncedAt   DateTime @default(now())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization          @relation(fields: [organizationId], references: [id])
+  location     Location              @relation(fields: [locationId], references: [id])
+  connection   OpenDentalConnection  @relation(fields: [connectionId], references: [id])
+  patientLink  PatientLink?          @relation(fields: [patientLinkId], references: [id])
+  operations   AppointmentOperation[]
+
+  @@unique([connectionId, externalAptNum])
+  @@index([organizationId, startAt])
+}
+
+model AppointmentOperation {
+  id                  String                     @id @default(cuid())
+  organizationId      String
+  connectionId        String
+  appointmentMirrorId String?
+  idempotencyKey      String
+  type                String
+  status              AppointmentOperationStatus @default(pending)
+  requestHash         String?
+  externalAptNum      String?
+  errorSummary        String?
+  correlationId       String?
+  createdAt           DateTime                   @default(now())
+  updatedAt           DateTime                   @updatedAt
+  completedAt         DateTime?
+
+  organization      Organization         @relation(fields: [organizationId], references: [id])
+  connection        OpenDentalConnection @relation(fields: [connectionId], references: [id])
+  appointmentMirror AppointmentMirror?   @relation(fields: [appointmentMirrorId], references: [id])
+
+  @@unique([organizationId, idempotencyKey])
+  @@index([connectionId, status])
+}
+
+model OfferedSlot {
+  id                   String    @id @default(cuid())
+  organizationId       String
+  locationId           String
+  categoryId           String
+  connectionId         String
+  startAt              DateTime
+  endAt                DateTime
+  externalClinicId     String?
+  externalProvNum      String?
+  externalOperatoryNum String?
+  expiresAt            DateTime
+  consumedAt           DateTime?
+  leadId               String?
+  createdAt            DateTime  @default(now())
+
+  organization Organization        @relation(fields: [organizationId], references: [id])
+  location     Location            @relation(fields: [locationId], references: [id])
+  category     AppointmentCategory @relation(fields: [categoryId], references: [id])
+
+  @@index([organizationId, expiresAt])
+}
+
+model DomainEvent {
+  id             String   @id @default(cuid())
+  organizationId String
+  type           String
+  payload        Json
+  correlationId  String?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([organizationId, type, createdAt])
+}
+
+model OutboxEvent {
+  id               String       @id @default(cuid())
+  organizationId   String
+  type             String
+  payload          Json
+  status           OutboxStatus @default(pending)
+  attempts         Int          @default(0)
+  availableAt      DateTime     @default(now())
+  processedAt      DateTime?
+  lastErrorSummary String?
+  correlationId    String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@index([status, availableAt])
+  @@index([organizationId, type])
+}
+
+model Job {
+  id               String    @id @default(cuid())
+  organizationId   String
+  locationId       String?
+  type             String
+  payload          Json
+  status           JobStatus @default(pending)
+  priority         Int       @default(100)
+  runAt            DateTime  @default(now())
+  attempts         Int       @default(0)
+  maxAttempts      Int       @default(5)
+  lockedAt         DateTime?
+  lockedBy         String?
+  leaseExpiresAt   DateTime?
+  lastErrorCode    String?
+  lastErrorSummary String?
+  idempotencyKey   String?
+  correlationId    String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  completedAt      DateTime?
+  failedAt         DateTime?
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+  location     Location?    @relation(fields: [locationId], references: [id])
+
+  @@unique([organizationId, idempotencyKey])
+  @@index([status, runAt, priority])
+  @@index([leaseExpiresAt])
+}
+
+model WebhookEvent {
+  id              String    @id @default(cuid())
+  organizationId  String
+  source          String
+  externalEventId String
+  payloadHash     String
+  processedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  @@unique([organizationId, source, externalEventId])
+}

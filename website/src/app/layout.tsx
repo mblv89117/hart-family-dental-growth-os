@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fraunces, Outfit } from "next/font/google";
+import { headers } from "next/headers";
 import { Analytics } from "@/components/Analytics";
 import { AttributionCapture } from "@/components/AttributionCapture";
 import { SiteFooter, SiteHeader } from "@/components/SiteChrome";
@@ -35,15 +36,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const h = await headers();
+  const isOps = h.get("x-hfd-surface") === "ops";
+
   return (
     <html lang="en">
       <body className={`${display.variable} ${body.variable} antialiased`}>
-        <Analytics />
-        <AttributionCapture />
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
+        {isOps ? (
+          children
+        ) : (
+          <>
+            <Analytics />
+            <AttributionCapture />
+            <SiteHeader />
+            <main>{children}</main>
+            <SiteFooter />
+          </>
+        )}
       </body>
     </html>
   );
