@@ -2,84 +2,73 @@
 
 Patient-acquisition operating system for **Hart Family Dental** (Yucca Valley + Desert Hot Springs).
 
-- Public marketing site: **Next.js 15** (preserved)
+- Public marketing site: **Next.js 15** (preserved; default path needs **no** PostgreSQL)
 - Platform slice (Phases 0–4): **PostgreSQL + Prisma**, ops portal, durable worker, Open Dental **mock** gateway
 - First public domain: **hfdds.net**
 - Repo: [github.com/mblv89117/hart-family-dental-growth-os](https://github.com/mblv89117/hart-family-dental-growth-os)
 
-**Honest status:** Phases 0–4 vertical slice is implemented locally. Phases 5–8 are **not** implemented. Production ops/OD/outbound are **blocked** (Postgres vendor, worker hosting, OD credentials, BAA, auth method, outbound vendors).
+**Honest status:** Phases 0–4 vertical slice exists on the feature branch. **Production merge must keep `GROWTH_OS_PLATFORM_ENABLED=false` and `OPS_ENABLED=false`** until hosted Postgres and production auth are ready. Phases 5–8 are **not** implemented.
 
-## Local setup (PostgreSQL required — not SQLite)
+## Safety defaults (`.env.example`)
+
+| Flag | Default | Meaning |
+| --- | --- | --- |
+| `GROWTH_OS_PLATFORM_ENABLED` | `false` | Public leads use legacy adapters; no Prisma |
+| `OPS_ENABLED` | `false` | `/ops` and `/api/ops/*` return 404 |
+| `AUTOMATION_MODE` | `draft` | No autonomous sends |
+| `OPEN_DENTAL_WRITES_ENABLED` | `false` | No live OD writes |
+| `OUTBOUND_COMMUNICATIONS_ENABLED` | `false` | No patient outbound |
+| `AUTH_MODE` | `local_credentials` | Dev/test only — **blocked in production when OPS is on** |
+
+## Public site only (matches live Vercel today)
 
 ```bash
-# 1) Start Postgres 16 (Docker Compose in website/)
-npm run db:up
-
-# 2) Env
-cd website
-cp .env.example .env
-# For local ops portal, set:
-#   OPS_ENABLED=true
-# Keep defaults for safety:
-#   AUTOMATION_MODE=draft
-#   OPEN_DENTAL_WRITES_ENABLED=false
-#   OUTBOUND_COMMUNICATIONS_ENABLED=false
+cd website && cp .env.example .env
+# leave GROWTH_OS_PLATFORM_ENABLED=false and OPS_ENABLED=false
 cd ..
-
-# 3) Migrate + seed
-npm run db:migrate          # prisma migrate deploy
-# OR during schema work: npm --prefix website run db:migrate:dev
-npm run db:seed
-
-# 4) App + worker (separate terminals)
-npm run dev                 # Next.js marketing + ops
-npm run worker              # durable outbox/job lease worker
+npm run build && npm run start
 ```
 
-### Verify
+No PostgreSQL, worker, OD keys, or AUTH_SECRET required for the public marketing path.
+
+## Local platform + ops (optional)
+
+```bash
+npm run db:up
+cd website && cp .env.example .env
+# set GROWTH_OS_PLATFORM_ENABLED=true
+# set OPS_ENABLED=true
+# optionally set DEV_SEED_*_PASSWORD=... (else seed prints generated passwords once)
+cd ..
+npm run db:migrate && npm run db:seed
+npm run dev          # terminal 1
+npm run worker       # terminal 2
+```
+
+Synthetic users (emails only — passwords come from `DEV_SEED_*` env vars or are generated at seed time and printed locally):
+
+- `wendy@local.test` (FrontDesk)
+- `lindsay@local.test` (Administrator)
+- `owner@local.test` (Owner)
+- `readonly@local.test` (ReadOnly)
+- `yv-only@local.test` (FrontDesk, YV only)
+
+**Never commit seed passwords. Never use local_credentials for production OPS.**
+
+## Verify
 
 ```bash
 npm test && npm run test:integration
-npm run lint
-npm run typecheck
-npm run build
+npm run lint && npm run typecheck && npm run build
 ```
-
-## Synthetic local users (dev only)
-
-| Email | Password | Role |
-| --- | --- | --- |
-| `wendy@local.test` | `LocalDev!Wendy2026` | FrontDesk |
-| `lindsay@local.test` | `LocalDev!Admin2026` | Administrator |
-| `owner@local.test` | `LocalDev!Owner2026` | Owner |
-| `readonly@local.test` | `LocalDev!Read2026` | ReadOnly |
-| `yv-only@local.test` | `LocalDev!YvOnly2026` | FrontDesk (YV only) |
-
-Ops UI: [http://localhost:3000/ops](http://localhost:3000/ops) when `OPS_ENABLED=true`. With `OPS_ENABLED=false`, `/ops` returns 404 (public site unaffected).
-
-## What you get in Phases 0–4
-
-- Lead ingest → Postgres + consent + outbox + Wendy task  
-- Ops: Today, Inbox, Lead 360, Safety, Scheduling  
-- Mock supervised booking via Open Dental mock gateway  
-- Custom session auth (`AUTH_MODE=local_credentials`) — **not** production Auth.js Credentials  
 
 ## Start here
 
-1. **[HANDOFF.md](./HANDOFF.md)** — current status after Phases 0–4  
-2. **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)** — system shape  
-3. **[docs/IMPLEMENTATION_STATUS.md](./docs/IMPLEMENTATION_STATUS.md)** — phase checklist + test placeholders  
-4. **[SECURITY.md](./SECURITY.md)** — never store real passwords in git  
-5. **[docs/KNOWN_LIMITATIONS.md](./docs/KNOWN_LIMITATIONS.md)**  
+1. [HANDOFF.md](./HANDOFF.md)
+2. [docs/PR1_RELEASE_GATE_AUDIT.md](./docs/PR1_RELEASE_GATE_AUDIT.md)
+3. [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
+4. [SECURITY.md](./SECURITY.md)
 
 ## Official hours (both offices)
 
 Mon–Thu 8:00 AM–4:30 PM · Fri 9:00 AM–2:00 PM · Sat/Sun Closed
-
-## Contacts
-
-| Role | Name | Notes |
-| --- | --- | --- |
-| Corporate Secretary | Lindsay Hawkins | (760) 365-6595 |
-| Lead follow-up (both desks) | Wendy Delgado | Approved |
-| Tech | Ryan Blakeslee | (951) 515-6246 |

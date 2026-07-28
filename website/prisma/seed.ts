@@ -1,10 +1,30 @@
 import "dotenv/config";
+import { randomBytes } from "crypto";
 import bcrypt from "bcryptjs";
 import { PrismaClient, Role } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+function requireDevSeed(): void {
+  if (process.env.NODE_ENV === "production" && process.env.ALLOW_PRODUCTION_SEED !== "true") {
+    throw new Error(
+      "Refusing to seed synthetic users in production. Set ALLOW_PRODUCTION_SEED=true only for controlled non-PHI bootstrap (still never use local_credentials in production ops).",
+    );
+  }
+}
+
+function passwordFromEnvOrGenerate(envKey: string): { password: string; generated: boolean } {
+  const fromEnv = process.env[envKey];
+  if (fromEnv && fromEnv.length >= 12) {
+    return { password: fromEnv, generated: false };
+  }
+  const password = `Dev_${randomBytes(18).toString("base64url")}`;
+  return { password, generated: true };
+}
+
 async function main() {
+  requireDevSeed();
+
   const org = await prisma.organization.upsert({
     where: { slug: "hart-family-dental" },
     create: { name: "Hart Family Dental", slug: "hart-family-dental" },
@@ -45,12 +65,23 @@ async function main() {
     update: {},
   });
 
-  const passwordHash = await bcrypt.hash("LocalDev!Wendy2026", 12);
-  const ownerHash = await bcrypt.hash("LocalDev!Owner2026", 12);
-  const adminHash = await bcrypt.hash("LocalDev!Admin2026", 12);
-  const readonlyHash = await bcrypt.hash("LocalDev!Read2026", 12);
+  const wendyPw = passwordFromEnvOrGenerate("DEV_SEED_WENDY_PASSWORD");
+  const ownerPw = passwordFromEnvOrGenerate("DEV_SEED_OWNER_PASSWORD");
+  const adminPw = passwordFromEnvOrGenerate("DEV_SEED_LINDSAY_PASSWORD");
+  const readPw = passwordFromEnvOrGenerate("DEV_SEED_READONLY_PASSWORD");
+  const yvOnlyPw = passwordFromEnvOrGenerate("DEV_SEED_YVONLY_PASSWORD");
 
-  async function upsertUser(email: string, name: string, role: Role, hash: string, locations: string[]) {
+  const printed: Array<{ email: string; password: string; generated: boolean }> = [];
+
+  async function upsertUser(
+    email: string,
+    name: string,
+    role: Role,
+    password: string,
+    generated: boolean,
+    locations: string[],
+  ) {
+    const passwordHash = await bcrypt.hash(password, 12);
     const user = await prisma.user.upsert({
       where: { organizationId_email: { organizationId: org.id, email } },
       create: {
@@ -58,10 +89,10 @@ async function main() {
         email,
         name,
         role,
-        passwordHash: hash,
+        passwordHash,
         active: true,
       },
-      update: { name, role, passwordHash: hash, active: true },
+      update: { name, role, passwordHash, active: true },
     });
     for (const locId of locations) {
       await prisma.userLocationAccess.upsert({
@@ -70,32 +101,46 @@ async function main() {
         update: {},
       });
     }
+    printed.push({ email, password, generated });
     return user;
   }
 
-  await upsertUser("owner@local.test", "Synthetic Owner", "Owner", ownerHash, [yv.id, dhs.id]);
-  await upsertUser("lindsay@local.test", "Lindsay Hawkins (synthetic)", "Administrator", adminHash, [
+  await upsertUser("owner@local.test", "Synthetic Owner", "Owner", ownerPw.password, ownerPw.generated, [
     yv.id,
     dhs.id,
   ]);
-  const wendy = await upsertUser(
+  await upsertUser(
+    "lindsay@local.test",
+    "Lindsay Hawkins (synthetic)",
+    "Administrator",
+    adminPw.password,
+    adminPw.generated,
+    [yv.id, dhs.id],
+  );
+  await upsertUser(
     "wendy@local.test",
     "Wendy Delgado (synthetic)",
     "FrontDesk",
-    passwordHash,
+    wendyPw.password,
+    wendyPw.generated,
     [yv.id, dhs.id],
   );
-  await upsertUser("readonly@local.test", "Read Only (synthetic)", "ReadOnly", readonlyHash, [yv.id]);
-  // Front desk limited to YV only — for location isolation tests
+  await upsertUser(
+    "readonly@local.test",
+    "Read Only (synthetic)",
+    "ReadOnly",
+    readPw.password,
+    readPw.generated,
+    [yv.id],
+  );
   await upsertUser(
     "yv-only@local.test",
     "YV Only Desk (synthetic)",
     "FrontDesk",
-    await bcrypt.hash("LocalDev!YvOnly2026", 12),
+    yvOnlyPw.password,
+    yvOnlyPw.generated,
     [yv.id],
   );
-
-  void wendy;
 
   // Shared DB + clinics connection (config A)
   const shared = await prisma.openDentalConnection.upsert({
@@ -110,7 +155,6 @@ async function main() {
     update: { mode: "mock" },
   });
 
-  // Separate connections (config B)
   const yvConn = await prisma.openDentalConnection.upsert({
     where: { organizationId_key: { organizationId: org.id, key: "yv-separate" } },
     create: {
@@ -208,7 +252,6 @@ async function main() {
     where: { organizationId_key: { organizationId: org.id, key: "new_patient_exam" } },
   });
 
-  // Synthetic scheduling rules for staff-supervised mock booking (active for ops testing; autoBook still false)
   for (const loc of [yv, dhs]) {
     const existing = await prisma.schedulingRule.findFirst({
       where: { organizationId: org.id, locationId: loc.id, categoryId: newPatient.id },
@@ -241,7 +284,6 @@ async function main() {
     }
   }
 
-  // Safety defaults
   await prisma.featureFlag.upsert({
     where: { organizationId_key: { organizationId: org.id, key: "emergency_stop" } },
     create: {
@@ -307,14 +349,18 @@ async function main() {
     org: org.slug,
     locations: [yv.key, dhs.key],
     connections: [shared.key, yvConn.key, dhsConn.key],
-    syntheticUsers: [
-      "owner@local.test",
-      "lindsay@local.test",
-      "wendy@local.test",
-      "readonly@local.test",
-      "yv-only@local.test",
-    ],
+    syntheticUsers: printed.map((p) => p.email),
   });
+
+  if (process.env.NODE_ENV !== "production") {
+    console.info("——— Synthetic login credentials (local/dev only — do not commit) ———");
+    for (const p of printed) {
+      console.info(
+        `${p.email}  password=${p.password}${p.generated ? "  (generated — set DEV_SEED_*_PASSWORD to pin)" : "  (from env)"}`,
+      );
+    }
+    console.info("———————————————————————————————————————————————————————————————");
+  }
 }
 
 main()
