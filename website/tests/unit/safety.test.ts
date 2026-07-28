@@ -1,11 +1,15 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, beforeEach } from "vitest";
 import { isOptOutText } from "@/server/compliance/consent";
-import { scrubForLog } from "@/server/audit";
+import { scrubForLog } from "@/server/logging";
 import { createMockGateway, resetMockOpenDentalStores } from "@/server/opendental/mockGateway";
-import { getEnv, resetEnvCache } from "@/server/env";
+import { getRuntimeFlags, isPlatformEnabled, resetEnvCache } from "@/server/env";
 import { draftFirstResponse } from "@/server/messaging/providers";
 
 describe("unit safety primitives", () => {
+  beforeEach(() => {
+    resetEnvCache();
+  });
+
   it("detects STOP and equivalent opt-out phrases", () => {
     expect(isOptOutText("STOP")).toBe(true);
     expect(isOptOutText("unsubscribe")).toBe(true);
@@ -23,20 +27,39 @@ describe("unit safety primitives", () => {
     expect(scrubbed.ok).toBe(true);
   });
 
-  it("defaults automation mode to draft and OD writes/outbound off", () => {
-    resetEnvCache();
-    process.env.AUTH_SECRET = process.env.AUTH_SECRET || "test-auth-secret-min-32-characters!!";
-    process.env.DATABASE_URL =
-      process.env.DATABASE_URL ||
-      "postgresql://hfd:hfd_local_dev@127.0.0.1:5432/hfd_growth_os?schema=public";
+  it("defaults automation mode to draft and OD writes/outbound off; platform off by default", () => {
     delete process.env.AUTOMATION_MODE;
     delete process.env.OPEN_DENTAL_WRITES_ENABLED;
     delete process.env.OUTBOUND_COMMUNICATIONS_ENABLED;
+    delete process.env.GROWTH_OS_PLATFORM_ENABLED;
+    delete process.env.OPS_ENABLED;
+    process.env.AUTH_MODE = "local_credentials";
+    (process.env as Record<string, string>)["NODE_ENV"] = "development";
     resetEnvCache();
-    const env = getEnv();
-    expect(env.automationMode).toBe("draft");
-    expect(env.openDentalWritesEnabled).toBe(false);
-    expect(env.outboundCommunicationsEnabled).toBe(false);
+    const flags = getRuntimeFlags();
+    expect(flags.automationMode).toBe("draft");
+    expect(flags.openDentalWritesEnabled).toBe(false);
+    expect(flags.outboundCommunicationsEnabled).toBe(false);
+    expect(isPlatformEnabled()).toBe(false);
+    expect(flags.opsEnabled).toBe(false);
+  });
+
+  it("rejects production OPS with local_credentials even if AUTH_PRODUCTION_APPROVED=true", () => {
+    (process.env as Record<string, string>)["NODE_ENV"] = "production";
+    process.env.OPS_ENABLED = "true";
+    process.env.AUTH_MODE = "local_credentials";
+    process.env.AUTH_PRODUCTION_APPROVED = "true";
+    resetEnvCache();
+    expect(() => getRuntimeFlags()).toThrow(/local_credentials/);
+  });
+
+  it("allows development local_credentials with OPS enabled", () => {
+    (process.env as Record<string, string>)["NODE_ENV"] = "development";
+    process.env.OPS_ENABLED = "true";
+    process.env.AUTH_MODE = "local_credentials";
+    process.env.AUTH_PRODUCTION_APPROVED = "false";
+    resetEnvCache();
+    expect(getRuntimeFlags().opsEnabled).toBe(true);
   });
 
   it("keeps separate Open Dental mock connections isolated", async () => {
@@ -44,7 +67,7 @@ describe("unit safety primitives", () => {
     const a = createMockGateway("yv-separate");
     const b = createMockGateway("dhs-separate");
     const aPatients = await a.findPatientCandidates({ FName: "Synthetic", LName: "PatientAlpha" });
-    const bPatients = await b.findPatientCandidates({ FName: "Synthetic", LName: "PatientAlpha" });
+    const bPatients = await b.findPatientCandidates({ FName: "Synthetic", LName: "PatientBeta" });
     expect(aPatients[0].PatNum).not.toEqual(bPatients[0].PatNum);
     await a.createAppointment({
       PatNum: aPatients[0].PatNum,

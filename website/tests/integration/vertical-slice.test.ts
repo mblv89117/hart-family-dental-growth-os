@@ -106,7 +106,7 @@ describe("integration vertical slice", () => {
   it("logs in synthetic Wendy with hashed password session", async () => {
     const result = await loginWithCredentials({
       email: "wendy@local.test",
-      password: "LocalDev!Wendy2026",
+      password: process.env.DEV_SEED_WENDY_PASSWORD || "TestOnly_Wendy_Seed_Password_32!",
       ipAddress: "127.0.0.1",
     });
     expect(result.ok).toBe(true);
