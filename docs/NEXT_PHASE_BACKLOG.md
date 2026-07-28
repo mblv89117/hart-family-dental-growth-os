@@ -4,7 +4,7 @@
 
 ## Production readiness (cross-cutting blockers)
 
-0. ~~**Before merging PR #1:** owner verifies Vercel Production safety flags~~ — **Done (authenticated Vercel CLI, 2026-07-28).** Dependency Highs remediated (`npm audit` 0).  
+0. ~~**Before merging PR #1:** Vercel Production safety flags~~ — **Done.** PR #1 merged; Production deploy verified on `hfdds.net` with platform/ops off.  
 1. Choose and provision **managed PostgreSQL**.  
 2. Host **durable worker** with health checks and dead-letter alerts.  
 3. Complete **Open Dental vendor request** + BAA; sandbox remote read smoke.  

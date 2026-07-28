@@ -392,4 +392,40 @@ Confirmed configuration (non-secret controls):
 | Growth OS / OD writes / outbound remain off by default | **PASS** |
 | Vercel Production flags verified | **PASS** (authenticated CLI, 2026-07-28) |
 
-**MERGE PR #1: YES** — keep platform/ops disabled; monitor Git-triggered Production deploy; roll back to `dpl_5NUP4wLrJHaMVnByQShfsW7Rr4gU` on material regression.
+**MERGE PR #1: YES** — merged 2026-07-28 (`b70c233`). Production deploy from `main` verified on `hfdds.net` (`dpl_FeWyfiKd2vr1h3xTcjGZXvifQMRD`). Rollback target remains `dpl_5NUP4wLrJHaMVnByQShfsW7Rr4gU` if needed.
+
+---
+
+## Post-merge Production deployment verification (2026-07-28)
+
+| Field | Value |
+| --- | --- |
+| Merge commit | `b70c2335b4060aa13becddcd22598a2878f32737` |
+| Git↔Vercel | Connected after merge (project previously had `link: null`); rootDirectory set to `website` |
+| New Production deployment | `dpl_FeWyfiKd2vr1h3xTcjGZXvifQMRD` |
+| Deployment URL | `hart-family-dental-2s1lvqn1v-high-value-capital-group.vercel.app` |
+| Git ref / SHA | `main` / `b70c233…` |
+| Status | **Ready** |
+| `hfdds.net` assignment | **Yes** (also www.hfdds.net) |
+| Previous known-good | `dpl_5NUP4wLrJHaMVnByQShfsW7Rr4gU` |
+| Rollback performed | **No** |
+
+### Public smoke
+
+Homepage, location pages, service pages, contact, smile-assessment, sitemap, robots: **200** with Hart Family Dental markers; viewport present; GA `gtag` present; no `/ops` in nav/sitemap.
+
+### Protected routes
+
+All tested `/ops*` and `/api/ops*` paths: **404 Not Found** (no login redirect / no 401).
+
+### Synthetic lead
+
+- One synthetic appointment lead via `/api/leads`
+- Response `ok: true`, legacy `lead_*` id, attribution fields accepted
+- Provider: **Resend accepted** (`emailDelivered: true`, provider message id recorded)
+- Inbox receipt: **owner confirmation required** (provider accepted; inbox not independently inspected)
+- No database required; no Open Dental; no worker
+
+### Log review (build)
+
+Next.js **15.5.22** build Ready. No `DATABASE_URL` / ECONNREFUSED / OD / worker / password hits in build logs. Prisma mentions limited to build generate path.

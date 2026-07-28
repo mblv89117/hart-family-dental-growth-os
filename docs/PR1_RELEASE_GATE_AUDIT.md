@@ -14,6 +14,7 @@ Functional release-gate remediations (public compatibility, auth fail-closed, se
 - Next.js patched to **15.5.22**; PostCSS/Sharp/Prisma Effect/brace-expansion advisories cleared.
 - `npm audit` → **0** vulnerabilities after controlled overrides (no `npm audit fix --force`, no Next 16).
 - **Vercel Production safety flags verified through authenticated Vercel CLI on July 28, 2026** (project `hart-family-dental`, domain `hfdds.net`). Existing lead-delivery variables preserved; 14 safety flags set Production-only; forbidden DB/seed/OD vars absent.
+- **PR #1 merged** (`b70c233`). Production deploy `dpl_FeWyfiKd2vr1h3xTcjGZXvifQMRD` Ready on `hfdds.net`; public smoke + `/ops` 404 + Resend-accepted synthetic lead completed. Rollback not required.
 
 Do **not** treat npm audit Highs as non-blocking merely because `GROWTH_OS_PLATFORM_ENABLED=false` — the public site runs Next.js.
 

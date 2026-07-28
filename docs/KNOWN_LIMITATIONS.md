@@ -56,7 +56,8 @@ Honest inventory after **Phases 0–4**. Do not treat these as bugs to silently 
 | --- | --- |
 | Next stays on 15.5 maintenance | Do not jump to Next 16 in this release; use patched 15.5.x (`15.5.22` as of dependency gate) |
 | npm overrides required | Next still pins nested PostCSS 8.4.31 and Sharp ^0.34.x; overrides keep patched PostCSS/Sharp without `audit fix --force` |
-| Vercel env not agent-verifiable | Merge requires owner confirmation of Production safety flags |
+| Vercel Git link was missing pre-merge | Project had no Git connection until post-merge reconnect; rootDirectory is `website`. Future main pushes should auto-deploy. |
+| Growth OS not production-ready | Platform/ops remain disabled despite code present on `main` |
 
 ## Testing / ops maturity
 
