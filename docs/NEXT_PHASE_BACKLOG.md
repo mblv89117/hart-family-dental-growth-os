@@ -4,7 +4,7 @@
 
 ## Production readiness (cross-cutting blockers)
 
-0. **Before merging PR #1:** owner verifies Vercel Production safety flags (`PR1_DEPENDENCY_SECURITY_GATE.md`). Dependency Highs on Next/PostCSS/Sharp/Prisma Effect/brace-expansion are remediated on-branch (`npm audit` 0 at gate time).  
+0. ~~**Before merging PR #1:** owner verifies Vercel Production safety flags~~ — **Done (authenticated Vercel CLI, 2026-07-28).** Dependency Highs remediated (`npm audit` 0).  
 1. Choose and provision **managed PostgreSQL**.  
 2. Host **durable worker** with health checks and dead-letter alerts.  
 3. Complete **Open Dental vendor request** + BAA; sandbox remote read smoke.  
