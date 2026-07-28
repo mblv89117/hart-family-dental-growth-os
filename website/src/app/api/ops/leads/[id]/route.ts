@@ -6,7 +6,7 @@ import {
   requireAuthUser,
   requireCsrf,
 } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { isOpsEnabled } from "@/server/env";
 import { prisma } from "@/server/db";
 import { draftFirstResponse } from "@/server/messaging/providers";
 import { writeAudit } from "@/server/audit";
@@ -14,7 +14,7 @@ import { writeAudit } from "@/server/audit";
 export const runtime = "nodejs";
 
 export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     assertCanManageLeads(user);
@@ -66,7 +66,7 @@ export async function GET(_req: NextRequest, ctx: { params: Promise<{ id: string
 }
 
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     assertCanManageLeads(user);

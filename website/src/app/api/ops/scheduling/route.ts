@@ -5,7 +5,7 @@ import {
   requireAuthUser,
   requireCsrf,
 } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { isOpsEnabled } from "@/server/env";
 import { canBookAppointments } from "@/server/authz/roles";
 import { listEligibleSlots, bookOfferedSlot } from "@/server/scheduling/booking";
 import { matchPatientForLead } from "@/server/patients/linking";
@@ -14,7 +14,7 @@ import { prisma } from "@/server/db";
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     if (!canBookAppointments(user.role)) {
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     if (!canBookAppointments(user.role)) {

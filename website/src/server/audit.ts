@@ -1,5 +1,6 @@
 import { prisma } from "./db";
 import type { Prisma } from "@prisma/client";
+export { scrubForLog, safeInfo, safeError } from "./logging";
 
 type AuditInput = {
   organizationId: string;
@@ -36,35 +37,4 @@ export async function writeAudit(input: AuditInput) {
       nextSafe: input.nextSafe,
     },
   });
-}
-
-export function scrubForLog(value: unknown): unknown {
-  if (value == null) return value;
-  if (typeof value === "string") {
-    if (/authorization/i.test(value) || /bearer\s+/i.test(value)) return "[REDACTED]";
-    return value.length > 200 ? `${value.slice(0, 200)}…` : value;
-  }
-  if (Array.isArray(value)) return value.map(scrubForLog);
-  if (typeof value === "object") {
-    const out: Record<string, unknown> = {};
-    for (const [k, v] of Object.entries(value as Record<string, unknown>)) {
-      if (/authorization|password|secret|api[_-]?key|token/i.test(k)) {
-        out[k] = "[REDACTED]";
-      } else if (/body|message|content|clinical|phi/i.test(k)) {
-        out[k] = "[OMITTED]";
-      } else {
-        out[k] = scrubForLog(v);
-      }
-    }
-    return out;
-  }
-  return value;
-}
-
-export function safeInfo(message: string, meta?: Record<string, unknown>) {
-  console.info(message, meta ? scrubForLog(meta) : undefined);
-}
-
-export function safeError(message: string, meta?: Record<string, unknown>) {
-  console.error(message, meta ? scrubForLog(meta) : undefined);
 }

@@ -4,8 +4,28 @@ function notFound() {
   return new NextResponse("Not Found", { status: 404 });
 }
 
-function opsEnabledFromEnv() {
-  return ["1", "true", "yes", "on"].includes((process.env.OPS_ENABLED || "").toLowerCase());
+function truthy(v: string | undefined) {
+  return ["1", "true", "yes", "on"].includes((v || "").toLowerCase());
+}
+
+function opsMayExpose(): boolean {
+  if (!truthy(process.env.OPS_ENABLED)) return false;
+
+  // Production: local credentials / disabled auth never expose ops — even if
+  // AUTH_PRODUCTION_APPROVED is flipped true by mistake.
+  if (process.env.NODE_ENV === "production") {
+    const mode = (process.env.AUTH_MODE || "local_credentials").toLowerCase();
+    if (mode === "local_credentials" || mode === "disabled" || mode === "") {
+      return false;
+    }
+    if (!truthy(process.env.AUTH_PRODUCTION_APPROVED)) {
+      return false;
+    }
+    if (!["oidc", "oauth", "magic_link", "passkey"].includes(mode)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 /** Host-based redirects for location funnel domains + ops portal isolation. */
@@ -28,17 +48,9 @@ export function middleware(req: NextRequest) {
     pathname.startsWith("/api/ops/");
 
   if (isOpsPath) {
-    if (!opsEnabledFromEnv()) {
+    if (!opsMayExpose()) {
       return notFound();
     }
-
-    if (
-      process.env.NODE_ENV === "production" &&
-      process.env.AUTH_PRODUCTION_APPROVED !== "true"
-    ) {
-      return notFound();
-    }
-
     const res = NextResponse.next();
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
     res.headers.set("x-hfd-surface", "ops");

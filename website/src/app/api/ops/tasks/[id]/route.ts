@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AuthError, requireAuthUser, requireCsrf, assertCanManageLeads } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { isOpsEnabled } from "@/server/env";
 import { prisma } from "@/server/db";
 import { writeAudit } from "@/server/audit";
 
 export const runtime = "nodejs";
 
 export async function PATCH(req: NextRequest, ctx: { params: Promise<{ id: string }> }) {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     assertCanManageLeads(user);

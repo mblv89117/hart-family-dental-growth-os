@@ -45,6 +45,9 @@ export async function loginWithCredentials(input: {
   if (!env.opsEnabled) {
     return { ok: false, error: "Operations portal is disabled." };
   }
+  if (env.nodeEnv === "production") {
+    return { ok: false, error: "Local credential authentication is not permitted in production." };
+  }
   if (env.authMode !== "local_credentials") {
     return { ok: false, error: "Unsupported auth mode." };
   }

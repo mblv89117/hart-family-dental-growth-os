@@ -4,12 +4,12 @@ import {
   SESSION_COOKIE,
   loginWithCredentials,
 } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { getEnv, isOpsEnabled } from "@/server/env";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  if (!getEnv().opsEnabled) {
+  if (!isOpsEnabled()) {
     return new NextResponse("Not Found", { status: 404 });
   }
 

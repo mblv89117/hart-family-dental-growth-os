@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { AuthError, requireAuthUser } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { isOpsEnabled } from "@/server/env";
 
 export const runtime = "nodejs";
 
 export async function GET() {
-  if (!getEnv().opsEnabled) {
+  if (!isOpsEnabled()) {
     return new NextResponse("Not Found", { status: 404 });
   }
   try {

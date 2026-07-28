@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { CSRF_COOKIE, SESSION_COOKIE, requireCsrf, revokeSession } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { isOpsEnabled } from "@/server/env";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  if (!getEnv().opsEnabled) {
+  if (!isOpsEnabled()) {
     return new NextResponse("Not Found", { status: 404 });
   }
   const csrf = req.headers.get("x-csrf-token");

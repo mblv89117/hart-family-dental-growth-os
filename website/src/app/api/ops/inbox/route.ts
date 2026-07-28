@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AuthError, assertLocationAccess, requireAuthUser } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { isOpsEnabled } from "@/server/env";
 import { prisma } from "@/server/db";
 import { canManageLeads } from "@/server/authz/roles";
 
 export const runtime = "nodejs";
 
 export async function GET(req: NextRequest) {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     if (!canManageLeads(user.role) && user.role !== "ReadOnly") {

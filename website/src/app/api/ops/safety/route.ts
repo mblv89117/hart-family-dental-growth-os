@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { AuthError, requireAuthUser, requireCsrf } from "@/server/auth/session";
-import { getEnv } from "@/server/env";
+import { getEnv, isOpsEnabled } from "@/server/env";
 import { prisma } from "@/server/db";
 import { canManageSafety } from "@/server/authz/roles";
 import {
@@ -16,7 +16,7 @@ import type { AutomationMode } from "@prisma/client";
 export const runtime = "nodejs";
 
 export async function GET() {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     const orgId = user.organizationId;
@@ -79,7 +79,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  if (!getEnv().opsEnabled) return new NextResponse("Not Found", { status: 404 });
+  if (!isOpsEnabled()) return new NextResponse("Not Found", { status: 404 });
   try {
     const user = await requireAuthUser();
     if (!canManageSafety(user.role)) {
