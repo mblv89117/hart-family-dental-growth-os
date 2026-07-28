@@ -7,7 +7,7 @@ Patient-acquisition operating system for **Hart Family Dental** (Yucca Valley + 
 - First public domain: **hfdds.net**
 - Repo: [github.com/mblv89117/hart-family-dental-growth-os](https://github.com/mblv89117/hart-family-dental-growth-os)
 
-**Honest status:** Phases 0–4 vertical slice exists on the feature branch. **Production merge must keep `GROWTH_OS_PLATFORM_ENABLED=false` and `OPS_ENABLED=false`** until hosted Postgres and production auth are ready. Dependency-security gate: `docs/PR1_DEPENDENCY_SECURITY_GATE.md` (`npm audit` 0 on patched 15.5.22 + overrides). Phases 5–8 are **not** implemented.
+**Honest status:** Phases 0–4 are on `main` (PR #1 merged). **Production keeps `GROWTH_OS_PLATFORM_ENABLED=false` and `OPS_ENABLED=false`.** Dependency-security + Vercel safety flags verified 2026-07-28. Phases 5–8 are **not** implemented.
 
 ## Safety defaults (`.env.example`)
 

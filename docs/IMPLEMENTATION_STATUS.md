@@ -52,8 +52,7 @@ Hosted Postgres · worker hosting · OD credentials/BAA · production auth provi
 
 ## Exact next action
 
-1. Merge PR #1 with platform/ops **off** (Vercel Production safety flags already verified).  
-2. Monitor Git-triggered Production deploy to `hfdds.net`.  
-3. Public smoke + `/ops` 404 + one synthetic lead.  
-4. Roll back to `dpl_5NUP4wLrJHaMVnByQShfsW7Rr4gU` on material regression.  
-5. Do **not** start Phase 5–8.
+1. ~~Merge PR #1~~ **Done** (`b70c233`, 2026-07-28).  
+2. ~~Production deploy + public smoke~~ **Done** (`dpl_FeWyfiKd2vr1h3xTcjGZXvifQMRD` on `hfdds.net`).  
+3. Owner optionally confirms administrative inbox receipt for the single synthetic Resend notification.  
+4. Do **not** start Phase 5–8; Growth OS remains disabled in Production.

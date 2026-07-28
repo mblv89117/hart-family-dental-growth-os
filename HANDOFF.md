@@ -19,7 +19,8 @@ Prefer this file over chat history.
 | Production auth | Local credentials **forbidden** when OPS is on in production |
 | Dependency security | Next **15.5.22**; `npm audit` **0** after overrides — see `docs/PR1_DEPENDENCY_SECURITY_GATE.md` |
 | Vercel Production safety flags | **Verified via authenticated Vercel CLI on July 28, 2026** (`hart-family-dental` / `hfdds.net`) |
-| PR #1 merge | Ready with platform/ops remaining disabled |
+| PR #1 | **Merged** (`b70c233`) — platform/ops remain disabled |
+| Production deploy | `dpl_FeWyfiKd2vr1h3xTcjGZXvifQMRD` Ready on `hfdds.net` |
 | Phases 5–8 | **Not implemented** |
 
 ### Production blockers
