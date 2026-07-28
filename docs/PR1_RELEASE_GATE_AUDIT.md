@@ -7,14 +7,15 @@
 
 ## Verdict
 
-After remediations on this branch: **APPROVE WITH NON-BLOCKING CONDITIONS** for merge **only if** production Vercel keeps:
+Functional release-gate remediations (public compatibility, auth fail-closed, seed passwords, tests) remain **accepted**.
 
-- `GROWTH_OS_PLATFORM_ENABLED=false`
-- `OPS_ENABLED=false`
-- `OPEN_DENTAL_WRITES_ENABLED=false`
-- `OUTBOUND_COMMUNICATIONS_ENABLED=false`
+**Dependency-security gate (2026-07-28):** see `PR1_DEPENDENCY_SECURITY_GATE.md`.
 
-Unresolved npm audit highs in Next/postcss/sharp are documented non-blocking (unsafe to force major downgrade).
+- Next.js patched to **15.5.22**; PostCSS/Sharp/Prisma Effect/brace-expansion advisories cleared.
+- `npm audit` → **0** vulnerabilities after controlled overrides (no `npm audit fix --force`, no Next 16).
+- Merge remains **blocked** until Manny verifies Vercel Production safety flags (agent has no Vercel API access).
+
+Do **not** treat npm audit Highs as non-blocking merely because `GROWTH_OS_PLATFORM_ENABLED=false` — the public site runs Next.js.
 
 ---
 
@@ -68,11 +69,11 @@ Unresolved npm audit highs in Next/postcss/sharp are documented non-blocking (un
 - **Remediation:** Concurrent same-slot, idempotency replay, expire/downtime tests.
 - **Status:** **Remediated** — `tests/integration/booking-races.test.ts`
 
-### RG-008 — Medium — npm audit high (Next/postcss/sharp)
+### RG-008 — High — npm audit (Next / PostCSS / Sharp / Prisma Effect / brace-expansion)
 
-- **Risk:** Transitive advisories; `npm audit fix --force` would break Next.
-- **Compensating:** Stay on Next 15.5.x; monitor; no PHI on Edge.
-- **Status:** **Open — non-blocking** for merge with platform off.
+- **Risk:** Public marketing site runs Next.js; transitive PostCSS + Sharp Highs are runtime-relevant. Prisma Effect and brace-expansion were also High in the pre-gate tree.
+- **Remediation:** `next@15.5.22`, `eslint-config-next@15.5.22`, `prisma`/`@prisma/client@6.19.3`, overrides for `postcss@8.5.24`, `sharp@0.35.3`, `brace-expansion@5.0.8`. Full advisory table in `PR1_DEPENDENCY_SECURITY_GATE.md`.
+- **Status:** **Remediated** (`npm audit` 0). Merge still gated on Vercel env verification.
 
 ### RG-009 — Low — Lint unused imports / seed label
 

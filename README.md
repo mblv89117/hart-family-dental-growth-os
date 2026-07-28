@@ -2,12 +2,12 @@
 
 Patient-acquisition operating system for **Hart Family Dental** (Yucca Valley + Desert Hot Springs).
 
-- Public marketing site: **Next.js 15** (preserved; default path needs **no** PostgreSQL)
+- Public marketing site: **Next.js 15.5.22** (preserved; default path needs **no** PostgreSQL)
 - Platform slice (Phases 0–4): **PostgreSQL + Prisma**, ops portal, durable worker, Open Dental **mock** gateway
 - First public domain: **hfdds.net**
 - Repo: [github.com/mblv89117/hart-family-dental-growth-os](https://github.com/mblv89117/hart-family-dental-growth-os)
 
-**Honest status:** Phases 0–4 vertical slice exists on the feature branch. **Production merge must keep `GROWTH_OS_PLATFORM_ENABLED=false` and `OPS_ENABLED=false`** until hosted Postgres and production auth are ready. Phases 5–8 are **not** implemented.
+**Honest status:** Phases 0–4 vertical slice exists on the feature branch. **Production merge must keep `GROWTH_OS_PLATFORM_ENABLED=false` and `OPS_ENABLED=false`** until hosted Postgres and production auth are ready. Dependency-security gate: `docs/PR1_DEPENDENCY_SECURITY_GATE.md` (`npm audit` 0 on patched 15.5.22 + overrides). Phases 5–8 are **not** implemented.
 
 ## Safety defaults (`.env.example`)
 
@@ -54,6 +54,17 @@ Synthetic users (emails only — passwords come from `DEV_SEED_*` env vars or ar
 - `yv-only@local.test` (FrontDesk, YV only)
 
 **Never commit seed passwords. Never use local_credentials for production OPS.**
+
+## Dependency security (PR #1 gate)
+
+Pinned after remediation:
+
+- `next@15.5.22`, `eslint-config-next@15.5.22`
+- `react` / `react-dom@19.1.0`
+- `prisma` / `@prisma/client@6.19.3`
+- overrides: `postcss@8.5.24`, `sharp@0.35.3`, `brace-expansion@5.0.8`
+
+Do **not** run `npm audit fix --force`. Do **not** upgrade to Next 16 in this PR.
 
 ## Verify
 

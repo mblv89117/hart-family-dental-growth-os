@@ -17,10 +17,13 @@ Prefer this file over chat history.
 | Phases 0–4 platform | Implemented on feature branch |
 | Default production flags | Platform **off**, Ops **off**, OD writes **off**, outbound **off** |
 | Production auth | Local credentials **forbidden** when OPS is on in production |
+| Dependency security | Next **15.5.22**; `npm audit` **0** after overrides — see `docs/PR1_DEPENDENCY_SECURITY_GATE.md` |
+| PR #1 merge | **Blocked** until Vercel Production safety flags verified by owner |
 | Phases 5–8 | **Not implemented** |
 
 ### Production blockers
 
+0. **Owner verify Vercel Production flags** (checklist in `PR1_DEPENDENCY_SECURITY_GATE.md`) before merge  
 1. Managed Postgres vendor  
 2. Worker hosting  
 3. Open Dental credentials + BAA  

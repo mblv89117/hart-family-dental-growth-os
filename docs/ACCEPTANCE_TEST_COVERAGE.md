@@ -37,14 +37,17 @@
 - Covered with automated evidence: **28**
 - Remaining gaps (documented, not merge-blocking with platform off): public HTTP rate limiting; full adversarial SSRF matrix; all 15 booking edge cases as separate named tests (several covered in composite tests)
 
-## Quality gate snapshot (2026-07-28)
+## Quality gate snapshot (2026-07-28 dependency-security gate)
 
 | Command | Result |
 | --- | --- |
 | `npm test` | 18 passed |
-| `npm run test:integration` | 21 passed |
+| `npm run test:integration` | 21 passed (worker concurrency + booking races included) |
 | `npm run lint` | pass (0 errors) |
 | `npm run typecheck` | pass |
-| `npm run build` | pass |
+| `npm run build` | pass (Next.js **15.5.22**) |
 | Production-like build (no DATABASE_URL, platform off) | pass |
+| Production-like HTTP smoke (pages, leads legacy, `/ops` 404) | pass |
+| `npm audit` | **0 vulnerabilities** |
 | Blank DB migrate + double seed | pass |
+| Stack pins | next 15.5.22 · react 19.1.0 · postcss 8.5.24 · sharp 0.35.3 · prisma 6.19.3 |

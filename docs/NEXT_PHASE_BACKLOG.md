@@ -4,12 +4,14 @@
 
 ## Production readiness (cross-cutting blockers)
 
+0. **Before merging PR #1:** owner verifies Vercel Production safety flags (`PR1_DEPENDENCY_SECURITY_GATE.md`). Dependency Highs on Next/PostCSS/Sharp/Prisma Effect/brace-expansion are remediated on-branch (`npm audit` 0 at gate time).  
 1. Choose and provision **managed PostgreSQL**.  
 2. Host **durable worker** with health checks and dead-letter alerts.  
 3. Complete **Open Dental vendor request** + BAA; sandbox remote read smoke.  
 4. Replace local credentials with **production auth** (SSO/MFA); set approval flag deliberately.  
 5. Select **SMS/email** vendors; compliance review; allowlisted pilot.  
-6. Execute `PRODUCTION_COMPLIANCE_CHECKLIST.md`.
+6. Execute `PRODUCTION_COMPLIANCE_CHECKLIST.md`.  
+7. Monitor Next.js 15.5 maintenance advisories; do not force Next 16 in a rush.
 
 ## Phase 5 — Live OD read path & sync foundations
 

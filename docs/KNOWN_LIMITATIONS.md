@@ -50,6 +50,14 @@ Honest inventory after **Phases 0–4**. Do not treat these as bugs to silently 
 | `autoBook` always false in seed | No autonomous booking |
 | Dual lead paths | DB CRM + legacy email/jsonl notify adapters coexist |
 
+## Dependencies / security
+
+| Limitation | Detail |
+| --- | --- |
+| Next stays on 15.5 maintenance | Do not jump to Next 16 in this release; use patched 15.5.x (`15.5.22` as of dependency gate) |
+| npm overrides required | Next still pins nested PostCSS 8.4.31 and Sharp ^0.34.x; overrides keep patched PostCSS/Sharp without `audit fix --force` |
+| Vercel env not agent-verifiable | Merge requires owner confirmation of Production safety flags |
+
 ## Testing / ops maturity
 
 | Limitation | Detail |
