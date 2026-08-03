@@ -11,7 +11,7 @@
 | Role | SHA |
 |---|---|
 | Fix commit (visually tested on Preview) | `fcdc8fce308a784b783d0ffe4cf588bae52b24e9` |
-| Docs commit (this report + preview screenshots) | *(see git log after docs commit)* |
+| Docs commit (this report + preview screenshots) | `61fbb5bc8a30b8f9940acd9451912677c7c053b4` |
 
 ## Preview deployment
 
