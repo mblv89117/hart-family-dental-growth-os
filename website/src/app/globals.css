@@ -17,7 +17,8 @@
   --shadow: 0 24px 60px rgba(42, 85, 112, 0.14);
   --background: var(--paper);
   --foreground: var(--ink);
-  --header-offset: 5.5rem;
+  /* Two-row sticky header (logo row + phone bar) */
+  --header-offset: 6.75rem;
 }
 
 @theme inline {

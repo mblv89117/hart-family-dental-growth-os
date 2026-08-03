@@ -36,7 +36,7 @@ export function SiteFooter() {
     <footer className="border-t border-[var(--line)] bg-[color-mix(in_oklab,var(--paper-deep)_70%,white)]">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-[1.2fr_1fr_1fr] md:px-8">
         <div>
-          <BrandLogo variant="horizontal" size={48} />
+          <BrandLogo variant="horizontal" size={180} />
           <p className="mt-3 max-w-sm text-sm text-ink-soft">{site.tagline}</p>
           <p className="mt-4 text-xs text-ink-soft">
             Website content is educational and not a diagnosis. Treatment recommendations are based on an individual
