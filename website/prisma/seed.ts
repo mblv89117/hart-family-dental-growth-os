@@ -42,10 +42,12 @@ async function main() {
       city: "Yucca Valley",
       state: "CA",
       zip: "92284",
-      phone: "(760) 365-6595",
+      phone: "(760) 389-7707",
       leadNotifyEmail: "hartdentalyv@hotmail.com",
     },
-    update: {},
+    update: {
+      phone: "(760) 389-7707",
+    },
   });
 
   const dhs = await prisma.location.upsert({
@@ -59,10 +61,12 @@ async function main() {
       city: "Desert Hot Springs",
       state: "CA",
       zip: "92240",
-      phone: "(760) 329-6713",
+      phone: "(760) 314-4160",
       leadNotifyEmail: "hartdental02@hotmail.com",
     },
-    update: {},
+    update: {
+      phone: "(760) 314-4160",
+    },
   });
 
   const wendyPw = passwordFromEnvOrGenerate("DEV_SEED_WENDY_PASSWORD");

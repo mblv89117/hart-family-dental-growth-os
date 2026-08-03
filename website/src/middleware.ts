@@ -34,11 +34,11 @@ export function middleware(req: NextRequest) {
   const { pathname, search } = req.nextUrl;
 
   if (host === "hartfamilyyv.com" || host === "www.hartfamilyyv.com") {
-    const url = new URL(`https://hfdds.net/yucca-valley${pathname === "/" ? "" : pathname}${search}`);
+    const url = new URL(`https://hfdds.net/locations/yucca-valley${pathname === "/" ? "" : pathname}${search}`);
     return NextResponse.redirect(url, 301);
   }
   if (host === "hartfamilydhs.com" || host === "www.hartfamilydhs.com") {
-    const url = new URL(`https://hfdds.net/desert-hot-springs${pathname === "/" ? "" : pathname}${search}`);
+    const url = new URL(`https://hfdds.net/locations/desert-hot-springs${pathname === "/" ? "" : pathname}${search}`);
     return NextResponse.redirect(url, 301);
   }
 
@@ -59,6 +59,9 @@ export function middleware(req: NextRequest) {
 
   const res = NextResponse.next();
   res.headers.set("x-hfd-surface", "public");
+  if (pathname === "/thank-you" || pathname.startsWith("/thank-you/")) {
+    res.headers.set("X-Robots-Tag", "noindex, nofollow");
+  }
   return res;
 }
 

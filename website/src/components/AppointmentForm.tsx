@@ -1,8 +1,10 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { locations, LocationId } from "@/lib/locations";
+import { appointmentServiceOptions } from "@/lib/services";
 import { readAttribution, trackEvent } from "@/lib/tracking";
 
 type Props = {
@@ -12,25 +14,12 @@ type Props = {
   formType?: string;
 };
 
-const services = [
-  "New patient visit",
-  "Dental implants",
-  "Full-mouth implants",
-  "Teeth straightening assessment",
-  "Emergency / tooth pain",
-  "Cosmetic dentistry",
-  "Restorative dentistry",
-  "Cash-pay consult",
-  "Financing information",
-  "Other",
-];
-
 const fieldClass =
-  "rounded-[0.85rem] border border-[var(--line)] bg-white px-3.5 py-2.5 text-[var(--ink)] outline-none focus:outline focus:outline-2 focus:outline-[color-mix(in_oklab,var(--sky)_55%,white)]";
+  "rounded-[0.85rem] border border-[var(--line)] bg-white px-3.5 py-2.5 text-[var(--ink)] outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--brand)]";
 
 export function AppointmentForm({
   defaultLocation,
-  defaultService = "New patient visit",
+  defaultService = appointmentServiceOptions[0],
   heading = "Request an appointment",
   formType = "appointment",
 }: Props) {
@@ -51,8 +40,18 @@ export function AppointmentForm({
     setError("");
     const form = e.currentTarget;
     const data = new FormData(form);
-    const payload = Object.fromEntries(data.entries());
+    const payload = Object.fromEntries(data.entries()) as Record<string, string>;
     const attribution = readAttribution();
+
+    // Fold the optional preferred day/time into the message so it flows through
+    // the existing lead payload shape without changing the API contract.
+    const preferredDayTime = String(payload.preferredDayTime || "").trim();
+    delete payload.preferredDayTime;
+    if (preferredDayTime) {
+      payload.message = payload.message
+        ? `${payload.message}\n\nPreferred day/time: ${preferredDayTime}`
+        : `Preferred day/time: ${preferredDayTime}`;
+    }
 
     try {
       const res = await fetch("/api/leads", {
@@ -88,13 +87,20 @@ export function AppointmentForm({
     >
       <h2 className="font-display text-3xl text-sky-deep">{heading}</h2>
       <p className="mt-2 text-sm text-ink-soft">
-        Tell us which office works best. Wendy Delgado follows up for both locations. This form does not diagnose or
-        approve treatment.
+        Tell us which office works best. Our team will contact you to confirm availability — submitting this form does
+        not book or guarantee an appointment time, and it does not diagnose or approve treatment.
       </p>
 
       {status === "error" ? (
         <p className="mt-4 rounded-xl bg-[color-mix(in_oklab,var(--brand)_10%,white)] p-4 text-sm text-brand" role="alert">
-          {error} Or call Yucca Valley (760) 365-6595 / Desert Hot Springs (760) 329-6713.
+          {error} Or call{" "}
+          {locations.map((l, i) => (
+            <span key={l.id}>
+              {l.shortName} {l.phone}
+              {i < locations.length - 1 ? " / " : ""}
+            </span>
+          ))}
+          .
         </p>
       ) : null}
 
@@ -140,7 +146,7 @@ export function AppointmentForm({
           <label className="grid gap-1 text-sm">
             <span>Service interest</span>
             <select name="service" className={fieldClass} defaultValue={defaultService}>
-              {services.map((s) => (
+              {appointmentServiceOptions.map((s) => (
                 <option key={s} value={s}>
                   {s}
                 </option>
@@ -148,14 +154,26 @@ export function AppointmentForm({
             </select>
           </label>
         </div>
-        <label className="grid gap-1 text-sm">
-          <span>Preferred follow-up</span>
-          <select name="followUp" className={fieldClass} defaultValue="phone">
-            <option value="phone">Phone</option>
-            <option value="text">Text</option>
-            <option value="email">Email</option>
-          </select>
-        </label>
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="grid gap-1 text-sm">
+            <span>Preferred follow-up</span>
+            <select name="followUp" className={fieldClass} defaultValue="phone">
+              <option value="phone">Phone</option>
+              <option value="text">Text</option>
+              <option value="email">Email</option>
+            </select>
+          </label>
+          <label className="grid gap-1 text-sm">
+            <span>Preferred day/time (optional)</span>
+            <input
+              name="preferredDayTime"
+              type="text"
+              placeholder="e.g., Wednesday mornings"
+              className={fieldClass}
+              autoComplete="off"
+            />
+          </label>
+        </div>
         <label className="grid gap-1 text-sm">
           <span>Message (optional — avoid sensitive medical details)</span>
           <textarea name="message" rows={3} className={fieldClass} />
@@ -173,16 +191,31 @@ export function AppointmentForm({
             I agree to receive email updates about appointments and practice information. I may unsubscribe anytime.
           </span>
         </label>
+        <p className="text-xs text-ink-soft">
+          We use the information you submit only to respond to your request and coordinate care. See our{" "}
+          <Link href="/privacy" className="text-sage underline underline-offset-2 hover:decoration-2">
+            Privacy Policy
+          </Link>{" "}
+          for details. Please do not include sensitive medical details in this form.
+        </p>
         <button
           type="submit"
           disabled={status === "sending"}
-          className="mt-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep disabled:opacity-60"
+          aria-busy={status === "sending"}
+          className="mt-2 rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep focus-ring disabled:opacity-60"
         >
           {status === "sending" ? "Sending…" : "Submit request"}
         </button>
         <p className="text-xs text-ink-soft">
-          For immediate help, call Yucca Valley (760) 365-6595 or Desert Hot Springs (760) 329-6713. Saturday &amp; Sunday:
-          Closed.
+          Submitting this form does not confirm an appointment — our office will contact you to confirm availability.
+          For immediate help, call{" "}
+          {locations.map((l, i) => (
+            <span key={l.id}>
+              {l.shortName} {l.phone}
+              {i < locations.length - 1 ? " or " : ""}
+            </span>
+          ))}
+          . Saturday &amp; Sunday: Closed.
         </p>
       </form>
     </section>

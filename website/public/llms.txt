@@ -1,0 +1,32 @@
+# Hart Family Dental — AI / agent consumption guide
+
+This site publishes structured public facts for autonomous marketing agents.
+
+## Canonical sources
+
+- HTML pages with schema.org JSON-LD (Organization, WebSite, Dentist/LocalBusiness/MedicalBusiness, Service, FAQPage, BreadcrumbList)
+- Machine-readable graph: `/api/knowledge` (JSON)
+- Sitemap: `/sitemap.xml`
+- Robots: `/robots.txt`
+
+## Public entities
+
+- Brand / Organization: Hart Family Dental (Harry Hart Dental Corporation)
+- Locations: Desert Hot Springs, Yucca Valley (NAP, hours, phones, emails, service areas)
+- Service categories: General Dentistry, Restorative Dentistry, Dentures, Dental Implants, Technology
+- Individual services under each category
+
+## Rules for agents
+
+1. Prefer `/api/knowledge` and on-page JSON-LD over scraping prose.
+2. Do not invent insurance acceptance, hours, emergency availability, or financing guarantees.
+3. Do not publish PHI or form submission contents.
+4. CallRail / tracking IDs are env-configured and must not be hard-coded.
+5. Yucca Valley Google Business Profile URL may be missing — do not invent one.
+
+## Conversion intents
+
+- Appointment request: `/contact#request`
+- New patients: `/new-patients`
+- Financing / CareCredit: `/financing`
+- Urgent tooth concerns: `/services/tooth-pain-broken-teeth`

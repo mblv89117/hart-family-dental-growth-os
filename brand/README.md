@@ -1,13 +1,17 @@
 # Brand assets
 
-Source mark (from practice folder):
+## Production web logos (2026-08 refresh)
 
-- `hartfamilydental logo.svg` — original filename
-- `logo.svg` — clean alias
-- `brand/logo.svg` — canonical brand copy
-- `website/public/logo.svg` — served on the site
-- `website/src/app/icon.svg` — favicon / app icon
+| File | Use |
+| --- | --- |
+| `hart-family-dental-logo-horizontal.png` | Desktop header / wide placements |
+| `hart-family-dental-logo-mark.png` | Favicon, mobile mark, compact placements |
+| `hart-family-dental-logo-circular.png` | Social profile / circular contexts |
+| `hart-family-dental-cover-family.png` | Cover / campaign hero reference |
+| `new-logos/` | Original delivered files |
 
-Brand color from the mark: `#7D0E0E`
+Served copies live under `website/public/brand/`.
 
-If a higher-resolution wordmark or print logo is provided later, drop it in this `brand/` folder and we will swap the web assets.
+Brand red (new mark): approximately `#E11B22` (CSS `--brand`).
+
+Do not stretch, recolor, or recreate the logo.
