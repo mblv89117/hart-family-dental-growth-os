@@ -11,7 +11,7 @@
 | Role | SHA |
 |---|---|
 | Fix commit (visually tested on Preview) | `fcdc8fce308a784b783d0ffe4cf588bae52b24e9` |
-| Docs commit (this report + preview screenshots) | `61fbb5bc8a30b8f9940acd9451912677c7c053b4` |
+| Docs commit (preview screenshots + report) | `61fbb5bc8a30b8f9940acd9451912677c7c053b4` (+ SHA note commit `1e2f493c5c6c43fceaeed56dcd5ee9bb0b8be512`) |
 
 ## Preview deployment
 
