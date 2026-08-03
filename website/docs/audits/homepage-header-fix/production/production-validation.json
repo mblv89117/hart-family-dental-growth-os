@@ -1,0 +1,334 @@
+{
+  "base": "https://hfdds.net",
+  "timestamp": "2026-08-03T02:45:15.321Z",
+  "breakpoints": [
+    {
+      "breakpoint": "390x844",
+      "logoSrc": "https://hfdds.net/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=150&q=75",
+      "logoSize": {
+        "w": 150,
+        "h": 44
+      },
+      "hasBlackPlate": true,
+      "logosAboveH1": 0,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "requestHref": "/contact#request",
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "overflow": false,
+      "navSample": [
+        "Desert Hot Springs",
+        "Yucca Valley",
+        "Services",
+        "Payment",
+        "Contact",
+        "Request appointment",
+        "Call Desert Hot Springs: (760) 314-4160",
+        "Call Yucca Valley: (760) 389-7707"
+      ],
+      "title": "Hart Family Dental | Dentist in Desert Hot Springs & Yucca Valley",
+      "gap": 48,
+      "mobileMenu": {
+        "found": true,
+        "before": "false",
+        "afterOpen": "true",
+        "afterClose": "false",
+        "menuPhones": [
+          "tel:+17603144160",
+          "tel:+17603897707"
+        ],
+        "menuVisibleHint": false
+      },
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/production/home-390x844.png"
+    },
+    {
+      "breakpoint": "430x932",
+      "logoSrc": "https://hfdds.net/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=150&q=75",
+      "logoSize": {
+        "w": 150,
+        "h": 44
+      },
+      "hasBlackPlate": true,
+      "logosAboveH1": 0,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "requestHref": "/contact#request",
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "overflow": false,
+      "navSample": [
+        "Desert Hot Springs",
+        "Yucca Valley",
+        "Services",
+        "Payment",
+        "Contact",
+        "Request appointment",
+        "Call Desert Hot Springs: (760) 314-4160",
+        "Call Yucca Valley: (760) 389-7707"
+      ],
+      "title": "Hart Family Dental | Dentist in Desert Hot Springs & Yucca Valley",
+      "gap": 48,
+      "mobileMenu": {
+        "found": true,
+        "before": "false",
+        "afterOpen": "true",
+        "afterClose": "false",
+        "menuPhones": [
+          "tel:+17603144160",
+          "tel:+17603897707"
+        ],
+        "menuVisibleHint": false
+      },
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/production/home-430x932.png"
+    },
+    {
+      "breakpoint": "768x1024",
+      "logoSrc": "https://hfdds.net/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+      "logoSize": {
+        "w": 200,
+        "h": 59
+      },
+      "hasBlackPlate": true,
+      "logosAboveH1": 0,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "requestHref": "/contact#request",
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "overflow": true,
+      "navSample": [
+        "Desert Hot Springs",
+        "Yucca Valley",
+        "Services",
+        "Payment",
+        "Contact",
+        "Request appointment",
+        "Call Desert Hot Springs: (760) 314-4160",
+        "Call Yucca Valley: (760) 389-7707"
+      ],
+      "title": "Hart Family Dental | Dentist in Desert Hot Springs & Yucca Valley",
+      "gap": 80,
+      "mobileMenu": {
+        "found": true,
+        "before": "false",
+        "afterOpen": "true",
+        "afterClose": "false",
+        "menuPhones": [
+          "tel:+17603144160",
+          "tel:+17603897707"
+        ],
+        "menuVisibleHint": false
+      },
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/production/home-768x1024.png"
+    },
+    {
+      "breakpoint": "1024x768",
+      "logoSrc": "https://hfdds.net/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+      "logoSize": {
+        "w": 200,
+        "h": 59
+      },
+      "hasBlackPlate": true,
+      "logosAboveH1": 0,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "requestHref": "/contact#request",
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "overflow": false,
+      "navSample": [
+        "Desert Hot Springs",
+        "Yucca Valley",
+        "Services",
+        "Payment",
+        "Contact",
+        "Request appointment",
+        "Call Desert Hot Springs: (760) 314-4160",
+        "Call Yucca Valley: (760) 389-7707"
+      ],
+      "title": "Hart Family Dental | Dentist in Desert Hot Springs & Yucca Valley",
+      "gap": 80,
+      "mobileMenu": null,
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/production/home-1024x768.png"
+    },
+    {
+      "breakpoint": "1440x900",
+      "logoSrc": "https://hfdds.net/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+      "logoSize": {
+        "w": 200,
+        "h": 59
+      },
+      "hasBlackPlate": true,
+      "logosAboveH1": 0,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "requestHref": "/contact#request",
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "overflow": false,
+      "navSample": [
+        "Desert Hot Springs",
+        "Yucca Valley",
+        "Services",
+        "Payment",
+        "Contact",
+        "Request appointment",
+        "Call Desert Hot Springs: (760) 314-4160",
+        "Call Yucca Valley: (760) 389-7707"
+      ],
+      "title": "Hart Family Dental | Dentist in Desert Hot Springs & Yucca Valley",
+      "gap": 80,
+      "mobileMenu": null,
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/production/home-1440x900.png"
+    },
+    {
+      "breakpoint": "1920x1080",
+      "logoSrc": "https://hfdds.net/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+      "logoSize": {
+        "w": 200,
+        "h": 59
+      },
+      "hasBlackPlate": true,
+      "logosAboveH1": 0,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "requestHref": "/contact#request",
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "overflow": false,
+      "navSample": [
+        "Desert Hot Springs",
+        "Yucca Valley",
+        "Services",
+        "Payment",
+        "Contact",
+        "Request appointment",
+        "Call Desert Hot Springs: (760) 314-4160",
+        "Call Yucca Valley: (760) 389-7707"
+      ],
+      "title": "Hart Family Dental | Dentist in Desert Hot Springs & Yucca Valley",
+      "gap": 80,
+      "mobileMenu": null,
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/production/home-1920x1080.png"
+    }
+  ],
+  "requestAppointment": {
+    "href": "/contact#request",
+    "url": "https://hfdds.net/contact#request"
+  },
+  "aboutHeader": {
+    "logoSrc": "https://hfdds.net/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+    "light": true
+  },
+  "consoleErrors": [
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725099675&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=4&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616985~115938466~115938469~118395334~118897920~118897930~119527020~119896803&sid=1785725099&sct=1&seg=0&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=2&tfd=3001&gaf=1' because it violates the following Content Security Policy directive: \"connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://www.facebook.com https://connect.facebook.net\".\n",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725099675&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=4&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616985~115938466~115938469~118395334~118897920~118897930~119527020~119896803&sid=1785725099&sct=1&seg=0&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=2&tfd=3001&gaf=1' because it violates the document's Content Security Policy.",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725102284&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938466~115938469~118897920~118897930~119896802~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=2319&gaf=1' because it violates the following Content Security Policy directive: \"connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://www.facebook.com https://connect.facebook.net\".\n",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725102284&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938466~115938469~118897920~118897930~119896802~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=2319&gaf=1' because it violates the document's Content Security Policy.",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725104534&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616985~115938466~115938469~118897920~118897930~119527020~119896802~120222309&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=2399&gaf=1' because it violates the following Content Security Policy directive: \"connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://www.facebook.com https://connect.facebook.net\".\n",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725104534&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616985~115938466~115938469~118897920~118897930~119527020~119896802~120222309&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=2399&gaf=1' because it violates the document's Content Security Policy.",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725106846&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938465~115938468~118897920~118897930~119381663~119896802&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1707&gaf=1' because it violates the following Content Security Policy directive: \"connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://www.facebook.com https://connect.facebook.net\".\n",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725106846&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938465~115938468~118897920~118897930~119381663~119896802&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1707&gaf=1' because it violates the document's Content Security Policy.",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725108477&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=2&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938466~115938468~118897920~118897930~119527020~119896803~120125305~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1876&gaf=1' because it violates the following Content Security Policy directive: \"connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://www.facebook.com https://connect.facebook.net\".\n",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725108477&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=2&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938466~115938468~118897920~118897930~119527020~119896803~120125305~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1876&gaf=1' because it violates the document's Content Security Policy.",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725110289&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616986~115938466~115938469~118395335~118897920~118897930~119896802~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1943&gaf=1' because it violates the following Content Security Policy directive: \"connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.clarity.ms https://www.facebook.com https://connect.facebook.net\".\n",
+    "Refused to connect to 'https://www.google.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725110289&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616986~115938466~115938469~118395335~118897920~118897930~119896802~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1943&gaf=1' because it violates the document's Content Security Policy."
+  ],
+  "failedLogoRequests": [
+    {
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725099675&gcd=13l3l3l3l1l1&npa=0&dma=0&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=4&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&_s=1&tag_exp=115616985~115938466~115938469~118395334~118897920~118897930~119527020~119896803&sid=1785725099&sct=1&seg=0&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&en=page_view&_fv=1&_nsi=1&_ss=1&_ee=1&tfd=535",
+      "err": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725099675&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=4&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616985~115938466~115938469~118395334~118897920~118897930~119527020~119896803&sid=1785725099&sct=1&seg=0&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=2&tfd=3001",
+      "err": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725102284&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938466~115938469~118897920~118897930~119896802~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=2319",
+      "err": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725104534&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616985~115938466~115938469~118897920~118897930~119527020~119896802~120222309&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=2399",
+      "err": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725106846&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938465~115938468~118897920~118897930~119381663~119896802&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1707",
+      "err": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725108477&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=2&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115938466~115938468~118897920~118897930~119527020~119896803~120125305~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1876",
+      "err": "net::ERR_ABORTED"
+    },
+    {
+      "url": "https://www.google-analytics.com/g/collect?v=2&tid=G-VPNLPP3BMV&gtm=45je67t1v9259149484za200zd9259149484&_p=1785725110289&gcd=13l3l3l3l1l1&npa=0&dma=0&_eu=AAAAAAQ&are=1&cid=1415777779.1785725100&frm=0&ngs=1&pscdl=&rcb=11&sr=1920x1080&uaa=arm&uab=64&uafvl=Chromium%3B131.0.6778.204%7CNot_A%2520Brand%3B24.0.0.0&uam=&uamb=0&uap=macOS&uapv=26.6.0&uaw=0&ul=en-us&tag_exp=115616986~115938466~115938469~118395335~118897920~118897930~119896802~120222307&sid=1785725099&sct=1&seg=1&dl=https%3A%2F%2Fhfdds.net%2F&dt=Hart%20Family%20Dental%20%7C%20Dentist%20in%20Desert%20Hot%20Springs%20%26%20Yucca%20Valley&_s=1&tfd=1943",
+      "err": "net::ERR_ABORTED"
+    }
+  ]
+}
