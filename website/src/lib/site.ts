@@ -19,6 +19,9 @@ export const site = {
   logo: {
     horizontal: "/brand/hart-family-dental-logo-horizontal.png",
     horizontalSm: "/brand/hart-family-dental-logo-horizontal-800.png",
+    /** Tight crop of horizontal lockup with white canvas removed (light UI). */
+    horizontalLight: "/brand/hart-family-dental-logo-horizontal-light.png",
+    horizontalLightSm: "/brand/hart-family-dental-logo-horizontal-light-880.png",
     mark: "/brand/hart-family-dental-logo-mark.png",
     markSm: "/brand/hart-family-dental-logo-mark-256.png",
     circular: "/brand/hart-family-dental-logo-circular.png",

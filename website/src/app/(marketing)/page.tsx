@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { AppointmentForm } from "@/components/AppointmentForm";
-import { BrandLogo } from "@/components/BrandLogo";
 import { SectionHeading } from "@/components/Ui";
 import { locations } from "@/lib/locations";
 import { services } from "@/lib/site";
@@ -18,49 +17,50 @@ const highlights = [
 export default function HomePage() {
   return (
     <>
-      <section className="desert-sky relative min-h-[calc(100svh-5.5rem)] overflow-hidden">
+      <section className="desert-sky relative overflow-hidden">
         <div className="grain absolute inset-0 opacity-60" aria-hidden />
-        <div className="relative mx-auto flex min-h-[calc(100svh-5.5rem)] max-w-6xl flex-col justify-end px-5 pb-16 pt-16 md:justify-center md:px-8 md:pb-24 md:pt-20">
-          <div className="reveal">
-            <BrandLogo variant="horizontal" size={64} priority />
-          </div>
-          <h1 className="reveal-delay mt-8 max-w-2xl text-3xl font-medium leading-tight text-ink md:text-5xl">
+        <div className="relative mx-auto max-w-6xl px-5 pb-12 pt-12 md:px-8 md:pb-14 md:pt-20">
+          <h1 className="reveal max-w-2xl text-3xl font-medium leading-tight text-ink md:text-5xl">
             Comprehensive Dental Care for Healthy, Confident Smiles
           </h1>
-          <p className="reveal-delay-2 mt-5 max-w-xl text-ink-soft">
+          <p className="reveal-delay mt-4 max-w-xl text-ink-soft md:mt-5">
             Hart Family Dental provides personalized general, restorative, implant, and denture care at convenient
             locations in Desert Hot Springs and Yucca Valley.
           </p>
-          <div className="reveal-delay-2 mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/contact#request"
-              className="rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep focus-ring"
-            >
-              Request Appointment
-            </Link>
-            <Link
-              href="#locations"
-              className="rounded-full bg-white/70 px-5 py-3 text-sm font-medium text-sky-deep ring-1 ring-[var(--line)] backdrop-blur transition hover:bg-white focus-ring"
-            >
-              Choose a Location
-            </Link>
-            <Link
-              href="/services/tooth-pain-broken-teeth"
-              className="rounded-full bg-white/70 px-5 py-3 text-sm font-medium text-brand ring-1 ring-[var(--line)] backdrop-blur transition hover:bg-white focus-ring"
-            >
-              Tooth pain / urgent care
-            </Link>
-            {locations.map((loc) => (
-              <a
-                key={loc.id}
-                href={loc.phoneHref}
+          <div className="reveal-delay-2 mt-7 flex flex-col gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/contact#request"
+                className="rounded-full bg-brand px-5 py-3 text-sm font-medium text-white transition hover:bg-brand-deep focus-ring"
+              >
+                Request Appointment
+              </Link>
+              <Link
+                href="#locations"
                 className="rounded-full bg-white/70 px-5 py-3 text-sm font-medium text-sky-deep ring-1 ring-[var(--line)] backdrop-blur transition hover:bg-white focus-ring"
               >
-                Call {loc.shortName}
-              </a>
-            ))}
+                Choose a Location
+              </Link>
+              <Link
+                href="/services/tooth-pain-broken-teeth"
+                className="rounded-full bg-white/70 px-5 py-3 text-sm font-medium text-brand ring-1 ring-[var(--line)] backdrop-blur transition hover:bg-white focus-ring"
+              >
+                Tooth pain / urgent care
+              </Link>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              {locations.map((loc) => (
+                <a
+                  key={loc.id}
+                  href={loc.phoneHref}
+                  className="rounded-full bg-white/70 px-5 py-3 text-sm font-medium text-sky-deep ring-1 ring-[var(--line)] backdrop-blur transition hover:bg-white focus-ring"
+                >
+                  Call {loc.shortName}
+                </a>
+              ))}
+            </div>
           </div>
-          <div className="float-soft pointer-events-none absolute right-[-10%] top-[22%] hidden h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.55),transparent_70%)] md:block" />
+          <div className="float-soft pointer-events-none absolute right-[-10%] top-[18%] hidden h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.55),transparent_70%)] md:block" />
         </div>
       </section>
 

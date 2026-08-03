@@ -31,19 +31,19 @@ export function SiteHeader() {
       className={`sticky top-0 z-40 transition-[background,box-shadow,backdrop-filter] ${
         scrolled || open
           ? "border-b border-[var(--line)] bg-white/90 shadow-[0_8px_30px_rgba(42,85,112,0.08)] backdrop-blur-md"
-          : "bg-transparent"
+          : "bg-white/55 backdrop-blur-[2px]"
       }`}
     >
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3 md:px-8 md:py-4">
-        <BrandLogo variant="horizontal" size={44} priority className="max-w-[min(52vw,220px)]" />
-        <nav className="hidden items-center gap-4 text-sm text-ink-soft xl:flex" aria-label="Primary">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-2.5 md:gap-4 md:px-8 md:py-3">
+        <BrandLogo variant="horizontal" size={200} priority className="shrink-0" />
+        <nav className="hidden min-w-0 items-center gap-3 text-sm text-ink-soft xl:flex xl:gap-4" aria-label="Primary">
           {nav.map((item) => (
-            <Link key={item.href} href={item.href} className="transition hover:text-ink focus-ring rounded">
+            <Link key={item.href} href={item.href} className="whitespace-nowrap transition hover:text-ink focus-ring rounded">
               {item.label}
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             href="/contact#request"
             className="hidden rounded-full bg-brand px-4 py-2 text-sm font-medium text-white transition hover:bg-brand-deep focus-ring sm:inline-flex"
@@ -62,12 +62,14 @@ export function SiteHeader() {
           </button>
         </div>
       </div>
-      <div className="mx-auto hidden max-w-6xl flex-wrap gap-x-6 gap-y-1 px-8 pb-2 text-xs text-ink-soft md:flex">
-        {locations.map((loc) => (
-          <a key={loc.id} href={loc.phoneHref} className="rounded hover:text-ink focus-ring">
-            Call {loc.shortName}: {loc.phone}
-          </a>
-        ))}
+      <div className="border-t border-[var(--line)]/70 bg-[color-mix(in_oklab,var(--paper-deep)_40%,white)]">
+        <div className="mx-auto hidden max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-8 py-1.5 text-xs text-ink-soft md:flex">
+          {locations.map((loc) => (
+            <a key={loc.id} href={loc.phoneHref} className="rounded hover:text-ink focus-ring">
+              Call {loc.shortName}: {loc.phone}
+            </a>
+          ))}
+        </div>
       </div>
       {open ? (
         <div
@@ -76,7 +78,7 @@ export function SiteHeader() {
         >
           <nav className="flex flex-col gap-1 text-sm" aria-label="Mobile">
             <div className="mb-2 flex justify-start">
-              <BrandLogo variant="mark" size={36} href={null} />
+              <BrandLogo variant="horizontal" size={150} href={null} />
             </div>
             {nav.map((item) => (
               <Link

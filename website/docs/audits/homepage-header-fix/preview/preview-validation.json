@@ -1,0 +1,224 @@
+{
+  "breakpoints": {
+    "390": {
+      "logoSrc": "https://hart-family-dental-kj320m5hj-high-value-capital-group.vercel.app/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=150&q=75",
+      "logoSize": {
+        "w": 150,
+        "h": 44
+      },
+      "logosAboveH1": 0,
+      "gap": 48,
+      "overflow": false,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "hasBlackPlate": false,
+      "logoAttrs": {
+        "widthAttr": "1080",
+        "heightAttr": "319",
+        "rendered": {
+          "w": 150,
+          "h": 44
+        }
+      },
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "heroCtas": [
+        {
+          "text": "Request Appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Choose a Location",
+          "href": "#locations"
+        },
+        {
+          "text": "Tooth pain / urgent care",
+          "href": "/services/tooth-pain-broken-teeth"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/preview/home-390x844.png"
+    },
+    "768": {
+      "logoSrc": "https://hart-family-dental-kj320m5hj-high-value-capital-group.vercel.app/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+      "logoSize": {
+        "w": 200,
+        "h": 59
+      },
+      "logosAboveH1": 0,
+      "gap": 80,
+      "overflow": true,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "hasBlackPlate": false,
+      "logoAttrs": {
+        "widthAttr": "1080",
+        "heightAttr": "319",
+        "rendered": {
+          "w": 200,
+          "h": 59
+        }
+      },
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "heroCtas": [
+        {
+          "text": "Request Appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Choose a Location",
+          "href": "#locations"
+        },
+        {
+          "text": "Tooth pain / urgent care",
+          "href": "/services/tooth-pain-broken-teeth"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/preview/home-768x1024.png"
+    },
+    "1440": {
+      "logoSrc": "https://hart-family-dental-kj320m5hj-high-value-capital-group.vercel.app/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+      "logoSize": {
+        "w": 200,
+        "h": 59
+      },
+      "logosAboveH1": 0,
+      "gap": 80,
+      "overflow": false,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "hasBlackPlate": false,
+      "logoAttrs": {
+        "widthAttr": "1080",
+        "heightAttr": "319",
+        "rendered": {
+          "w": 200,
+          "h": 59
+        }
+      },
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "heroCtas": [
+        {
+          "text": "Request Appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Choose a Location",
+          "href": "#locations"
+        },
+        {
+          "text": "Tooth pain / urgent care",
+          "href": "/services/tooth-pain-broken-teeth"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/preview/home-1440x900.png"
+    },
+    "1920": {
+      "logoSrc": "https://hart-family-dental-kj320m5hj-high-value-capital-group.vercel.app/_next/image?url=%2Fbrand%2Fhart-family-dental-logo-horizontal-light.png&w=200&q=75",
+      "logoSize": {
+        "w": 200,
+        "h": 59
+      },
+      "logosAboveH1": 0,
+      "gap": 80,
+      "overflow": false,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "hasBlackPlate": false,
+      "logoAttrs": {
+        "widthAttr": "1080",
+        "heightAttr": "319",
+        "rendered": {
+          "w": 200,
+          "h": 59
+        }
+      },
+      "stickyCtas": [
+        {
+          "text": "Schedule appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Call now",
+          "href": "tel:+17603144160"
+        }
+      ],
+      "heroCtas": [
+        {
+          "text": "Request Appointment",
+          "href": "/contact#request"
+        },
+        {
+          "text": "Choose a Location",
+          "href": "#locations"
+        },
+        {
+          "text": "Tooth pain / urgent care",
+          "href": "/services/tooth-pain-broken-teeth"
+        }
+      ],
+      "canonical": "https://hfdds.net",
+      "screenshot": "/Volumes/MacMiniPro2TB/Hart Family Dental Marketing OS/website/docs/audits/homepage-header-fix/preview/home-1920x1080.png"
+    }
+  },
+  "interactions": {
+    "menuClicked": true,
+    "menuOpen": {
+      "present": true,
+      "phones": [
+        "tel:+17603144160",
+        "tel:+17603897707"
+      ],
+      "logoW": 150
+    },
+    "menuClosed": true,
+    "servicesUrl": "https://hart-family-dental-kj320m5hj-high-value-capital-group.vercel.app/services",
+    "requestUrl": "https://hart-family-dental-kj320m5hj-high-value-capital-group.vercel.app/contact#request",
+    "sticky": {
+      "top": 0,
+      "position": "sticky",
+      "visible": true
+    }
+  },
+  "consoleErrors": [
+    "Loading the script 'https://vercel.live/_next-live/feedback/feedback.js' violates the following Content Security Policy directive: \"script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://connect.facebook.net\". Note that 'script-src-elem' was not explicitly set, so 'script-src' is used as a fallback. The action has been blocked."
+  ],
+  "missingAssets": [],
+  "clsNotes": []
+}
