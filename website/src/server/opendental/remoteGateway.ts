@@ -1,4 +1,4 @@
-import { getEnv } from "../env";
+import { areOpenDentalWritesAllowed, getEnv, getRuntimeFlags } from "../env";
 import { safeError, safeInfo } from "../audit";
 import type {
   CreateAppointmentInput,
@@ -32,24 +32,60 @@ function jitter(base: number) {
   return base + Math.floor(Math.random() * base * 0.3);
 }
 
+function assertWritesAllowed() {
+  const flags = getRuntimeFlags();
+  if (flags.openDentalMode === "remote_readonly") {
+    throw new Error(
+      "Open Dental writes are blocked (OPEN_DENTAL_MODE=remote_readonly). remote_readonly blocks writes even if OPEN_DENTAL_WRITES_ENABLED=true.",
+    );
+  }
+  if (!areOpenDentalWritesAllowed() || !getEnv().openDentalWritesEnabled) {
+    throw new Error("Open Dental writes are disabled (OPEN_DENTAL_WRITES_ENABLED=false).");
+  }
+}
+
+async function rejectWrite(reason: string): Promise<never> {
+  try {
+    const { emitAlert } = await import("../alerting");
+    await emitAlert({
+      kind: "open_dental_write_attempt",
+      severity: "critical",
+      summary: "Blocked Open Dental write attempt",
+      detail: { reason },
+    });
+  } catch {
+    // alerting must not mask the write block
+  }
+  throw new Error(reason);
+}
+
 export function createRemoteGateway(input: {
   connectionKey: string;
   baseUrl: string;
   developerKey: string;
   customerKey: string;
+  /** When true, every write method fails closed regardless of OPEN_DENTAL_WRITES_ENABLED. */
+  readOnly?: boolean;
 }): OpenDentalGateway {
   const env = getEnv();
-  if (!env.openDentalWritesEnabled) {
-    // Writes still exist as methods but throw unless flag is on — checked per call.
-  }
+  const forceReadOnly = Boolean(input.readOnly) || getRuntimeFlags().openDentalMode === "remote_readonly";
 
   async function request<T>(
     method: string,
     path: string,
     opts?: { body?: unknown; write?: boolean; schema?: { parse: (v: unknown) => T } },
   ): Promise<T> {
-    if (opts?.write && !getEnv().openDentalWritesEnabled) {
-      throw new Error("Open Dental writes are disabled (OPEN_DENTAL_WRITES_ENABLED=false).");
+    if (opts?.write) {
+      if (forceReadOnly) {
+        await rejectWrite(
+          "Open Dental writes are blocked (OPEN_DENTAL_MODE=remote_readonly). remote_readonly blocks writes even if OPEN_DENTAL_WRITES_ENABLED=true.",
+        );
+      }
+      try {
+        assertWritesAllowed();
+      } catch (err) {
+        await rejectWrite(err instanceof Error ? err.message : "writes blocked");
+      }
     }
     const circuit = circuits.get(input.connectionKey) || { failures: 0 };
     if (circuit.openUntil && Date.now() < circuit.openUntil) {

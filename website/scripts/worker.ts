@@ -3,9 +3,13 @@ import { getEnv } from "../src/server/env";
 import { processOutboxBatch, claimNextJob, completeJob, failJob } from "../src/server/jobs/queue";
 import { prisma } from "../src/server/db";
 import { safeError, safeInfo } from "../src/server/audit";
-import { assertAutomationMayRun } from "../src/server/safety/controls";
-import { checkOutboundAllowed } from "../src/server/compliance/consent";
+import { assertPatientOutboundMaySend } from "../src/server/messaging/outboundGate";
 import { getMockProviders } from "../src/server/messaging/providers";
+import {
+  createPatientEmailProvider,
+  createPatientSmsProvider,
+} from "../src/server/messaging/patientProviders";
+import { emitAlert } from "../src/server/alerting";
 
 let shuttingDown = false;
 
@@ -29,42 +33,74 @@ async function handleJob(job: {
   }
 
   if (job.type === "outbound.message") {
-    const gate = await assertAutomationMayRun({
+    const channel = String(payload.channel || "sms") as "sms" | "email" | "voice";
+    const gate = await assertPatientOutboundMaySend({
       organizationId: job.organizationId,
       workflowKey: String(payload.workflowKey || "outbound"),
-      requireOutbound: true,
-      recipient: String(payload.to || ""),
+      channel,
+      purpose: String(payload.purpose || "general"),
+      recipient: String(payload.to || payload.phone || payload.email || ""),
+      contactId: payload.contactId ? String(payload.contactId) : undefined,
+      email: payload.email ? String(payload.email) : undefined,
+      phone: payload.phone ? String(payload.phone) : undefined,
+      requireConsent: Boolean(payload.requireConsent ?? true),
     });
     if (!gate.allowed) {
       safeInfo("[worker] outbound blocked", { jobId: job.id, reasons: gate.reasons });
       return;
     }
-    const channel = String(payload.channel || "sms") as "sms" | "email" | "voice";
-    const suppression = await checkOutboundAllowed({
-      organizationId: job.organizationId,
-      contactId: payload.contactId ? String(payload.contactId) : undefined,
-      email: payload.email ? String(payload.email) : undefined,
-      phone: payload.phone ? String(payload.phone) : undefined,
-      channel,
-      purpose: payload.purpose ? String(payload.purpose) : undefined,
-    });
-    if (!suppression.allowed) {
-      safeInfo("[worker] suppressed", { jobId: job.id, reasons: suppression.reasons });
-      return;
-    }
+    // Prefer patient adapters (fail-closed until BAA vendor). Local synthetic drills use mock.
     if (channel === "sms") {
-      await getMockProviders().sms.send({
+      const patient = await createPatientSmsProvider().send({
         to: String(payload.phone),
         body: String(payload.body || ""),
-        purpose: String(payload.purpose || "general"),
+        correlationId: job.correlationId || job.id,
       });
+      if (!patient.ok) {
+        await emitAlert({
+          kind: "message_provider_failure",
+          severity: "warning",
+          organizationId: job.organizationId,
+          correlationId: job.correlationId || undefined,
+          summary: "Patient SMS provider rejected send",
+          detail: { provider: patient.provider },
+        });
+        if (getEnv().workerExecutionMode === "local") {
+          await getMockProviders().sms.send({
+            to: String(payload.phone),
+            body: String(payload.body || ""),
+            purpose: String(payload.purpose || "general"),
+          });
+        } else {
+          throw new Error(patient.detail);
+        }
+      }
     } else if (channel === "email") {
-      await getMockProviders().email.send({
+      const patient = await createPatientEmailProvider().send({
         to: String(payload.email),
-        subject: String(payload.subject || "Hart Family Dental"),
-        text: String(payload.body || ""),
-        purpose: String(payload.purpose || "general"),
+        body: String(payload.body || ""),
+        correlationId: job.correlationId || job.id,
       });
+      if (!patient.ok) {
+        await emitAlert({
+          kind: "message_provider_failure",
+          severity: "warning",
+          organizationId: job.organizationId,
+          correlationId: job.correlationId || undefined,
+          summary: "Patient email provider rejected send",
+          detail: { provider: patient.provider },
+        });
+        if (getEnv().workerExecutionMode === "local") {
+          await getMockProviders().email.send({
+            to: String(payload.email),
+            subject: String(payload.subject || "Hart Family Dental"),
+            text: String(payload.body || ""),
+            purpose: String(payload.purpose || "general"),
+          });
+        } else {
+          throw new Error(patient.detail);
+        }
+      }
     }
   }
 }
@@ -93,6 +129,14 @@ async function loop() {
           "handler_error",
           err instanceof Error ? err.message : "unknown",
         );
+        await emitAlert({
+          kind: "worker_failure",
+          severity: "critical",
+          organizationId: job.organizationId,
+          correlationId: job.correlationId || undefined,
+          summary: "Worker job handler failed",
+          detail: { jobType: job.type },
+        });
       }
     } catch (err) {
       safeError("[worker] loop error", {

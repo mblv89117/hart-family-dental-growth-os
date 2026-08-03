@@ -15,7 +15,7 @@ export function hasMinRole(role: Role, min: Role): boolean {
 }
 
 export function canAccessOps(role: Role): boolean {
-  return role !== ("SystemService" as Role) || true;
+  return role !== ("SystemService" as Role);
 }
 
 export function canManageSafety(role: Role): boolean {

@@ -1,0 +1,12 @@
+# Staging durable worker template (Railway).
+# Do not connect this service to Production DATABASE_URL.
+# Keep OUTBOUND_COMMUNICATIONS_ENABLED=false and OPEN_DENTAL_WRITES_ENABLED=false.
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "website/Dockerfile.worker"
+
+[deploy]
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+healthcheckPath = ""
+healthcheckTimeout = 30

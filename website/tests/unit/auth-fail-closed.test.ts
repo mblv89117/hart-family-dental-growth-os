@@ -16,6 +16,7 @@ describe("production auth fail-closed", () => {
     "AUTH_MODE",
     "AUTH_PRODUCTION_APPROVED",
     "GROWTH_OS_PLATFORM_ENABLED",
+    "APP_ENV",
   ] as const;
   const snapshot: Record<string, string | undefined> = {};
 
