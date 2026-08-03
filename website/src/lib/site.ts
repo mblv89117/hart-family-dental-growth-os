@@ -1,3 +1,6 @@
+import { locationPath, locations } from "@/lib/locations";
+import { serviceCategories, servicePath } from "@/lib/services";
+
 export const site = {
   brand: "Hart Family Dental",
   legalName: "Harry Hart Dental Corporation",
@@ -6,65 +9,48 @@ export const site = {
   /** Long-term SEO domain (align after first cutover). */
   seoDomain: "https://hartfamilydds.com",
   interimDomain: "https://hfdds.net",
-  tagline: "Approachable family dentistry. Advanced care when you need it.",
+  tagline: "Care that lasts a lifetime",
   description:
-    "Hart Family Dental serves Yucca Valley and Desert Hot Springs with friendly family dentistry, dental implants, restorative care, and dentist-supervised teeth straightening.",
+    "Hart Family Dental provides general dentistry, restorative care, dental implants, dentures, CBCT imaging, and digital impressions in Desert Hot Springs and Yucca Valley.",
+  homepageTitle: "Hart Family Dental | Dentist in Desert Hot Springs & Yucca Valley",
+  homepageHeadline: "Comprehensive Dental Care for Healthy, Confident Smiles",
+  homepageSupport:
+    "Hart Family Dental provides personalized general, restorative, implant, and denture care at convenient locations in Desert Hot Springs and Yucca Valley.",
+  logo: {
+    horizontal: "/brand/hart-family-dental-logo-horizontal.png",
+    horizontalSm: "/brand/hart-family-dental-logo-horizontal-800.png",
+    mark: "/brand/hart-family-dental-logo-mark.png",
+    markSm: "/brand/hart-family-dental-logo-mark-256.png",
+    circular: "/brand/hart-family-dental-logo-circular.png",
+    stackedTransparent: "/brand/hart-family-dental-logo-stacked-transparent.png",
+    ogImage: "/brand/hart-family-dental-og-image.jpg",
+    favicon: "/brand/hart-family-dental-favicon.png",
+    appleTouchIcon: "/brand/hart-family-dental-apple-touch-icon.png",
+  },
+  npi: "1104492891",
 };
 
 export const nav = [
-  { href: "/yucca-valley", label: "Yucca Valley" },
-  { href: "/desert-hot-springs", label: "Desert Hot Springs" },
-  { href: "/dental-implants", label: "Implants" },
-  { href: "/teeth-straightening", label: "Straightening" },
-  { href: "/cash-pay-dentistry", label: "Cash-pay" },
+  { href: locationPath(locations.find((l) => l.id === "desert-hot-springs")!), label: "Desert Hot Springs" },
+  { href: locationPath(locations.find((l) => l.id === "yucca-valley")!), label: "Yucca Valley" },
+  { href: "/services", label: "Services" },
+  { href: "/financing", label: "Payment" },
   { href: "/contact", label: "Contact" },
 ];
 
-export const services = [
-  {
-    href: "/dental-implants",
-    title: "Dental implants",
-    blurb: "Replace missing teeth with options built for comfort, function, and confidence.",
-  },
-  {
-    href: "/full-mouth-dental-implants",
-    title: "Full-mouth implants",
-    blurb: "Explore fuller smile restoration pathways with clear consult next steps.",
-  },
-  {
-    href: "/teeth-straightening",
-    title: "Dentist-supervised straightening",
-    blurb: "A simpler path to a straighter smile — always with dentist oversight, never DIY.",
-  },
-  {
-    href: "/cash-pay-dentistry",
-    title: "Cash-pay dentistry",
-    blurb: "Clear next steps if you’re paying without insurance — no invented online prices.",
-  },
-  {
-    href: "/cosmetic-dentistry",
-    title: "Cosmetic dentistry",
-    blurb: "Whitening, veneers, and smile refreshes when clinically appropriate.",
-  },
-  {
-    href: "/restorative-dentistry",
-    title: "Restorative dentistry",
-    blurb: "Crowns, bridges, dentures, and care that helps you eat and smile comfortably.",
-  },
-  {
-    href: "/emergency-dentistry",
-    title: "Emergency dentistry",
-    blurb: "Tooth pain, broken teeth, and urgent concerns — call us for the soonest opening.",
-  },
-];
+/** Homepage + nav service highlights — five categories from Hart Offices.docx */
+export const services = serviceCategories.map((c) => ({
+  href: servicePath(c.slug),
+  title: c.title,
+  blurb: c.description.split(".")[0] + ".",
+}));
 
 export const footerLinks = [
   { href: "/about", label: "About" },
   { href: "/providers", label: "Providers" },
   { href: "/new-patients", label: "New patients" },
-  { href: "/smile-assessment", label: "Smile assessment" },
-  { href: "/cash-pay-dentistry", label: "Cash-pay" },
-  { href: "/financing", label: "Financing" },
+  { href: "/services", label: "Services" },
+  { href: "/financing", label: "Payment & financing" },
   { href: "/reviews", label: "Reviews" },
   { href: "/faq", label: "FAQ" },
   { href: "/privacy", label: "Privacy" },

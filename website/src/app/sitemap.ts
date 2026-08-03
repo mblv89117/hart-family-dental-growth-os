@@ -1,19 +1,12 @@
 import type { MetadataRoute } from "next";
+import { locations } from "@/lib/locations";
+import { allServicePaths } from "@/lib/services";
 import { site } from "@/lib/site";
 
-const paths = [
+const staticPaths = [
   "/",
-  "/yucca-valley",
-  "/desert-hot-springs",
-  "/dental-implants",
-  "/full-mouth-dental-implants",
-  "/teeth-straightening",
-  "/smile-assessment",
-  "/cosmetic-dentistry",
-  "/restorative-dentistry",
-  "/emergency-dentistry",
+  "/services",
   "/financing",
-  "/cash-pay-dentistry",
   "/new-patients",
   "/about",
   "/providers",
@@ -27,10 +20,13 @@ const paths = [
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const locationPaths = locations.map((l) => l.path);
+  const paths = [...staticPaths, ...locationPaths, ...allServicePaths()];
+
   return paths.map((path) => ({
     url: `${site.domain}${path === "/" ? "" : path}`,
     lastModified: new Date(),
-    changeFrequency: "weekly",
-    priority: path === "/" ? 1 : 0.7,
+    changeFrequency: "weekly" as const,
+    priority: path === "/" ? 1 : path.startsWith("/locations") || path.startsWith("/services") ? 0.8 : 0.6,
   }));
 }

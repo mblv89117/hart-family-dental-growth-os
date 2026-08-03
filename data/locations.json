@@ -5,65 +5,20 @@
     "primaryDomain": "hartfamilydds.com",
     "interimDeployDomain": "hfdds.net",
     "owner": "Dr. Harry Allen Hart, DDS",
-    "corporateContact": {
-      "name": "Lindsay Hawkins",
-      "title": "Corporate Secretary / Office Manager",
-      "phone": "(760) 365-6595",
-      "fax": "(760) 365-7203"
-    },
-    "techContact": {
-      "name": "Ryan Blakeslee",
-      "phone": "(951) 515-6246",
-      "notes": "Website coordination; Mason referenced as website builder"
-    },
+    "npi": "1104492891",
     "leadFollowUpOwner": {
       "name": "Wendy Delgado",
       "scope": "Both Yucca Valley and Desert Hot Springs desks",
-      "approved": "2026-07-21"
+      "primaryInbox": "hartdental02@hotmail.com"
     }
   },
+  "sourceOfTruth": "docs/source/Hart-Offices.docx (Hart Offices.docx)",
   "locations": [
     {
-      "id": "yucca-valley",
-      "name": "Hart Family Dental — Yucca Valley",
-      "slug": "yucca-valley",
-      "address": {
-        "street": "56728 Twentynine Palms Highway",
-        "streetAlt": "56728 29 Palms Hwy",
-        "city": "Yucca Valley",
-        "state": "CA",
-        "zip": "92284",
-        "country": "US"
-      },
-      "phone": "(760) 365-6595",
-      "fax": "(760) 365-7203",
-      "emailAccounts": ["hartdentalyv@hotmail.com", "hartdental@gmail.com"],
-      "leadNotifyEmail": "hartdentalyv@hotmail.com",
-      "locationDomain": "hartfamilyyv.com",
-      "canonicalPath": "/yucca-valley",
-      "hoursStatus": "OFFICIAL — Option A approved 2026-07-21 for both locations",
-      "hours": {
-        "monday": "8:00 AM – 4:30 PM",
-        "tuesday": "8:00 AM – 4:30 PM",
-        "wednesday": "8:00 AM – 4:30 PM",
-        "thursday": "8:00 AM – 4:30 PM",
-        "friday": "9:00 AM – 2:00 PM",
-        "saturday": "Closed",
-        "sunday": "Closed"
-      },
-      "serviceArea": [
-        "Yucca Valley",
-        "Joshua Tree",
-        "Twentynine Palms",
-        "Morongo Valley",
-        "Landers",
-        "Pioneertown"
-      ]
-    },
-    {
       "id": "desert-hot-springs",
-      "name": "Hart Family Dental — Desert Hot Springs",
+      "name": "Hart Family Dental \u2014 Desert Hot Springs",
       "slug": "desert-hot-springs",
+      "canonicalPath": "/locations/desert-hot-springs",
       "address": {
         "street": "11523 Palm Drive",
         "city": "Desert Hot Springs",
@@ -71,83 +26,150 @@
         "zip": "92240",
         "country": "US"
       },
-      "phone": "(760) 329-6713",
+      "phone": "(760) 314-4160",
+      "phoneHref": "tel:+17603144160",
       "fax": "(760) 329-1088",
-      "npi": "1689868564",
-      "emailAccounts": ["hartdental02@hotmail.com", "hartdental@gmail.com"],
       "leadNotifyEmail": "hartdental02@hotmail.com",
-      "locationDomain": "hartfamilydhs.com",
-      "canonicalPath": "/desert-hot-springs",
-      "hoursStatus": "OFFICIAL — Option A approved 2026-07-21 for both locations",
       "hours": {
-        "monday": "8:00 AM – 4:30 PM",
-        "tuesday": "8:00 AM – 4:30 PM",
-        "wednesday": "8:00 AM – 4:30 PM",
-        "thursday": "8:00 AM – 4:30 PM",
-        "friday": "9:00 AM – 2:00 PM",
+        "monday": "Closed",
+        "tuesday": "Closed",
+        "wednesday": "8:00 AM \u2013 4:00 PM",
+        "thursday": "Closed",
+        "friday": "Closed",
         "saturday": "Closed",
         "sunday": "Closed"
       },
-      "serviceArea": [
-        "Desert Hot Springs",
-        "Palm Springs",
-        "Cathedral City",
-        "Palm Desert",
-        "Rancho Mirage",
-        "Sky Valley"
-      ]
+      "lastPatientAppointment": "3:30 PM",
+      "languages": [
+        "English",
+        "Spanish"
+      ],
+      "acceptingNewPatients": true,
+      "sameDayAppointments": true,
+      "emergencyAppointments": false,
+      "payment": [
+        "Cash",
+        "Credit card",
+        "Debit card"
+      ],
+      "insurance": "None \u2014 cash/credit/debit only",
+      "financingCurrent": [
+        "CareCredit"
+      ],
+      "financingComingSoon": [
+        "Cherry",
+        "Sunbit"
+      ],
+      "membershipComingSoon": "Hart Family Dental Membership Plan",
+      "facebook": "https://www.facebook.com/hartfamilydentaldhs/",
+      "yelp": "https://www.yelp.com/biz/hart-family-dental-desert-hot-springs",
+      "googleBusinessProfile": "https://share.google/rZOWsM5Bf0Fmiu4yU",
+      "hoursStatus": "OFFICIAL \u2014 Hart Offices.docx 2026-08-02 (Wed only)",
+      "schedulingNote": "Last patient appointments typically scheduled by 3:30 PM",
+      "social": {
+        "facebook": "https://www.facebook.com/hartfamilydentaldhs/",
+        "yelp": "https://www.yelp.com/biz/hart-family-dental-desert-hot-springs",
+        "googleBusinessProfile": "https://share.google/rZOWsM5Bf0Fmiu4yU"
+      }
+    },
+    {
+      "id": "yucca-valley",
+      "name": "Hart Family Dental \u2014 Yucca Valley",
+      "slug": "yucca-valley",
+      "canonicalPath": "/locations/yucca-valley",
+      "address": {
+        "street": "56728 Twentynine Palms Highway",
+        "city": "Yucca Valley",
+        "state": "CA",
+        "zip": "92284",
+        "country": "US"
+      },
+      "phone": "(760) 389-7707",
+      "phoneHref": "tel:+17603897707",
+      "fax": "(760) 365-7203",
+      "leadNotifyEmail": "hartdentalyv@hotmail.com",
+      "hours": {
+        "monday": "8:00 AM \u2013 4:00 PM",
+        "tuesday": "8:00 AM \u2013 4:00 PM",
+        "wednesday": "Closed",
+        "thursday": "Closed",
+        "friday": "Closed",
+        "saturday": "Closed",
+        "sunday": "Closed"
+      },
+      "lastPatientAppointment": "3:30 PM",
+      "languages": [
+        "English",
+        "Spanish"
+      ],
+      "acceptingNewPatients": true,
+      "sameDayAppointments": true,
+      "emergencyAppointments": true,
+      "payment": [
+        "Cash",
+        "Credit card",
+        "Debit card"
+      ],
+      "insurance": "None \u2014 cash/credit/debit only",
+      "financingCurrent": [
+        "CareCredit"
+      ],
+      "financingComingSoon": [
+        "Cherry",
+        "Sunbit"
+      ],
+      "membershipComingSoon": "Hart Family Dental Membership Plan",
+      "facebook": "https://www.facebook.com/hartfamilydentalyv/",
+      "yelp": "https://www.yelp.com/biz/hart-family-dental-yucca-valley",
+      "googleBusinessProfile": "https://share.google/VVNz381E66m6FcbUP",
+      "hoursStatus": "OFFICIAL \u2014 Hart Offices.docx 2026-08-02 (Mon/Tue only)",
+      "schedulingNote": "Last patient appointments typically scheduled by 3:30 PM",
+      "social": {
+        "facebook": "https://www.facebook.com/hartfamilydentalyv/",
+        "yelp": "https://www.yelp.com/biz/hart-family-dental-yucca-valley",
+        "googleBusinessProfile": "https://share.google/VVNz381E66m6FcbUP"
+      }
+    }
+  ],
+  "conflictingInfoResolved": [
+    {
+      "topic": "Phone numbers",
+      "previousWebsite": "YV (760) 365-6595 \u00b7 DHS (760) 329-6713",
+      "sourceDocument": "YV 760-389-7707 \u00b7 DHS 760-314-4160 (CallRail)",
+      "resolution": "Updated site to CallRail numbers from Hart Offices.docx per assignment"
+    },
+    {
+      "topic": "Hours",
+      "previousWebsite": "Both offices Mon\u2013Thu 8:00\u20134:30 \u00b7 Fri 9:00\u20132:00",
+      "sourceDocument": "DHS Wednesday only 8a\u20134p; YV Monday/Tuesday only 8a\u20134p; last patient 3:30p",
+      "resolution": "Updated site to source-document hours; location-specific"
+    },
+    {
+      "topic": "Cosmetic dentistry",
+      "previousWebsite": "Dedicated cosmetic page (whitening/veneers)",
+      "sourceDocument": "Listed briefly under location services offered, but not in comprehensive service taxonomy",
+      "resolution": "Removed from primary nav/architecture; /cosmetic-dentistry 301 \u2192 /services/general-dentistry. Open question if a dedicated cosmetic category should return."
     }
   ],
   "servicesApproved": {
-    "status": "Approved 2026-07-21 from owner Target Services brief + financing deferred reply",
+    "status": "Updated 2026-08-02 from Hart Offices.docx",
     "provider": "Dr. Harry Allen Hart, DDS",
-    "bothLocations": [
-      "general-family",
-      "new-patient-exam-cleaning",
-      "emergency",
-      "dental-implants-single",
-      "implants-multiple-bridges",
-      "implant-supported-dentures",
-      "full-arch",
-      "implant-consult-second-opinion",
-      "dentist-supervised-aligners",
-      "cosmetic-veneers-whitening",
-      "crowns-bridges-dentures",
-      "root-canal",
-      "oral-surgery-routine",
-      "sedation-as-clinically-appropriate",
-      "same-week-emergency-when-capacity"
+    "npi": "1104492891",
+    "categories": [
+      "general-dentistry",
+      "restorative-dentistry",
+      "dentures",
+      "dental-implants",
+      "technology"
     ],
-    "deferred": ["financing-partners", "membership-savings-plan"]
-  },
-  "domains": {
-    "interimDeploy": {
-      "host": "hfdds.net",
-      "status": "Purchased GoDaddy 2026-07-21 — go-live authorized 2026-07-21",
-      "dns": ["3.33.130.190", "15.197.148.33"],
-      "cutoverStatus": "IN PROGRESS — deploy + DNS",
-      "recommendation": "Deploy Next.js here first; then align hartfamilydds.com"
-    },
-    "primary": {
-      "host": "hartfamilydds.com",
-      "status": "Parked GoDaddy lander — long-term SEO/brand domain",
-      "dns": ["3.33.130.190", "15.197.148.33"],
-      "cutoverStatus": "DEFERRED — after hfdds.net stable",
-      "recommendation": "Same app as hfdds.net; pick one canonical for GBP/Search Console"
-    },
-    "locationFunnels": [
-      {
-        "host": "hartfamilyyv.com",
-        "target": "https://hfdds.net/yucca-valley",
-        "status": "Deferred with brand-domain alignment",
-        "recommendation": "301 redirect to location page on canonical host"
-      },
-      {
-        "host": "hartfamilydhs.com",
-        "target": "https://hfdds.net/desert-hot-springs",
-        "status": "Deferred with brand-domain alignment",
-        "recommendation": "301 redirect to location page on canonical host"
-      }
-    ]
+    "deferredPublic": [
+      "cherry",
+      "sunbit",
+      "membership-plan"
+    ],
+    "notInDetailedTaxonomy": [
+      "cosmetic-dentistry"
+    ],
+    "notes": "Cosmetic dentistry appeared in location summary services offered but not in detailed service list; omitted from public taxonomy pending clarification."
   }
 }

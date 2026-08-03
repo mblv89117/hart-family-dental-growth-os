@@ -53,11 +53,25 @@ export function readAttribution(): UtmParams {
 
 export function trackEvent(name: string, params?: Record<string, string | number | boolean | undefined>) {
   if (typeof window === "undefined") return;
-  const payload = { event: name, ...params };
-  const w = window as Window & { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
-  w.dataLayer = w.dataLayer || [];
-  w.dataLayer.push(payload);
-  if (typeof w.gtag === "function") {
-    w.gtag("event", name, params || {});
+  const w = window as Window & {
+    dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
+    hfdTrack?: (event: string, params?: Record<string, unknown>) => void;
+    fbq?: (...args: unknown[]) => void;
+  };
+
+  if (typeof w.hfdTrack === "function") {
+    w.hfdTrack(name, params);
+  } else {
+    w.dataLayer = w.dataLayer || [];
+    w.dataLayer.push({ event: name, ...params });
+    if (typeof w.gtag === "function") {
+      w.gtag("event", name, params || {});
+    }
+  }
+
+  // Meta Pixel conversion hooks when pixel is configured via Analytics
+  if (typeof w.fbq === "function" && name === "form_submit_success") {
+    w.fbq("track", "Lead", params || {});
   }
 }

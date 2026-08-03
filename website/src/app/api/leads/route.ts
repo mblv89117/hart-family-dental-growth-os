@@ -5,6 +5,7 @@ import { getLocationById, leadOwner } from "@/lib/locations";
 import { deliverLeadEmail } from "@/lib/lead-delivery";
 import { isPlatformEnabled } from "@/server/env";
 import { safeError, safeInfo } from "@/server/logging";
+import { checkRateLimit, pruneRateLimits } from "@/server/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -214,6 +215,16 @@ async function handlePlatformLead(req: NextRequest, body: unknown) {
 }
 
 export async function POST(req: NextRequest) {
+  pruneRateLimits();
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const limited = checkRateLimit(`leads:${ip}`, { limit: 8, windowMs: 60_000 });
+  if (!limited.ok) {
+    return NextResponse.json(
+      { ok: false, error: "Too many requests. Please wait a moment or call the office." },
+      { status: 429, headers: { "Retry-After": String(limited.retryAfterSec) } },
+    );
+  }
+
   let body: LeadBody;
   try {
     body = await req.json();
