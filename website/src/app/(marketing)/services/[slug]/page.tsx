@@ -3,10 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AppointmentForm } from "@/components/AppointmentForm";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { ImplantOfferDisclosure } from "@/components/ImplantOfferDisclosure";
 import { JsonLd } from "@/components/JsonLd";
 import { PageHero, Prose } from "@/components/PageHero";
 import { ConversionStrip, FaqList, SectionHeading } from "@/components/Ui";
-import { locationPath, locations } from "@/lib/locations";
+import { locationPath, locations, type LocationId } from "@/lib/locations";
+import { parseOfficeParam } from "@/lib/office-context";
 import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/schema";
 import {
   getCategory,
@@ -17,7 +19,10 @@ import {
 } from "@/lib/services";
 import { site } from "@/lib/site";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = {
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ office?: string }>;
+};
 
 export function generateStaticParams() {
   const categorySlugs = serviceCategories.map((c) => ({ slug: c.slug }));
@@ -70,10 +75,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {};
 }
 
-function LocationLinks() {
+function LocationLinks({ preferredOffice }: { preferredOffice?: LocationId | null }) {
+  const ordered = preferredOffice
+    ? [...locations].sort((a, b) => Number(b.id === preferredOffice) - Number(a.id === preferredOffice))
+    : locations;
   return (
     <ul className="mt-3 space-y-2 text-sm">
-      {locations.map((loc) => (
+      {ordered.map((loc) => (
         <li key={loc.id}>
           <Link className="text-sage hover:underline focus-ring rounded" href={locationPath(loc)}>
             {loc.shortName}
@@ -82,14 +90,17 @@ function LocationLinks() {
           <a href={loc.phoneHref} className="text-ink-soft hover:text-ink focus-ring rounded">
             {loc.phone}
           </a>
+          {preferredOffice === loc.id ? (
+            <span className="ml-2 text-xs font-medium text-sage">This campaign office</span>
+          ) : null}
         </li>
       ))}
     </ul>
   );
 }
 
-function categoryFaqs(title: string): { q: string; a: string }[] {
-  return [
+function categoryFaqs(title: string, implantOffer: boolean): { q: string; a: string }[] {
+  const faqs = [
     {
       q: `Is ${title.toLowerCase()} available at both offices?`,
       a: "Yes. Hart Family Dental offers this category of care at both Desert Hot Springs and Yucca Valley. Hours and emergency availability differ by location.",
@@ -103,6 +114,13 @@ function categoryFaqs(title: string): { q: string; a: string }[] {
       a: "CareCredit financing is available for qualified applicants. Approval is never guaranteed. Cash, credit, and debit are accepted; additional options are coming soon.",
     },
   ];
+  if (implantOffer) {
+    faqs.unshift({
+      q: "Does the $999 Implant + PMMA Flex Crown include a permanent crown?",
+      a: "No. The $999 fee includes implant placement with a PMMA Flex Crown, which is provisional. A permanent crown is not included and is $1,100 additional. Exam + CT Scan is required and costs $100. Clinical eligibility is determined after evaluation.",
+    });
+  }
+  return faqs;
 }
 
 function serviceFaqs(title: string): { q: string; a: string }[] {
@@ -122,22 +140,30 @@ function serviceFaqs(title: string): { q: string; a: string }[] {
   ];
 }
 
-function CategoryPage({ slug }: { slug: string }) {
+function CategoryPage({ slug, office }: { slug: string; office: LocationId | null }) {
   const category = getCategory(slug)!;
+  const implantOffer = category.slug === "dental-implants";
+  const preferred = office ? locations.find((l) => l.id === office) : undefined;
   const childServices = category.serviceSlugs
     .map((s) => getService(s))
     .filter((s): s is NonNullable<typeof s> => Boolean(s));
-  const faqs = categoryFaqs(category.title);
+  const faqs = categoryFaqs(category.title, implantOffer);
   const url = `${site.domain}/services/${category.slug}`;
 
   return (
     <>
       <PageHero
-        title={category.title}
-        body={category.description}
+        title={implantOffer ? "$999 Implant + PMMA Flex Crown" : category.title}
+        body={
+          implantOffer
+            ? "Hart Family Dental’s normal fee for implant placement with a PMMA Flex Crown. The PMMA crown is provisional. A permanent crown is not included. Clinical eligibility is determined after evaluation."
+            : category.description
+        }
         primaryHref="#request"
         secondaryHref="/financing"
         secondaryLabel="CareCredit & payment"
+        phoneHref={preferred?.phoneHref}
+        phoneLabel={preferred ? `Call ${preferred.phone}` : undefined}
       />
       <Prose>
         <Breadcrumbs
@@ -149,6 +175,7 @@ function CategoryPage({ slug }: { slug: string }) {
         />
         <div className="grid gap-12 lg:grid-cols-[1.1fr_0.9fr]">
           <div className="space-y-10">
+            {implantOffer ? <ImplantOfferDisclosure /> : null}
             <section>
               <SectionHeading
                 title="Benefits"
@@ -182,7 +209,7 @@ function CategoryPage({ slug }: { slug: string }) {
                 title="Locations"
                 body="Care in this category is available at both Hart Family Dental offices."
               />
-              <LocationLinks />
+              <LocationLinks preferredOffice={office} />
             </section>
             <ConversionStrip />
             <section>
@@ -197,7 +224,11 @@ function CategoryPage({ slug }: { slug: string }) {
               </Link>
             </p>
           </div>
-          <AppointmentForm heading="Request an appointment" />
+          <AppointmentForm
+            heading="Request an appointment"
+            defaultLocation={office ?? undefined}
+            defaultService={implantOffer ? "Dental implants" : undefined}
+          />
         </div>
       </Prose>
       <JsonLd
@@ -324,10 +355,12 @@ function ServiceDetailPage({ slug }: { slug: string }) {
   );
 }
 
-export default async function ServiceSlugPage({ params }: Props) {
+export default async function ServiceSlugPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const query = await searchParams;
+  const office = parseOfficeParam(query.office);
   if (getCategory(slug)) {
-    return <CategoryPage slug={slug} />;
+    return <CategoryPage slug={slug} office={office} />;
   }
   if (getService(slug)) {
     return <ServiceDetailPage slug={slug} />;

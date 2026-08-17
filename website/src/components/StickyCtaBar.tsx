@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { locations } from "@/lib/locations";
+import { officeFromSearch } from "@/lib/office-context";
 
 /**
  * Mobile conversion bar: Schedule + Call.
@@ -10,9 +11,11 @@ import { locations } from "@/lib/locations";
  */
 export function StickyCtaBar() {
   const [hidden, setHidden] = useState(false);
-  const primary = locations[0];
+  const [officeId, setOfficeId] = useState<string | null>(null);
+  const preferred = locations.find((l) => l.id === officeId) ?? locations[0];
 
   useEffect(() => {
+    setOfficeId(officeFromSearch(window.location.search));
     const form = document.getElementById("request");
     if (!form || typeof IntersectionObserver === "undefined") return;
 
@@ -34,16 +37,16 @@ export function StickyCtaBar() {
     >
       <div className="mx-auto flex max-w-6xl items-center gap-2">
         <Link
-          href="/contact#request"
+          href={typeof document !== "undefined" && document.getElementById("request") ? "#request" : "/contact#request"}
           className="flex-1 rounded-full bg-brand px-4 py-3 text-center text-sm font-medium text-white transition hover:bg-brand-deep focus-ring"
         >
           Schedule appointment
         </Link>
         <a
-          href={primary.phoneHref}
+          href={preferred.phoneHref}
           className="flex-1 rounded-full bg-sky-deep px-4 py-3 text-center text-sm font-medium text-white transition hover:opacity-90 focus-ring"
         >
-          Call now
+          Call {preferred.shortName}
         </a>
       </div>
       <div className="mx-auto mt-1.5 flex max-w-6xl justify-center gap-4 text-[11px] text-ink-soft">

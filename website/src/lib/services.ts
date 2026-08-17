@@ -103,9 +103,9 @@ export const serviceCategories: ServiceCategory[] = [
       "implant-consultation",
       "bone-grafting",
     ],
-    metaTitle: "Dental Implants",
+    metaTitle: "Dental Implants | $999 Implant + PMMA Flex Crown",
     metaDescription:
-      "Single, multiple, and full-arch dental implants, implant crowns and bridges, consultations, and bone grafting at Hart Family Dental.",
+      "Hart Family Dental $999 Implant + PMMA Flex Crown. PMMA crown is provisional. Permanent crown $1,100 additional. Exam + CT $100. CareCredit for qualified applicants.",
   },
   {
     id: "technology",

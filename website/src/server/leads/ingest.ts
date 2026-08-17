@@ -28,6 +28,8 @@ export const publicLeadSchema = z.object({
   utm_content: z.string().trim().max(120).optional().default(""),
   utm_term: z.string().trim().max(120).optional().default(""),
   gclid: z.string().trim().max(120).optional().default(""),
+  gbraid: z.string().trim().max(200).optional().default(""),
+  wbraid: z.string().trim().max(200).optional().default(""),
   fbclid: z.string().trim().max(120).optional().default(""),
   referrer: z.string().trim().max(500).optional().default(""),
 });

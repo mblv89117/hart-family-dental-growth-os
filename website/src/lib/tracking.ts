@@ -7,6 +7,8 @@ export type UtmParams = {
   utm_content?: string;
   utm_term?: string;
   gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
   fbclid?: string;
   referrer?: string;
 };
@@ -18,6 +20,8 @@ const UTM_KEYS = [
   "utm_content",
   "utm_term",
   "gclid",
+  "gbraid",
+  "wbraid",
   "fbclid",
 ] as const;
 

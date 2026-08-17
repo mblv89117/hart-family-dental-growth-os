@@ -32,6 +32,8 @@ type LeadBody = {
   utm_content?: string;
   utm_term?: string;
   gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
   fbclid?: string;
   referrer?: string;
 };
@@ -77,6 +79,8 @@ async function handleLegacyLead(req: NextRequest, body: LeadBody) {
     utm_content: sanitize(body.utm_content, 120),
     utm_term: sanitize(body.utm_term, 120),
     gclid: sanitize(body.gclid, 120),
+    gbraid: sanitize(body.gbraid, 200),
+    wbraid: sanitize(body.wbraid, 200),
     fbclid: sanitize(body.fbclid, 120),
     referrer: sanitize(body.referrer, 500),
     userAgent: req.headers.get("user-agent")?.slice(0, 200) || "",
