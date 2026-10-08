@@ -18,9 +18,22 @@ export function Analytics() {
       <Script id="hfd-datalayer-init" strategy="afterInteractive">{`
         window.dataLayer = window.dataLayer || [];
         window.hfdTrack = window.hfdTrack || function hfdTrack(event, params) {
-          window.dataLayer.push(Object.assign({ event: event }, params || {}));
+          var allow = { formType: 1, location: 1, path: 1, office: 1 };
+          var clean = {};
+          var src = params || {};
+          Object.keys(src).forEach(function (key) {
+            if (!allow[key] || src[key] == null || src[key] === '') return;
+            var text = String(src[key]).slice(0, 120);
+            if (key === 'path') {
+              text = text.split('?')[0].split('#')[0];
+              if (text.charAt(0) !== '/') return;
+            }
+            if ((key === 'location' || key === 'office') && text !== 'yucca-valley' && text !== 'desert-hot-springs') return;
+            clean[key] = text;
+          });
+          window.dataLayer.push(Object.assign({ event: event }, clean));
           if (typeof window.gtag === 'function') {
-            window.gtag('event', event, params || {});
+            window.gtag('event', event, clean);
           }
         };
       `}</Script>
@@ -43,8 +56,21 @@ export function Analytics() {
             function gtag(){dataLayer.push(arguments);}
             window.gtag = gtag;
             gtag('js', new Date());
-            gtag('config', '${ga}', { send_page_view: true });
-            ${ads ? `gtag('config', '${ads}');` : ""}
+            gtag('config', '${ga}', { send_page_view: false });
+            ${ads ? `gtag('config', '${ads}', { send_page_view: false });` : ""}
+            (function () {
+              var sensitive = {service:1,name:1,email:1,phone:1,message:1,goals:1,concerns:1,patient:1,transcript:1,treatment:1,appointment:1,preferreddaytime:1,smsconsent:1,emailconsent:1,companywebsite:1,priorortho:1,dentalvisit:1};
+              var url = new URL(window.location.href);
+              url.hash = '';
+              Array.from(url.searchParams.keys()).forEach(function (key) {
+                if (sensitive[key.toLowerCase()]) url.searchParams.delete(key);
+              });
+              gtag('event', 'page_view', {
+                page_location: url.toString(),
+                page_path: url.pathname,
+                page_title: document.title
+              });
+            })();
           `}</Script>
         </>
       ) : null}

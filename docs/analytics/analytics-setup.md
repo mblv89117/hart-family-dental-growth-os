@@ -1,5 +1,9 @@
 # Analytics & Attribution Setup
 
+**Production check, 2026-10-08:** `https://www.hfdds.net` loads GA4 measurement id `G-VPNLPP3BMV`. GTM, Clarity, Meta Pixel, and the CallRail swap script were not in the HTML. The published phone numbers are the CallRail tracking numbers themselves.
+
+Analytics events must not include form contents (name, phone, email, message) or clinical service text. Page views drop those query keys before they are sent. See `website/src/lib/analytics-privacy.ts`.
+
 ## Implemented in repo (no fabricated IDs)
 
 | Capability | Status |

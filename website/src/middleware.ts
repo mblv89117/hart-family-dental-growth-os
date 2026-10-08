@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { canonicalRedirectUrl } from "@/lib/public-host";
 
 function notFound() {
   return new NextResponse("Not Found", { status: 404 });
@@ -32,6 +33,11 @@ function opsMayExpose(): boolean {
 export function middleware(req: NextRequest) {
   const host = req.headers.get("host")?.toLowerCase().replace(/:\d+$/, "") || "";
   const { pathname, search } = req.nextUrl;
+
+  const canonical = canonicalRedirectUrl(host, pathname, search);
+  if (canonical) {
+    return NextResponse.redirect(canonical, 301);
+  }
 
   if (host === "hartfamilyyv.com" || host === "www.hartfamilyyv.com") {
     const url = new URL(`https://hfdds.net/locations/yucca-valley${pathname === "/" ? "" : pathname}${search}`);

@@ -176,8 +176,17 @@ async function sendViaWebhook(lead: Record<string, unknown>, primaryInbox: strin
   try {
     const res = await fetch(webhook, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...lead, notifyInbox: primaryInbox, deliveries }),
+      headers: {
+        "Content-Type": "application/json",
+        "X-HFD-Lead-Contract": "hfd-website-lead-1",
+      },
+      body: JSON.stringify({
+        contractVersion: "hfd-website-lead-1",
+        source: "hfdds-website",
+        ...lead,
+        notifyInbox: primaryInbox,
+        deliveries,
+      }),
     });
     return {
       channel: "webhook",
@@ -206,9 +215,18 @@ export async function deliverLeadEmail(lead: Record<string, unknown>, primaryInb
 
   const anyTransactionalOk = deliveries.some((d) => d.ok && (d.channel === "smtp" || d.channel === "resend"));
   if (!anyTransactionalOk) {
-    // Attempt FormSubmit to each recipient — usually needs Activate Form email first.
-    for (const inbox of recipients) {
-      deliveries.push(await sendViaFormSubmit(lead, inbox, subject));
+    // FormSubmit posts the full lead (name, phone, email, message) to a third party.
+    // Leave it off unless the owner explicitly accepts that disclosure.
+    if (process.env.LEAD_FORMSUBMIT_FALLBACK === "true") {
+      for (const inbox of recipients) {
+        deliveries.push(await sendViaFormSubmit(lead, inbox, subject));
+      }
+    } else {
+      deliveries.push({
+        channel: "formsubmit",
+        ok: false,
+        detail: "skipped; set LEAD_FORMSUBMIT_FALLBACK=true to allow",
+      });
     }
   }
 

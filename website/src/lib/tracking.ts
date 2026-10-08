@@ -1,5 +1,7 @@
 /** Client-side attribution + conversion helpers (no fabricated IDs). */
 
+import { referrerWithoutQuery, sanitizeAnalyticsParams } from "@/lib/analytics-privacy";
+
 export type UtmParams = {
   utm_source?: string;
   utm_medium?: string;
@@ -7,6 +9,8 @@ export type UtmParams = {
   utm_content?: string;
   utm_term?: string;
   gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
   fbclid?: string;
   referrer?: string;
 };
@@ -18,6 +22,8 @@ const UTM_KEYS = [
   "utm_content",
   "utm_term",
   "gclid",
+  "gbraid",
+  "wbraid",
   "fbclid",
 ] as const;
 
@@ -30,7 +36,8 @@ export function captureAttributionFromLocation(search: string, referrer: string)
     const v = params.get(key);
     if (v) data[key] = v.slice(0, 200);
   }
-  if (referrer) data.referrer = referrer.slice(0, 500);
+  const safeReferrer = referrerWithoutQuery(referrer);
+  if (safeReferrer) data.referrer = safeReferrer;
   if (Object.keys(data).length) {
     try {
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(data));
@@ -53,6 +60,7 @@ export function readAttribution(): UtmParams {
 
 export function trackEvent(name: string, params?: Record<string, string | number | boolean | undefined>) {
   if (typeof window === "undefined") return;
+  const safe = sanitizeAnalyticsParams(params);
   const w = window as Window & {
     dataLayer?: unknown[];
     gtag?: (...args: unknown[]) => void;
@@ -61,17 +69,17 @@ export function trackEvent(name: string, params?: Record<string, string | number
   };
 
   if (typeof w.hfdTrack === "function") {
-    w.hfdTrack(name, params);
+    w.hfdTrack(name, safe);
   } else {
     w.dataLayer = w.dataLayer || [];
-    w.dataLayer.push({ event: name, ...params });
+    w.dataLayer.push({ event: name, ...safe });
     if (typeof w.gtag === "function") {
-      w.gtag("event", name, params || {});
+      w.gtag("event", name, safe);
     }
   }
 
-  // Meta Pixel conversion hooks when pixel is configured via Analytics
+  // Meta Lead event gets the same allowlist — never form contents or service text.
   if (typeof w.fbq === "function" && name === "form_submit_success") {
-    w.fbq("track", "Lead", params || {});
+    w.fbq("track", "Lead", safe);
   }
 }

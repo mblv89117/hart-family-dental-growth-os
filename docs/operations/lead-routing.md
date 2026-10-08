@@ -52,10 +52,9 @@ Implementation (`website/src/app/api/leads/route.ts`):
 
 ## Location selection rules
 
-1. User-selected office wins when provided  
-2. Else phone number / zip / city heuristic  
-3. Else “nearest / either office” queue — Wendy monitors both  
-4. Implant or straightening may route to the office with sooner consult capacity (define weekly)
+1. User-selected office wins when it is exactly `yucca-valley` or `desert-hot-springs`.
+2. Any other value — blank, “either”, “both”, a city guess, or a typo — is rejected. The API returns 400 and does not email either office. It does not default to Yucca Valley.
+3. There is no automatic nearest-office guess on the website form.
 
 ## Response-time standards
 
@@ -77,10 +76,13 @@ Do not treat form submit as revenue.
 
 ## Hours context for routing
 
-Both offices (Option A approved):
+Verified office hours (do not use the retired Monday–Thursday / Friday schedule):
 
-- Monday–Thursday: 8:00 AM – 4:30 PM  
-- Friday: 9:00 AM – 2:00 PM  
-- Saturday & Sunday: Closed  
+| Office | Hours | Last appointment | Lead inbox | CallRail number |
+| --- | --- | --- | --- | --- |
+| Yucca Valley | Monday and Tuesday, 8:00 AM–4:00 PM. Closed Wednesday–Sunday. | 3:30 PM | `hartdentalyv@hotmail.com` | (760) 389-7707 |
+| Desert Hot Springs | Wednesday, 8:00 AM–4:00 PM. Closed all other days. | 3:30 PM | `hartdental02@hotmail.com` | (760) 314-4160 |
 
-After-hours and weekend inquiries → thank-you ack + Wendy follow-up next business day.
+After-hours and closed-day inquiries → thank-you acknowledgment + follow-up on that office’s next open day.
+
+Website → 360 Growth form-lead contract: `docs/integrations/360-growth-lead-handoff.md`. CallRail call events stay on 360; this site does not ingest them.
