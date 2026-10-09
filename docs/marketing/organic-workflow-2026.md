@@ -24,7 +24,7 @@ Do not add orthodontics, clear aligners, or a smile-assessment offer. `/teeth-st
 
 Payment language already on the site: cash, credit, debit, and CareCredit for qualified applicants. Cherry, Sunbit, and a membership plan are described as not yet available. Insurance is described as not accepted. Do not publish a new financing or insurance claim. Dr. Hart should confirm CareCredit is still active; if it is not, the financing page needs a follow-up edit.
 
-The live implants page on production currently shows a “$999 Implant + PMMA Flex Crown” fee (and related fees) from the unmerged branch `feature/implant-offer-disclosures`. That price is not in the verified fact list for this mission, and `docs/approvals/offers-for-approval.md` still says offers need a signature. This branch does not copy those prices. See owner action 1.
+The live implants page on production currently shows a “$999 Implant + PMMA Flex Crown” fee (and related fees) from the unmerged branch `feature/implant-offer-disclosures`. That price is not in the verified fact list for this mission, and `docs/approvals/offers-for-approval.md` still says offers need a signature. `main` and this branch do not contain that copy. The deployment that is serving it, and the 2026-08-03 production deployment that does not, are in `docs/operations/vercel-deploy-and-rollback.md`.
 
 ## Local SEO plan
 

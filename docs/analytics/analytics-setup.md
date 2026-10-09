@@ -1,8 +1,8 @@
 # Analytics & Attribution Setup
 
-**Production check, 2026-10-08:** `https://www.hfdds.net` loads GA4 measurement id `G-VPNLPP3BMV`. GTM, Clarity, Meta Pixel, and the CallRail swap script were not in the HTML. The published phone numbers are the CallRail tracking numbers themselves.
+**Production check, 2026-10-08:** `https://www.hfdds.net` loads GA4 measurement id `G-VPNLPP3BMV`. GTM, Clarity, Meta Pixel, and the CallRail swap script were not in the HTML. The published phone numbers are the CallRail tracking numbers themselves. The same measurement id was still on `https://hfdds.net` on 2026-10-09. What that property may already have stored, and the owner steps to redact and delete it, are in `docs/analytics/ga4-historical-disclosure.md`.
 
-Analytics events must not include form contents (name, phone, email, message) or clinical service text. Page views drop those query keys before they are sent. See `website/src/lib/analytics-privacy.ts`.
+Analytics events must not include form contents (name, phone, email, message) or clinical service text. Page views drop those query keys before they are sent. See `website/src/lib/analytics-privacy.ts`. That behavior is in this branch. The deployment on the production domains does not include it yet.
 
 ## Implemented in repo (no fabricated IDs)
 
@@ -34,4 +34,4 @@ Analytics events must not include form contents (name, phone, email, message) or
 4. Submit a **TEST LEAD** → `form_submit_success`.  
 5. Confirm realtime hits in GA4 within 60 seconds.
 
-Until IDs are provided, analytics remain **code-ready / not measuring**.
+GA4 is already measuring on production under `G-VPNLPP3BMV`. GTM, Clarity, Meta Pixel, and Google Ads stay unloaded until their env ids are set.
