@@ -4,6 +4,7 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { locations, LocationId } from "@/lib/locations";
+import { thankYouPath } from "@/lib/office-routing";
 import { appointmentServiceOptions } from "@/lib/services";
 import { readAttribution, trackEvent } from "@/lib/tracking";
 
@@ -66,13 +67,9 @@ export function AppointmentForm({
       trackEvent("form_submit_success", {
         formType,
         location: String(payload.location || ""),
-        service: String(payload.service || ""),
       });
       trackEvent("location_selection", { location: String(payload.location || "") });
-      const loc = String(payload.location || "");
-      router.push(
-        `/thank-you?location=${encodeURIComponent(loc)}&service=${encodeURIComponent(String(payload.service || ""))}`,
-      );
+      router.push(thankYouPath(String(payload.location || "")));
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong.");
@@ -111,16 +108,16 @@ export function AppointmentForm({
         </label>
         <label className="grid gap-1 text-sm">
           <span>Full name</span>
-          <input required name="name" className={fieldClass} autoComplete="name" />
+          <input required name="name" className={fieldClass} autoComplete="name" data-clarity-mask="true" />
         </label>
         <div className="grid gap-4 md:grid-cols-2">
           <label className="grid gap-1 text-sm">
             <span>Phone</span>
-            <input required name="phone" type="tel" className={fieldClass} autoComplete="tel" />
+            <input required name="phone" type="tel" className={fieldClass} autoComplete="tel" data-clarity-mask="true" />
           </label>
           <label className="grid gap-1 text-sm">
             <span>Email</span>
-            <input required name="email" type="email" className={fieldClass} autoComplete="email" />
+            <input required name="email" type="email" className={fieldClass} autoComplete="email" data-clarity-mask="true" />
           </label>
         </div>
         <div className="grid gap-4 md:grid-cols-2">
@@ -171,12 +168,13 @@ export function AppointmentForm({
               placeholder="e.g., Wednesday mornings"
               className={fieldClass}
               autoComplete="off"
+              data-clarity-mask="true"
             />
           </label>
         </div>
         <label className="grid gap-1 text-sm">
           <span>Message (optional — avoid sensitive medical details)</span>
-          <textarea name="message" rows={3} className={fieldClass} />
+          <textarea name="message" rows={3} className={fieldClass} data-clarity-mask="true" />
         </label>
         <label className="flex items-start gap-2 text-xs text-ink-soft">
           <input required type="checkbox" name="smsConsent" className="mt-1" value="yes" />

@@ -12,6 +12,7 @@ vi.mock("@/lib/lead-delivery", () => ({
 
 describe("platform-disabled public lead compatibility", () => {
   beforeEach(() => {
+    vi.clearAllMocks();
     process.env.GROWTH_OS_PLATFORM_ENABLED = "false";
     process.env.OPS_ENABLED = "false";
     (process.env as Record<string, string>)["NODE_ENV"] = "test";
@@ -75,5 +76,66 @@ describe("platform-disabled public lead compatibility", () => {
     expect(res.status).toBe(503);
     expect(json.ok).toBe(false);
     expect(json.error).not.toMatch(/prisma|stack|password/i);
+  });
+
+  it("routes each office to its own inbox", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+    const { deliverLeadEmail } = await import("@/lib/lead-delivery");
+    const cases = [
+      ["yucca-valley", "hartdentalyv@hotmail.com"],
+      ["desert-hot-springs", "hartdental02@hotmail.com"],
+    ] as const;
+
+    for (const [location, inbox] of cases) {
+      vi.mocked(deliverLeadEmail).mockClear();
+      const req = new NextRequest("http://localhost/api/leads", {
+        method: "POST",
+        body: JSON.stringify({
+          name: "TEST LEAD — DO NOT CONTACT",
+          phone: "7605550199",
+          email: "test-lead@example.test",
+          location,
+          smsConsent: "yes",
+          formType: "appointment",
+          service: "New patient visit",
+          message: "TEST LEAD — DO NOT CONTACT",
+        }),
+        headers: { "content-type": "application/json" },
+      });
+      const res = await POST(req);
+      const json = await res.json();
+      expect(res.status).toBe(200);
+      expect(json.ok).toBe(true);
+      expect(json.notifyInbox).toBe(inbox);
+      expect(deliverLeadEmail).toHaveBeenCalledTimes(1);
+      expect(vi.mocked(deliverLeadEmail).mock.calls[0]?.[1]).toBe(inbox);
+    }
+  });
+
+  it("fails closed for an ambiguous office instead of defaulting to Yucca Valley", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+    const { deliverLeadEmail } = await import("@/lib/lead-delivery");
+
+    for (const location of ["both", "either", "unsure", "yucca", " "]) {
+      const req = new NextRequest("http://localhost/api/leads", {
+        method: "POST",
+        body: JSON.stringify({
+          name: "TEST LEAD — DO NOT CONTACT",
+          phone: "7605550199",
+          email: "test-lead@example.test",
+          location,
+          smsConsent: "yes",
+          message: "TEST LEAD — DO NOT CONTACT",
+        }),
+        headers: { "content-type": "application/json" },
+      });
+      const res = await POST(req);
+      const json = await res.json();
+      expect(res.status).toBe(400);
+      expect(json.ok).toBe(false);
+      expect(json.notifyInbox).toBeUndefined();
+    }
+
+    expect(deliverLeadEmail).not.toHaveBeenCalled();
   });
 });

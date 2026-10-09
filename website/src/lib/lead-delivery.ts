@@ -1,5 +1,8 @@
+import { createHmac } from "node:crypto";
 import nodemailer from "nodemailer";
 import { leadOwner } from "@/lib/locations";
+
+export const LEAD_WEBHOOK_CONTRACT = "hfd-website-lead-1";
 
 export type DeliveryResult = {
   channel: string;
@@ -170,22 +173,81 @@ async function sendViaFormSubmit(
   }
 }
 
-async function sendViaWebhook(lead: Record<string, unknown>, primaryInbox: string, deliveries: DeliveryResult[]) {
-  const webhook = process.env.LEAD_WEBHOOK_URL?.trim();
-  if (!webhook) return { channel: "webhook", ok: false, detail: "LEAD_WEBHOOK_URL not set" } as DeliveryResult;
+/**
+ * The intake URL is origin + path only. A query string, fragment, or userinfo
+ * would put a credential in the URL, so those values are refused before any fetch.
+ */
+export function plainLeadWebhookUrlProblem(raw: string | undefined): string | null {
+  const webhook = raw?.trim() ?? "";
+  if (!webhook) return "LEAD_WEBHOOK_URL not set";
+  if (webhook.includes("?") || webhook.includes("#")) {
+    return "LEAD_WEBHOOK_URL must be a plain URL with no query string";
+  }
+  let url: URL;
+  try {
+    url = new URL(webhook);
+  } catch {
+    return "LEAD_WEBHOOK_URL is not a valid URL";
+  }
+  if (url.username || url.password) {
+    return "LEAD_WEBHOOK_URL must not contain embedded credentials";
+  }
+  if (url.search || url.hash) {
+    return "LEAD_WEBHOOK_URL must be a plain URL with no query string";
+  }
+  if (url.protocol !== "https:" && url.protocol !== "http:") {
+    return "LEAD_WEBHOOK_URL must be an http(s) URL";
+  }
+  return null;
+}
+
+/** HMAC-SHA256 of the exact JSON body bytes. The timestamp header is not part of the MAC. */
+export function signLeadWebhookBody(secret: string, rawBody: string): string {
+  return createHmac("sha256", secret).update(rawBody).digest("hex");
+}
+
+export function leadWebhookHeaders(secret: string, rawBody: string, timestampSeconds: number) {
+  return {
+    "Content-Type": "application/json",
+    "X-HFD-Lead-Contract": LEAD_WEBHOOK_CONTRACT,
+    "X-HFD-Signature": `sha256=${signLeadWebhookBody(secret, rawBody)}`,
+    "X-HFD-Timestamp": String(timestampSeconds),
+  };
+}
+
+export async function sendLeadWebhook(
+  lead: Record<string, unknown>,
+  primaryInbox: string,
+  deliveries: DeliveryResult[],
+  now: Date = new Date(),
+): Promise<DeliveryResult> {
+  const webhook = process.env.LEAD_WEBHOOK_URL?.trim() ?? "";
+  const urlProblem = plainLeadWebhookUrlProblem(webhook);
+  if (urlProblem) return { channel: "webhook", ok: false, detail: urlProblem };
+  const secret = process.env.LEAD_WEBHOOK_SECRET?.trim() ?? "";
+  if (!secret) return { channel: "webhook", ok: false, detail: "LEAD_WEBHOOK_SECRET not set" };
+
+  const rawBody = JSON.stringify({
+    contractVersion: LEAD_WEBHOOK_CONTRACT,
+    source: "hfdds-website",
+    ...lead,
+    notifyInbox: primaryInbox,
+    deliveries,
+  });
+  const timestampSeconds = Math.floor(now.getTime() / 1000);
   try {
     const res = await fetch(webhook, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...lead, notifyInbox: primaryInbox, deliveries }),
+      headers: leadWebhookHeaders(secret, rawBody, timestampSeconds),
+      body: rawBody,
     });
     return {
       channel: "webhook",
       ok: res.ok,
       detail: res.ok ? undefined : `status ${res.status}`,
-    } as DeliveryResult;
+    };
   } catch (err) {
-    return { channel: "webhook", ok: false, detail: String(err) } as DeliveryResult;
+    return { channel: "webhook", ok: false, detail: String(err) };
   }
 }
 
@@ -206,13 +268,22 @@ export async function deliverLeadEmail(lead: Record<string, unknown>, primaryInb
 
   const anyTransactionalOk = deliveries.some((d) => d.ok && (d.channel === "smtp" || d.channel === "resend"));
   if (!anyTransactionalOk) {
-    // Attempt FormSubmit to each recipient — usually needs Activate Form email first.
-    for (const inbox of recipients) {
-      deliveries.push(await sendViaFormSubmit(lead, inbox, subject));
+    // FormSubmit posts the full lead (name, phone, email, message) to a third party.
+    // Leave it off unless the owner explicitly accepts that disclosure.
+    if (process.env.LEAD_FORMSUBMIT_FALLBACK === "true") {
+      for (const inbox of recipients) {
+        deliveries.push(await sendViaFormSubmit(lead, inbox, subject));
+      }
+    } else {
+      deliveries.push({
+        channel: "formsubmit",
+        ok: false,
+        detail: "skipped; set LEAD_FORMSUBMIT_FALLBACK=true to allow",
+      });
     }
   }
 
-  deliveries.push(await sendViaWebhook(lead, primaryInbox, deliveries));
+  deliveries.push(await sendLeadWebhook(lead, primaryInbox, deliveries));
 
   const emailDelivered = deliveries.some(
     (d) => d.ok && (d.channel === "smtp" || d.channel === "resend" || d.channel === "formsubmit"),
