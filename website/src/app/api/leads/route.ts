@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendFile, mkdir } from "fs/promises";
 import path from "path";
+import { explicitOffice } from "@/lib/hfd-lead-webhook";
 import { getLocationById, leadOwner } from "@/lib/locations";
 import { deliverLeadEmail } from "@/lib/lead-delivery";
 import { isPlatformEnabled } from "@/server/env";
@@ -42,8 +43,8 @@ function sanitize(value: unknown, max = 500) {
 }
 
 function officeInbox(locationId: string) {
-  const loc = getLocationById(locationId);
-  return loc?.leadNotifyEmail || "hartdentalyv@hotmail.com";
+  if (!explicitOffice(locationId)) return null;
+  return getLocationById(locationId)?.leadNotifyEmail ?? null;
 }
 
 /** Pre-platform public path — no Prisma, no worker, no AUTH_SECRET required. */
@@ -89,14 +90,20 @@ async function handleLegacyLead(req: NextRequest, body: LeadBody) {
     );
   }
 
+  const primaryInbox = officeInbox(lead.location);
+  if (!primaryInbox) {
+    return NextResponse.json(
+      { ok: false, error: "Preferred office must be Yucca Valley or Desert Hot Springs." },
+      { status: 400 },
+    );
+  }
+
   if (!lead.smsConsent) {
     return NextResponse.json(
       { ok: false, error: "SMS consent is required for appointment follow-up." },
       { status: 400 },
     );
   }
-
-  const primaryInbox = officeInbox(lead.location);
 
   try {
     const dir = path.join(process.cwd(), "..", "data", "leads");

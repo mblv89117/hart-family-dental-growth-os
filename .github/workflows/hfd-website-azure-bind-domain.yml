@@ -1,0 +1,71 @@
+# MANUAL ONLY. Do not run this as part of validation or from a pull request.
+# Binds hfdds.net and www.hfdds.net on the Container App and requests a
+# managed certificate. It does not change GoDaddy DNS and does not touch Vercel.
+# Follow docs/AZURE_DNS_CUTOVER_ROLLBACK.md. Azure hostname validation fails
+# until the verification record in that runbook exists.
+
+name: HFD website bind production domain
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: 'Type BIND_HFDDS_NET to bind the production hostnames. This does not change DNS.'
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  bind:
+    name: Bind hfdds.net on Container Apps
+    if: github.event.inputs.confirmation == 'BIND_HFDDS_NET'
+    runs-on: ubuntu-latest
+    environment: hfd-website-production
+    env:
+      RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+      CONTAINER_APP: ${{ vars.AZURE_CONTAINER_APP_NAME }}
+    steps:
+      - name: Azure login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Show verification values and add hostnames
+        run: |
+          set -euo pipefail
+          test -n "$RESOURCE_GROUP"
+          test -n "$CONTAINER_APP"
+          ENV_ID=$(az containerapp show \
+            --name "$CONTAINER_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --query properties.managedEnvironmentId -o tsv)
+          az resource show --ids "$ENV_ID" \
+            --query "{staticIp:properties.staticIp,customDomainVerificationId:properties.customDomainVerificationId}" \
+            -o json
+          for host in hfdds.net www.hfdds.net; do
+            az containerapp hostname add \
+              --hostname "$host" \
+              --name "$CONTAINER_APP" \
+              --resource-group "$RESOURCE_GROUP"
+          done
+          echo "Hostnames were added on the Container App only. Public DNS was not changed."
+
+      - name: Bind managed certificates
+        run: |
+          set -euo pipefail
+          # www can validate by CNAME. The apex uses the asuid TXT record from the runbook.
+          az containerapp hostname bind \
+            --hostname www.hfdds.net \
+            --name "$CONTAINER_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --validation-method CNAME
+          az containerapp hostname bind \
+            --hostname hfdds.net \
+            --name "$CONTAINER_APP" \
+            --resource-group "$RESOURCE_GROUP" \
+            --validation-method TXT

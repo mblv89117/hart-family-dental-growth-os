@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { NextRequest } from "next/server";
+import { deliverLeadEmail } from "@/lib/lead-delivery";
 import { resetEnvCache } from "@/server/env";
 
 vi.mock("@/lib/lead-delivery", () => ({
@@ -21,6 +22,7 @@ describe("platform-disabled public lead compatibility", () => {
     delete process.env.AUTH_SECRET;
     resetEnvCache();
     vi.resetModules();
+    vi.mocked(deliverLeadEmail).mockClear();
   });
 
   afterEach(() => {
@@ -49,7 +51,27 @@ describe("platform-disabled public lead compatibility", () => {
     expect(json.ok).toBe(true);
     expect(json.id).toMatch(/^lead_/);
     expect(json.emailDelivered).toBe(true);
-    expect(json.notifyInbox).toBeTruthy();
+    expect(json.notifyInbox).toBe("hartdentalyv@hotmail.com");
+  });
+
+  it("rejects an unknown office instead of defaulting to Yucca Valley", async () => {
+    const { POST } = await import("@/app/api/leads/route");
+    const req = new NextRequest("http://localhost/api/leads", {
+      method: "POST",
+      body: JSON.stringify({
+        name: "Synthetic Patient",
+        phone: "7605554003",
+        email: "synthetic@example.test",
+        location: "either",
+        smsConsent: "yes",
+      }),
+      headers: { "content-type": "application/json" },
+    });
+    const res = await POST(req);
+    const json = await res.json();
+    expect(res.status).toBe(400);
+    expect(json.ok).toBe(false);
+    expect(deliverLeadEmail).not.toHaveBeenCalled();
   });
 
   it("platform enabled without database fails closed (no legacy fallback)", async () => {

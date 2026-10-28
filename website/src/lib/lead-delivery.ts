@@ -1,5 +1,7 @@
 import nodemailer from "nodemailer";
 import { leadOwner } from "@/lib/locations";
+import { explicitOffice, postSignedHfdWebsiteLead } from "@/lib/hfd-lead-webhook";
+import { safeError } from "@/server/logging";
 
 export type DeliveryResult = {
   channel: string;
@@ -117,85 +119,22 @@ async function sendViaSmtp(
   }
 }
 
-/**
- * FormSubmit is unreliable for Hotmail (activation emails often never arrive).
- * Kept as last-resort only; success requires JSON success===true, not HTTP 200.
- */
-async function sendViaFormSubmit(
-  lead: Record<string, unknown>,
-  inbox: string,
-  subject: string,
-): Promise<DeliveryResult> {
-  try {
-    const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(inbox)}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Origin: "https://hfdds.net",
-        Referer: "https://hfdds.net/contact",
-      },
-      body: JSON.stringify({
-        _subject: subject,
-        _template: "table",
-        _url: "https://hfdds.net/contact",
-        name: lead.name,
-        phone: lead.phone,
-        email: lead.email,
-        location: lead.location,
-        service: lead.service,
-        followUp: lead.followUp,
-        formType: lead.formType,
-        message: lead.message || "",
-        owner: leadOwner.name,
-        leadId: lead.id,
-        replyto: lead.email,
-      }),
-    });
-    const raw = await res.text();
-    let parsed: { success?: string | boolean; message?: string } = {};
-    try {
-      parsed = JSON.parse(raw);
-    } catch {
-      return { channel: "formsubmit", ok: false, detail: `non-json ${res.status}: ${raw.slice(0, 200)}` };
-    }
-    const ok = parsed.success === true || parsed.success === "true";
-    return {
-      channel: "formsubmit",
-      ok,
-      detail: ok ? inbox : parsed.message || `status ${res.status}`,
-    };
-  } catch (err) {
-    return { channel: "formsubmit", ok: false, detail: String(err) };
-  }
-}
-
-async function sendViaWebhook(lead: Record<string, unknown>, primaryInbox: string, deliveries: DeliveryResult[]) {
-  const webhook = process.env.LEAD_WEBHOOK_URL?.trim();
-  if (!webhook) return { channel: "webhook", ok: false, detail: "LEAD_WEBHOOK_URL not set" } as DeliveryResult;
-  try {
-    const res = await fetch(webhook, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...lead, notifyInbox: primaryInbox, deliveries }),
-    });
-    return {
-      channel: "webhook",
-      ok: res.ok,
-      detail: res.ok ? undefined : `status ${res.status}`,
-    } as DeliveryResult;
-  } catch (err) {
-    return { channel: "webhook", ok: false, detail: String(err) } as DeliveryResult;
-  }
-}
-
 export async function deliverLeadEmail(lead: Record<string, unknown>, primaryInbox: string) {
+  const office = explicitOffice(lead.office ?? lead.location);
+  if (!office) {
+    safeError("[leads] delivery refused", { reason: "office_not_explicit" });
+    return {
+      deliveries: [{ channel: "hfd-website-lead", ok: false, detail: "office_not_explicit" }] as DeliveryResult[],
+      emailDelivered: false,
+      recipients: [] as string[],
+    };
+  }
+
   const subject = subjectFor(lead);
   const text = buildBody(lead);
   const recipients = notifyRecipients(primaryInbox);
   const deliveries: DeliveryResult[] = [];
 
-  // Prefer transactional SMTP/Resend; never trust FormSubmit HTTP 200 alone.
   const smtp = await sendViaSmtp(lead, recipients, subject, text);
   deliveries.push(smtp);
 
@@ -204,19 +143,29 @@ export async function deliverLeadEmail(lead: Record<string, unknown>, primaryInb
     deliveries.push(resend);
   }
 
-  const anyTransactionalOk = deliveries.some((d) => d.ok && (d.channel === "smtp" || d.channel === "resend"));
-  if (!anyTransactionalOk) {
-    // Attempt FormSubmit to each recipient — usually needs Activate Form email first.
-    for (const inbox of recipients) {
-      deliveries.push(await sendViaFormSubmit(lead, inbox, subject));
-    }
+  const emailDelivered = deliveries.some((d) => d.ok && (d.channel === "smtp" || d.channel === "resend"));
+  if (!emailDelivered) {
+    safeError("[leads] email delivery unavailable", {
+      reason: "smtp_and_resend_not_delivered",
+      location: office,
+    });
+    deliveries.push({
+      channel: "email",
+      ok: false,
+      detail: "smtp_and_resend_unavailable",
+    });
   }
 
-  deliveries.push(await sendViaWebhook(lead, primaryInbox, deliveries));
-
-  const emailDelivered = deliveries.some(
-    (d) => d.ok && (d.channel === "smtp" || d.channel === "resend" || d.channel === "formsubmit"),
-  );
+  // Signed 360 Growth intake runs beside SMTP/Resend. A webhook failure does not
+  // suppress an email that already succeeded, and email failure does not skip signing.
+  const webhook = await postSignedHfdWebsiteLead(lead);
+  deliveries.push(webhook);
+  if (!webhook.ok) {
+    safeError("[leads] signed website webhook not accepted", {
+      reason: webhook.detail || "webhook_failed",
+      location: office,
+    });
+  }
 
   return { deliveries, emailDelivered, recipients };
 }
