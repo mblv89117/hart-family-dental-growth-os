@@ -20,14 +20,14 @@ Wendy is the accountable human for responding to new web leads, missed-call call
 | Desert Hot Springs | `hartdental02@hotmail.com` |
 | Optional CC | `hartdental@gmail.com` via `LEAD_CC_EMAILS` |
 
-Implementation (`website/src/app/api/leads/route.ts`):
+Implementation (`website/src/app/api/leads/route.ts` and `website/src/lib/lead-delivery.ts`):
 
-1. Append to `data/leads/leads.jsonl` (local / server filesystem; gitignored)  
-2. Email primary Hotmail via FormSubmit ajax (no password stored in repo)  
-3. Optional Resend email when `RESEND_API_KEY` is set on the host  
-4. Optional `LEAD_WEBHOOK_URL` for CRM  
+1. Reject the request unless the office is exactly `yucca-valley` or `desert-hot-springs`. There is no default office.  
+2. Append to `data/leads/leads.jsonl` (local / server filesystem; gitignored; ephemeral on Container Apps)  
+3. Email the office inbox via SMTP, then Resend if SMTP is not configured. If both fail, the request is logged without patient details and is not sent to any other email vendor.  
+4. In parallel, POST a signed lead to 360 Growth (`HFD_WEBSITE_LEAD_WEBHOOK_SECRET`, contract `hfd-website-lead-1`).  
 
-**Never commit Hotmail passwords.** Prefer vaulted host env vars for Resend / SMTP.
+**Never commit Hotmail passwords or the webhook secret.** Store them in Key Vault. Do not use formsubmit.co.
 
 ## Channels in scope
 
@@ -51,6 +51,10 @@ Implementation (`website/src/app/api/leads/route.ts`):
 | After hours | Auto-ack | Wendy next business morning | Next business morning | AFTER-HOURS |
 
 ## Location selection rules
+
+The website form does not guess an office. `location` must be `yucca-valley` or `desert-hot-springs`. Any other value is rejected before email or the 360 Growth webhook.
+
+Phone and walk-in routing, outside the website form, still follows:
 
 1. User-selected office wins when provided  
 2. Else phone number / zip / city heuristic  

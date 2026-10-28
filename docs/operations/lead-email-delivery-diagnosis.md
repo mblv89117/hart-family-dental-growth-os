@@ -19,11 +19,15 @@
 3. **Bug: API treated HTTP 200 as success.**  
    FormSubmit returns HTTP 200 with `success:"false"`. Our code marked `formsubmit-hotmail` as `ok: true` because `res.ok` was true. That made API responses look healthy while email never sent.
 
+## Update (Azure prep)
+
+FormSubmit is no longer a fallback. Patient inquiry bodies are not sent to formsubmit.co. If SMTP and Resend both fail, delivery fails closed and a non-PHI error is logged. The signed 360 Growth webhook is a separate channel and does not replace SMTP or Resend.
+
 ## Fix implemented
 
 - New `website/src/lib/lead-delivery.ts`:
   - Prefer **SMTP** (Outlook) then **Resend**
-  - FormSubmit only as last resort; requires JSON `success === true`
+  - FormSubmit was a last resort when this note was written. It has since been removed; do not turn it back on.
   - Always include primary Hotmail + `LEAD_CC_EMAILS` (Gmail)
   - API response now includes `emailDelivered` + per-channel `deliveries`
 - Env template updated for `SMTP_*` and `RESEND_*`
