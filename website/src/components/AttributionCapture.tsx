@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { officeFromTel } from "@/lib/office-routing";
 import { captureAttributionFromLocation, trackEvent } from "@/lib/tracking";
 
 /** Captures UTM/referrer once per session and binds phone/email click tracking. */
@@ -13,12 +14,14 @@ export function AttributionCapture() {
       const t = e.target as HTMLElement | null;
       const a = t?.closest?.("a") as HTMLAnchorElement | null;
       if (!a?.href) return;
+      const path = window.location.pathname;
       if (a.href.startsWith("tel:")) {
-        trackEvent("phone_click", { href: a.getAttribute("href") || "", path: window.location.pathname });
+        const office = officeFromTel(a.getAttribute("href") || "");
+        trackEvent("phone_click", { office: office || undefined, path });
       } else if (a.href.startsWith("mailto:")) {
-        trackEvent("email_click", { href: a.getAttribute("href") || "", path: window.location.pathname });
+        trackEvent("email_click", { path });
       } else if (a.getAttribute("href")?.includes("#request") || a.getAttribute("href")?.includes("smile-assessment")) {
-        trackEvent("appointment_link_click", { href: a.getAttribute("href") || "", path: window.location.pathname });
+        trackEvent("appointment_link_click", { path });
       }
     }
     document.addEventListener("click", onClick);

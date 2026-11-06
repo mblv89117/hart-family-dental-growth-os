@@ -1,5 +1,7 @@
 # Analytics & Attribution Setup
 
+Analytics events must not include form contents (name, phone, email, message) or clinical service text. Page views drop those query keys before they are sent. See `website/src/lib/analytics-privacy.ts`. What the previous thank-you URL may already have stored in GA4, and the owner deletion checklist, are in `docs/analytics/ga4-historical-disclosure.md`.
+
 ## Implemented in repo (no fabricated IDs)
 
 | Capability | Status |

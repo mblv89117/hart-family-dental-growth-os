@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { appendFile, mkdir } from "fs/promises";
 import path from "path";
-import { explicitOffice } from "@/lib/hfd-lead-webhook";
-import { getLocationById, leadOwner } from "@/lib/locations";
+import { leadOwner } from "@/lib/locations";
 import { deliverLeadEmail } from "@/lib/lead-delivery";
+import { officeInbox, resolveOfficeId } from "@/lib/office-routing";
 import { isPlatformEnabled } from "@/server/env";
 import { safeError, safeInfo } from "@/server/logging";
 import { checkRateLimit, pruneRateLimits } from "@/server/rate-limit";
@@ -33,6 +33,8 @@ type LeadBody = {
   utm_content?: string;
   utm_term?: string;
   gclid?: string;
+  gbraid?: string;
+  wbraid?: string;
   fbclid?: string;
   referrer?: string;
 };
@@ -40,11 +42,6 @@ type LeadBody = {
 function sanitize(value: unknown, max = 500) {
   if (typeof value !== "string") return "";
   return value.trim().slice(0, max);
-}
-
-function officeInbox(locationId: string) {
-  if (!explicitOffice(locationId)) return null;
-  return getLocationById(locationId)?.leadNotifyEmail ?? null;
 }
 
 /** Pre-platform public path — no Prisma, no worker, no AUTH_SECRET required. */
@@ -78,6 +75,8 @@ async function handleLegacyLead(req: NextRequest, body: LeadBody) {
     utm_content: sanitize(body.utm_content, 120),
     utm_term: sanitize(body.utm_term, 120),
     gclid: sanitize(body.gclid, 120),
+    gbraid: sanitize(body.gbraid, 200),
+    wbraid: sanitize(body.wbraid, 200),
     fbclid: sanitize(body.fbclid, 120),
     referrer: sanitize(body.referrer, 500),
     userAgent: req.headers.get("user-agent")?.slice(0, 200) || "",
@@ -90,13 +89,18 @@ async function handleLegacyLead(req: NextRequest, body: LeadBody) {
     );
   }
 
-  const primaryInbox = officeInbox(lead.location);
-  if (!primaryInbox) {
+  const office = resolveOfficeId(lead.location);
+  const primaryInbox = office ? officeInbox(office) : null;
+  if (!office || !primaryInbox) {
     return NextResponse.json(
-      { ok: false, error: "Preferred office must be Yucca Valley or Desert Hot Springs." },
+      {
+        ok: false,
+        error: "Choose Yucca Valley or Desert Hot Springs. An unspecified office is not routed.",
+      },
       { status: 400 },
     );
   }
+  lead.location = office;
 
   if (!lead.smsConsent) {
     return NextResponse.json(

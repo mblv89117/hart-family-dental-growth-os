@@ -43,14 +43,6 @@ export function websiteGraph() {
       description: site.description,
       publisher: { "@id": orgId },
       inLanguage: "en-US",
-      potentialAction: {
-        "@type": "SearchAction",
-        target: {
-          "@type": "EntryPoint",
-          urlTemplate: `${site.domain}/services?q={search_term_string}`,
-        },
-        "query-input": "required name=search_term_string",
-      },
     },
   ];
 }
@@ -74,7 +66,6 @@ export function dentistLocationSchema(location: (typeof locations)[number]) {
     url: `${site.domain}${location.path}`,
     logo: `${site.domain}${site.logo.mark}`,
     image: `${site.domain}${site.logo.ogImage}`,
-    priceRange: "$$",
     currenciesAccepted: "USD",
     paymentAccepted: location.paymentMethods.join(", "),
     address: {

@@ -81,10 +81,11 @@ Do not treat form submit as revenue.
 
 ## Hours context for routing
 
-Both offices (Option A approved):
+Verified office hours (do not use the retired Monday–Thursday / Friday schedule):
 
-- Monday–Thursday: 8:00 AM – 4:30 PM  
-- Friday: 9:00 AM – 2:00 PM  
-- Saturday & Sunday: Closed  
+| Office | Hours | Last appointment | Lead inbox | CallRail number |
+| --- | --- | --- | --- | --- |
+| Yucca Valley | Monday and Tuesday, 8:00 AM–4:00 PM. Closed Wednesday–Sunday. | 3:30 PM | `hartdentalyv@hotmail.com` | (760) 389-7707 |
+| Desert Hot Springs | Wednesday, 8:00 AM–4:00 PM. Closed all other days. | 3:30 PM | `hartdental02@hotmail.com` | (760) 314-4160 |
 
-After-hours and weekend inquiries → thank-you ack + Wendy follow-up next business day.
+After-hours and closed-day inquiries → thank-you acknowledgment + follow-up on that office’s next open day.
