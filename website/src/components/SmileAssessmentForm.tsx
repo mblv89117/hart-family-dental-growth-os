@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { locations } from "@/lib/locations";
+import { thankYouPath } from "@/lib/office-routing";
 import { readAttribution, trackEvent } from "@/lib/tracking";
 
 const fieldClass =
@@ -39,11 +40,8 @@ export function SmileAssessmentForm() {
       trackEvent("form_submit_success", {
         formType: "smile-assessment",
         location: String(payload.location || ""),
-        service: "Teeth straightening assessment",
       });
-      router.push(
-        `/thank-you?location=${encodeURIComponent(String(payload.location || ""))}&service=${encodeURIComponent("Teeth straightening assessment")}`,
-      );
+      router.push(thankYouPath(String(payload.location || "")));
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Something went wrong.");

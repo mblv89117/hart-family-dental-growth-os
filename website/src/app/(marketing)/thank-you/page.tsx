@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default async function ThankYouPage({
   searchParams,
 }: {
-  searchParams: Promise<{ location?: string; service?: string }>;
+  searchParams: Promise<{ location?: string }>;
 }) {
   const params = await searchParams;
   const loc = locations.find((l) => l.id === params.location);
@@ -25,11 +25,6 @@ export default async function ThankYouPage({
       />
       <Prose>
         <div className="max-w-2xl space-y-4 text-ink-soft">
-          {params.service ? (
-            <p>
-              Request type: <span className="font-medium text-ink">{params.service}</span>
-            </p>
-          ) : null}
           {loc ? (
             <div className="space-y-2">
               <p>

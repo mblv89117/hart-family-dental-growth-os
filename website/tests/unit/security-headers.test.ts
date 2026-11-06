@@ -14,4 +14,12 @@ describe("security headers", () => {
     const hsts = securityHeaders(true).find((header) => header.key === "Strict-Transport-Security");
     expect(hsts?.value).toBe(HSTS_VALUE);
   });
+
+  it("allows GA4 collect on www.google.com without dropping the other security headers", () => {
+    const csp = securityHeaders(false).find((header) => header.key === "Content-Security-Policy");
+    expect(csp?.value).toContain("connect-src");
+    expect(csp?.value).toContain("https://www.google.com");
+    expect(csp?.value).toContain("https://*.google-analytics.com");
+    expect(csp?.value).not.toContain("formsubmit.co");
+  });
 });
